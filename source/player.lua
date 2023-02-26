@@ -3,9 +3,9 @@ import "CoreLibs/object"
 
 local gfx <const> = playdate.graphics
 
-class("player").extends()
+class("Player").extends()
 
-function player:init(xspeed, yspeed)
+function Player:init(xspeed, yspeed)
     self.label = {
 		x = 155,
 		y = 240 - 25,
@@ -16,7 +16,7 @@ function player:init(xspeed, yspeed)
 	}
 end
 
-function player:update()
+function Player:update()
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
 		self.label.xspeed += 2
 	end
@@ -40,7 +40,7 @@ function player:update()
 	-- self.label.y = math.floor(self.label.y)
 end
 
-function player:draw()
+function Player:draw()
     local label = self.label;
     gfx.fillCircleAtPoint(label.x, label.y, label.radius)
 end

@@ -1,5 +1,5 @@
-import "player" -- DEMO
-local player = player(0, 0) -- DEMO
+import "Player" -- DEMO
+local player = Player(0, 0) -- DEMO
 
 local gfx <const> = playdate.graphics
 
