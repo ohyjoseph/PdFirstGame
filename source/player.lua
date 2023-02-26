@@ -1,16 +1,23 @@
-import "CoreLibs/graphics"
-import "CoreLibs/object"
+local pd <const> = playdate
+local gfx <const> = pd.graphics
 
-local gfx <const> = playdate.graphics
+class("Player").extends(gfx.sprite)
 
-class("Player").extends()
-
-function Player:init(xspeed, yspeed)
+function Player:init(x, y, r)
+	Player.super.init(self)
+	self:moveTo(x,y)
+	local circleImage = gfx.image.new(r*2, r*2)
+	gfx.pushContext(circleImage)
+		gfx.fillCircleAtPoint(r,r,r)
+	gfx.popContext()
+	self:setImage(circleImage)
+	self:add()
+	
     self.label = {
 		x = 155,
 		y = 240 - 25,
-		xspeed = xspeed,
-		yspeed = yspeed,
+		xspeed = 0,
+		yspeed = 0,
 		radius = 25,
 		friction = 1.5,
 	}
@@ -36,11 +43,5 @@ function Player:update()
 	end
 	self.label.x += self.label.xspeed
 	self.label.y += self.label.yspeed
-	-- self.label.x = math.floor(self.label.x)
-	-- self.label.y = math.floor(self.label.y)
-end
-
-function Player:draw()
-    local label = self.label;
-    gfx.fillCircleAtPoint(label.x, label.y, label.radius)
+	self:moveTo(math.floor(self.label.x), math.floor(self.label.y))
 end

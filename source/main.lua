@@ -1,25 +1,22 @@
-import "Player" -- DEMO
-local player = Player(0, 0) -- DEMO
+import "CoreLibs/object"
+import "CoreLibs/graphics"
+import "CoreLibs/sprites"
+
+import "Player"
 
 local gfx <const> = playdate.graphics
 
-local function loadGame()
+local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
+	local player = Player(200, 120, 20)
+	player:add()
 end
 
-local function updateGame()
-	player:update() -- DEMO
-end
-
-local function drawGame()
-	gfx.clear() -- Clears the screen
-	player:draw() -- DEMO
-end
-
-loadGame()
+initialize()
 
 function playdate.update()
-	updateGame()
-	drawGame()
+	-- updateGame()
+	-- drawGame()
 	playdate.drawFPS(0,0) -- FPS widget
+	gfx.sprite.update()
 end
