@@ -5,43 +5,82 @@ class("Player").extends(gfx.sprite)
 
 function Player:init(x, y, r)
 	Player.super.init(self)
-	self:moveTo(x,y)
-	local circleImage = gfx.image.new(r*2, r*2)
+
+	self.radius = r
+
+	self.x = x
+	self.y = y
+	self.dx = 0
+	self.dy = 0
+
+	self.maxDx = 8
+	self.maxDy = 8
+	self.terminalY = 16
+	self.g = .6
+	self.friction = 1.6
+
+	local circleImage = gfx.image.new(self.radius*2, self.radius*2)
 	gfx.pushContext(circleImage)
 		gfx.fillCircleAtPoint(r,r,r)
 	gfx.popContext()
 	self:setImage(circleImage)
 	self:add()
-	
-    self.label = {
-		x = 155,
-		y = 240 - 25,
-		xspeed = 0,
-		yspeed = 0,
-		radius = 25,
-		friction = 1.5,
-	}
 end
 
 function Player:update()
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
-		self.label.xspeed += 2
+		self.dx += 2
 	end
 	if playdate.buttonIsPressed(playdate.kButtonLeft) then
-		self.label.xspeed -= 2
-	end
-	if self.label.xspeed > 0 then
-		self.label.xspeed -= self.label.friction
-	elseif self.label.xspeed < 0 then
-		self.label.xspeed += self.label.friction
+		self.dx -= 2
 	end
 	if playdate.buttonIsPressed(playdate.kButtonA) then
-		self.label.yspeed -= 2
+		self.dy -= 2
 	end
-	if self.label.yspeed < 0 then
-		self.label.yspeed += self.label.friction
+
+	self:applyFriction()
+	self:applyGravity()
+	self:applyVelocities()
+end
+
+function Player:applyVelocities()
+	self.x += self.dx
+	self.y += self.dy
+	if self.y > 240 then
+		self.y = 240
 	end
-	self.label.x += self.label.xspeed
-	self.label.y += self.label.yspeed
-	self:moveTo(math.floor(self.label.x), math.floor(self.label.y))
+	self:moveTo(self.x, self.y)
+end
+
+function Player:applyFriction()
+	if self.dx > 0 then
+		self.dx -= self.friction
+		if self.dx < 0 then
+			self.dx = 0
+		end
+	elseif self.dx < 0 then
+		self.dx += self.friction
+		if self.dx > 0 then
+			self.dx = 0
+		end
+	end
+	if self.dx > self.maxDx then
+		self.dx = self.maxDx
+	end
+	if self.dx < -self.maxDx then
+		self.dx = -self.maxDx
+	end
+end
+
+function Player:applyGravity()
+	self.dy += self.g
+	if self.y >= 240 and self.dy > 0 then
+		self.dy = 0
+	end
+	if self.dy < -self.maxDy then
+		self.dy = -self.maxDy
+	end
+	if self.dy > self.terminalY then
+		self.dy = self.terminalY
+	end
 end

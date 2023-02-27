@@ -8,7 +8,7 @@ local gfx <const> = playdate.graphics
 
 local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
-	local player = Player(200, 120, 20)
+	local player = Player(200, 120, 12)
 	player:add()
 end
 
