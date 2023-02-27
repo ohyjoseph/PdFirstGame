@@ -3,10 +3,12 @@ local gfx <const> = pd.graphics
 
 class("Player").extends(gfx.sprite)
 
+local count = 0
+
 function Player:init(x, y, r)
 	Player.super.init(self)
 
-	self.radius = r
+	self.r = r
 
 	self.x = x
 	self.y = y
@@ -19,12 +21,18 @@ function Player:init(x, y, r)
 	self.g = .6
 	self.friction = 1.6
 
-	local circleImage = gfx.image.new(self.radius*2, self.radius*2)
+	local circleImage = gfx.image.new(self.r*2, self.r*2)
 	gfx.pushContext(circleImage)
-		gfx.fillCircleAtPoint(r,r,r)
+		gfx.fillCircleAtPoint(self.r, self.r ,self.r)
 	gfx.popContext()
 	self:setImage(circleImage)
+	self:setCollideRect(3, 3, self.r*2 - 6, self.r*2 - 6)
+	self:moveWithCollisions(self.x, self.y)
 	self:add()
+end
+
+function Player:collisionResponse(other)
+	return gfx.sprite.kCollisionTypeSlide
 end
 
 function Player:update()
@@ -41,6 +49,8 @@ function Player:update()
 	self:applyFriction()
 	self:applyGravity()
 	self:applyVelocities()
+
+	self:moveWithCollisions(self.x, self.y)
 end
 
 function Player:applyVelocities()
@@ -49,7 +59,6 @@ function Player:applyVelocities()
 	if self.y > 240 then
 		self.y = 240
 	end
-	self:moveTo(self.x, self.y)
 end
 
 function Player:applyFriction()
