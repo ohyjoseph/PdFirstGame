@@ -27,8 +27,8 @@ function Player:init(x, y, r)
 	gfx.popContext()
 	self:setImage(circleImage)
 	self:setCollideRect(3, 3, self.r*2 - 6, self.r*2 - 6)
-	self:moveWithCollisions(self.x, self.y)
 	self:add()
+	self:moveWithCollisions(self.x, self.y)
 end
 
 function Player:collisionResponse(other)
@@ -50,7 +50,17 @@ function Player:update()
 	self:applyGravity()
 	self:applyVelocities()
 
-	self:moveWithCollisions(self.x, self.y)
+	local collisions
+
+	self.x, self.y, collisions = self:moveWithCollisions(self.x, self.y)
+	if collisions[1] then
+		local coor = collisions[1]["normal"]
+		local x, y = coor:unpack()
+		-- print(x, y)
+		if y == -1 then
+			self.dy = 0
+		end
+	end
 end
 
 function Player:applyVelocities()
