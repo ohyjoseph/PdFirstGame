@@ -3,7 +3,11 @@ local gfx <const> = pd.graphics
 
 class("Player").extends(gfx.sprite)
 
-local count = 0
+local MAX_DX = 8
+local MAX_DY = 8
+local TERMINAL_Y = 16
+local G = 0.6
+local FRICTION = 1.6
 
 function Player:init(x, y, r)
 	Player.super.init(self)
@@ -14,12 +18,6 @@ function Player:init(x, y, r)
 	self.y = y
 	self.dx = 0
 	self.dy = 0
-
-	self.maxDx = 8
-	self.maxDy = 8
-	self.terminalY = 16
-	self.g = .6
-	self.friction = 1.6
 
 	local circleImage = gfx.image.new(self.r*2, self.r*2)
 	gfx.pushContext(circleImage)
@@ -73,33 +71,33 @@ end
 
 function Player:applyFriction()
 	if self.dx > 0 then
-		self.dx -= self.friction
+		self.dx -= FRICTION
 		if self.dx < 0 then
 			self.dx = 0
 		end
 	elseif self.dx < 0 then
-		self.dx += self.friction
+		self.dx += FRICTION
 		if self.dx > 0 then
 			self.dx = 0
 		end
 	end
-	if self.dx > self.maxDx then
-		self.dx = self.maxDx
+	if self.dx > MAX_DX then
+		self.dx = MAX_DX
 	end
-	if self.dx < -self.maxDx then
-		self.dx = -self.maxDx
+	if self.dx < -MAX_DX then
+		self.dx = -MAX_DX
 	end
 end
 
 function Player:applyGravity()
-	self.dy += self.g
+	self.dy += G
 	if self.y >= 240 and self.dy > 0 then
 		self.dy = 0
 	end
-	if self.dy < -self.maxDy then
-		self.dy = -self.maxDy
+	if self.dy < -MAX_DY then
+		self.dy = -MAX_DY
 	end
-	if self.dy > self.terminalY then
-		self.dy = self.terminalY
+	if self.dy > TERMINAL_Y then
+		self.dy = TERMINAL_Y
 	end
 end
