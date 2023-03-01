@@ -8,9 +8,14 @@ local MAX_DY = 8
 local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.6
+local JUMP_FORCE = 20
 
 function Player:init(x, y, r)
 	Player.super.init(self)
+
+	self.jumpTimer = pd.frameTimer.new(10)
+	self.jumpTimer:pause()
+	self.jumpTimer.discardOnCompletion = false
 
 	self.r = r
 
@@ -18,6 +23,8 @@ function Player:init(x, y, r)
 	self.y = y
 	self.dx = 0
 	self.dy = 0
+
+	self.onGround = false
 
 	local circleImage = gfx.image.new(self.r*2, self.r*2)
 	gfx.pushContext(circleImage)
@@ -34,14 +41,17 @@ function Player:collisionResponse(other)
 end
 
 function Player:update()
+	print(self.jumpTimer.frame)
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
 		self.dx += 2
 	end
 	if playdate.buttonIsPressed(playdate.kButtonLeft) then
 		self.dx -= 2
 	end
-	if playdate.buttonIsPressed(playdate.kButtonA) then
-		self.dy -= 2
+	if playdate.buttonJustPressed(playdate.kButtonA) then
+		self:jump()
+	elseif playdate.buttonIsPressed(playdate.kButtonA) then
+		self:continueJump()
 	end
 
 	self:applyFriction()
@@ -57,7 +67,26 @@ function Player:update()
 		-- print(x, y)
 		if y == -1 then
 			self.dy = 0
+			self.onGround = true
+			self.jumpTimer:pause()
+			self.jumpTimer:reset()
+		else
+			self.onGround = false
 		end
+	end
+end
+
+function Player:jump()
+	self.jumpTimer:reset()
+	self.jumpTimer:start()
+	if self.onGround then
+		self.dy -= JUMP_FORCE
+	end
+end
+
+function Player:continueJump()
+	if self.jumpTimer.frame < 10 then
+		self.dy -= JUMP_FORCE
 	end
 end
 
