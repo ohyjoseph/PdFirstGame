@@ -10,11 +10,12 @@ local G = 0.6
 local FRICTION = 1.6
 local JUMP_FORCE = 9
 local CONTINUE_JUMP_FORCE = 0.5
+local MAX_CONTINUE_JUMP_FRAMES = 6
 
 function Player:init(x, y, r)
 	Player.super.init(self)
 
-	self.jumpTimer = pd.frameTimer.new(6)
+	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
 	self.jumpTimer.discardOnCompletion = false
 
@@ -86,7 +87,7 @@ function Player:jump()
 end
 
 function Player:continueJump()
-	if self.jumpTimer.frame < 6 and self.jumpTimer.frame >= 1 then
+	if self.jumpTimer.frame < MAX_CONTINUE_JUMP_FRAMES and self.jumpTimer.frame >= 1 then
 		self.dy -= CONTINUE_JUMP_FORCE
 	end
 end
