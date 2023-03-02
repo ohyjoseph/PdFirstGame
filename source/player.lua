@@ -4,16 +4,16 @@ local gfx <const> = pd.graphics
 class("Player").extends(gfx.sprite)
 
 local MAX_DX = 8
-local MAX_DY = 8
+local MAX_DY = 10
 local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.6
-local JUMP_FORCE = 20
+local JUMP_FORCE = 5
 
 function Player:init(x, y, r)
 	Player.super.init(self)
 
-	self.jumpTimer = pd.frameTimer.new(10)
+	self.jumpTimer = pd.frameTimer.new(6)
 	self.jumpTimer:pause()
 	self.jumpTimer.discardOnCompletion = false
 
@@ -77,16 +77,19 @@ function Player:update()
 end
 
 function Player:jump()
-	self.jumpTimer:reset()
-	self.jumpTimer:start()
-	if self.onGround then
+	if self.onGround and self.jumpTimer.frame == 0 then
+		self.jumpTimer:reset()
+		self.jumpTimer:start()
 		self.dy -= JUMP_FORCE
 	end
 end
 
 function Player:continueJump()
-	if self.jumpTimer.frame < 10 then
+	if self.jumpTimer.frame < 6 and self.jumpTimer.frame >= 1 then
 		self.dy -= JUMP_FORCE
+	else
+		self.jumpTimer:pause()
+		self.jumpTimer:reset()
 	end
 end
 
