@@ -5,6 +5,7 @@ import 'CoreLibs/frameTimer'
 
 import "Player"
 import "Wall"
+import "Projectile"
 
 local gfx <const> = playdate.graphics
 
@@ -18,6 +19,9 @@ local function initialize()
 	local wall = Wall(180, 250, 500, 30)
 	wall:add()
 	wall:moveTo(180, 250)
+	local projectile = Projectile(-20, 180)
+	projectile:add()
+	projectile:moveTo(-20, 180)
 end
 
 initialize()
