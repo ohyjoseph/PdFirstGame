@@ -87,9 +87,6 @@ end
 function Player:continueJump()
 	if self.jumpTimer.frame < 6 and self.jumpTimer.frame >= 1 then
 		self.dy -= JUMP_FORCE
-	else
-		self.jumpTimer:pause()
-		self.jumpTimer:reset()
 	end
 end
 
