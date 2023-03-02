@@ -45,7 +45,6 @@ function Player:collisionResponse(other)
 end
 
 function Player:update()
-	print(self.jumpTimer.frame)
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
 		self.dx += 2
 	end
@@ -68,7 +67,6 @@ function Player:update()
 	if collisions[1] then
 		local coor = collisions[1]["normal"]
 		local x, y = coor:unpack()
-		-- print(x, y)
 		if y == -1 then
 			self.dy = 0
 			self.onGround = true

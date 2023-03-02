@@ -29,8 +29,15 @@ end
 function Projectile:update()
     self:applyVelocities()
 	self:moveWithCollisions(self.x, self.y)
+    self:removeSelf()
 end
 
 function Projectile:applyVelocities()
 	self.x += self.dx
+end
+
+function Projectile:removeSelf()
+    if self.x > 500 or self.x < -50 then
+        self:remove()
+    end
 end
