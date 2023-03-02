@@ -35,7 +35,7 @@ function Player:init(x, y, r)
 	self:setImage(circleImage)
 	self:setCollideRect(3, 3, self.r*2 - 6, self.r*2 - 6)
 	self:setGroups(1)
-	self:setCollidesWithGroups(2)
+	self:setCollidesWithGroups({2, 3})
 	self:add()
 	self:moveWithCollisions(self.x, self.y)
 end
