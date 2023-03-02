@@ -34,6 +34,8 @@ function Player:init(x, y, r)
 	gfx.popContext()
 	self:setImage(circleImage)
 	self:setCollideRect(3, 3, self.r*2 - 6, self.r*2 - 6)
+	self:setGroups(1)
+	self:setCollidesWithGroups(2)
 	self:add()
 	self:moveWithCollisions(self.x, self.y)
 end

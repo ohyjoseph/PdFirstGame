@@ -17,6 +17,8 @@ function Wall:init(x, y, w, h)
 	gfx.popContext()
 	self:setImage(rectImage)
     self:setCollideRect(0, 0, self:getSize())
+	self:setGroups(2)
+	self:setCollidesWithGroups(1)
 	self:add()
     self:moveWithCollisions(self.x, self.y)
 end
