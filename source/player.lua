@@ -9,8 +9,8 @@ local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.6
 local JUMP_FORCE = 9
-local CONTINUE_JUMP_FORCE = 0.5
-local MAX_CONTINUE_JUMP_FRAMES = 6
+local CONTINUE_JUMP_FORCE = 0.3
+local MAX_CONTINUE_JUMP_FRAMES = 10
 
 function Player:init(x, y, r)
 	Player.super.init(self)
