@@ -75,6 +75,8 @@ function Player:update()
 		else
 			self.onGround = false
 		end
+	else
+		self.onGround = false
 	end
 end
 
@@ -87,7 +89,7 @@ function Player:jump()
 end
 
 function Player:continueJump()
-	if self.jumpTimer.frame < MAX_CONTINUE_JUMP_FRAMES and self.jumpTimer.frame >= 1 then
+	if self.jumpTimer.frame < MAX_CONTINUE_JUMP_FRAMES and self.jumpTimer.frame > 1 then
 		self.dy -= CONTINUE_JUMP_FORCE
 	end
 end
