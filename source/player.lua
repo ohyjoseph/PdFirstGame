@@ -11,6 +11,7 @@ local FRICTION = 1.6
 local JUMP_FORCE = 9
 local CONTINUE_JUMP_FORCE = 0.3
 local MAX_CONTINUE_JUMP_FRAMES = 10
+local MAX_COYOTE_FRAMES = 7
 
 function Player:init(x, y, r)
 	Player.super.init(self)
@@ -18,6 +19,10 @@ function Player:init(x, y, r)
 	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
 	self.jumpTimer.discardOnCompletion = false
+
+	self.coyoteTimer = pd.frameTimer.new(MAX_COYOTE_FRAMES)
+	self.coyoteTimer:pause()
+	self.coyoteTimer.discardOnCompletion = false
 
 	self.r = r
 
@@ -72,19 +77,23 @@ function Player:update()
 			self.onGround = true
 			self.jumpTimer:pause()
 			self.jumpTimer:reset()
+			self.coyoteTimer:pause()
+			self.coyoteTimer:reset()
 		else
 			self.onGround = false
+			self.coyoteTimer:start()
 		end
 	else
 		self.onGround = false
+		self.coyoteTimer:start()
 	end
 end
 
 function Player:jump()
-	if self.onGround and self.jumpTimer.frame == 0 then
+	if ((self.coyoteTimer.frame > 0 and self.coyoteTimer.frame < MAX_COYOTE_FRAMES) or self.onGround) and self.jumpTimer.frame == 0 then
 		self.jumpTimer:reset()
 		self.jumpTimer:start()
-		self.dy -= JUMP_FORCE
+		self.dy = -JUMP_FORCE
 	end
 end
 
