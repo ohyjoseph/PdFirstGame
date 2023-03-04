@@ -68,7 +68,8 @@ function Player:update()
 
 	local collisions
 
-	self.x, self.y, collisions = self:moveWithCollisions(self.x, self.y)
+	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
+	print(length)
 	self:executeCollisionResponses(collisions)
 end
 
@@ -128,22 +129,28 @@ function Player:applyGravity()
 end
 
 function Player:executeCollisionResponses(collisions)
-	if collisions[1] then
-		local coor = collisions[1]["normal"]
-		local x, y = coor:unpack()
-		if y == -1 then
-			self.dy = 0
-			self.onGround = true
-			self.jumpTimer:pause()
-			self.jumpTimer:reset()
-			self.coyoteTimer:pause()
-			self.coyoteTimer:reset()
-		else
-			self.onGround = false
-			self.coyoteTimer:start()
+	local isTouchingAFloor = false
+	
+	for i, collision in pairs(collisions) do
+		if collision then
+			local coor = collision["normal"]
+			local x, y = coor:unpack()
+			if y == -1 then
+				isTouchingAFloor = true
+			end
 		end
+	end
+
+	if isTouchingAFloor then
+		self.onGround = true
+		self.dy = 0
+		self.jumpTimer:pause()
+		self.jumpTimer:reset()
+		self.coyoteTimer:pause()
+		self.coyoteTimer:reset()
 	else
-		self.onGround = false
+	    self.onGround = false
 		self.coyoteTimer:start()
 	end
+	print(self.coyoteTimer.frame)
 end

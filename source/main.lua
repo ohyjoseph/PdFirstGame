@@ -20,6 +20,9 @@ local function initialize()
 	local wall = Wall(180, 250, 500, 30)
 	wall:add()
 	wall:moveTo(180, 250)
+	local wall2 = Wall(180, 230, 100, 30)
+	wall2:add()
+	wall2:moveTo(180, 230)
 	projectileSpawnTimer:start()
 end
 
