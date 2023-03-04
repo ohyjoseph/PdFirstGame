@@ -10,7 +10,7 @@ import "Projectile"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
-local timer = playdate.frameTimer.new(200)
+local projectileSpawnTimer = playdate.frameTimer.new(200)
 
 local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
@@ -20,6 +20,16 @@ local function initialize()
 	local wall = Wall(180, 250, 500, 30)
 	wall:add()
 	wall:moveTo(180, 250)
+	projectileSpawnTimer:start()
+end
+
+local function resetGame()
+	gfx.sprite.removeAll()
+	for i, timer in pairs(playdate.frameTimer.allTimers()) do
+		timer:reset()
+		timer:pause()
+	end
+	initialize()
 end
 
 initialize()
@@ -31,10 +41,10 @@ function playdate.update()
 	FrameTimer_update()
 	gfx.sprite.update()
 
-	if timer.frame >= 200 then
+	if projectileSpawnTimer.frame >= 200 then
 		local projectile = Projectile(-20, 180)
 		projectile:add()
 		projectile:moveTo(-20, 180)
-		timer:reset()
+		projectileSpawnTimer:reset()
 	end
 end
