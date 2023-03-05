@@ -13,6 +13,7 @@ local JUMP_FORCE = 9
 local CONTINUE_JUMP_FORCE = 0.3
 local MAX_CONTINUE_JUMP_FRAMES = 10
 local MAX_COYOTE_FRAMES = 7
+local BOUNCE_FORCE = 6
 
 function Player:init(x, y, r)
 	Player.super.init(self)
@@ -137,19 +138,42 @@ function Player:executeCollisionResponses(collisions)
 	
 	for i, collision in pairs(collisions) do
 		if collision then
+			if collision["type"] == gfx.sprite.kCollisionTypeSlide then
+				print("SLIDE")
+			end
 			local coor = collision["normal"]
 			local x, y = coor:unpack()
+
+			-- Walking into sprite
 			if x == 1 then 
-				self.dx = WALK_FORCE
+				if collision["type"] == gfx.sprite.kCollisionTypeSlide then
+					self.dx = WALK_FORCE
+				elseif collision["type"] == gfx.sprite.kCollisionTypeBounce then
+					print("DEAD")
+				end
 			elseif x == -1 then
-				self.dx = -WALK_FORCE
+				if collision["type"] == gfx.sprite.kCollisionTypeSlide then
+					self.dx = -WALK_FORCE
+				elseif collision["type"] == gfx.sprite.kCollisionTypeBounce then
+					print("DEAD")
+				end
 			end
+
+			-- Head touching sprite
 			if y == 1 then
 				if self.dy < -CONTINUE_JUMP_FORCE then
+					if collision["type"] == gfx.sprite.kCollisionTypeBounce then
+						print("DEAD")
+					end
 					self.dy = -CONTINUE_JUMP_FORCE
 				end
+			-- Feet touching sprite
 			elseif y == -1 then
-				isTouchingAFloor = true
+				if collision["type"] == gfx.sprite.kCollisionTypeSlide then
+					isTouchingAFloor = true
+				elseif collision["type"] == gfx.sprite.kCollisionTypeBounce then
+					self.dy = -BOUNCE_FORCE
+				end
 			end
 		end
 	end
