@@ -13,6 +13,7 @@ function Projectile:init(x, y)
 	self.x = x
 	self.y = y
     self.dx = VELOCITY
+	self.dy = 0
 
 	local rectImage = gfx.image.new(WIDTH, HEIGHT)
 	gfx.pushContext(rectImage)
@@ -21,8 +22,13 @@ function Projectile:init(x, y)
 	self:setImage(rectImage)
     self:setCollideRect(0, 0, self:getSize())
 	self:setGroups(3)
+	self:setCollidesWithGroups(2)
 	self:add()
     self:moveWithCollisions(self.x, self.y)
+end
+
+function Player:collisionResponse(other)
+	return gfx.sprite.kCollisionTypeSlide
 end
 
 function Projectile:update()
@@ -33,6 +39,13 @@ end
 
 function Projectile:applyVelocities()
 	self.x += self.dx
+	self.y += self.dy
+end
+
+function Projectile:fall()
+	print("FALL")
+	self.dx = 0
+	self.dy = 6
 end
 
 function Projectile:removeSelf()
