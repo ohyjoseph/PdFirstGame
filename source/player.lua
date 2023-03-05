@@ -190,7 +190,6 @@ function Player:executeCollisionResponses(collisions)
 			local normalX, normalY = normalCoor:unpack()
 			local otherSprite = collision["other"]
 			local collisionType = collision["type"]
-			print(otherSprite)
 
 			self:slideCollisionResponse(collisionType, normalX, normalY)
 			self:projectileCollisionResponse(otherSprite, normalX, normalY)
