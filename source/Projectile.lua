@@ -3,16 +3,15 @@ local gfx <const> = pd.graphics
 
 local WIDTH = 40
 local HEIGHT = 10
-local VELOCITY = 3
 
 class("Projectile").extends(gfx.sprite)
 
-function Projectile:init(x, y)
+function Projectile:init(x, y, dx)
 	Projectile.super.init(self)
 
 	self.x = x
 	self.y = y
-    self.dx = VELOCITY
+    self.dx = dx
 	self.dy = 0
 	self.isDangerous = true
 
