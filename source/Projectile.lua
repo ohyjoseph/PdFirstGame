@@ -1,8 +1,8 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-local WIDTH = 40
-local HEIGHT = 10
+local WIDTH = 20
+local HEIGHT = 20
 
 class("Projectile").extends(gfx.sprite)
 
