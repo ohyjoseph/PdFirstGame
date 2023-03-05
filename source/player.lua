@@ -175,16 +175,10 @@ end
 
 function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 	if otherSprite:isa(Projectile) then
-		if normalX == 1 then 
-			self:hitByProjectileResponse()
-		elseif normalX == -1 then
-			self:hitByProjectileResponse()
-		end
-
-		if normalY == 1 then
-			self:hitByProjectileResponse()
-		elseif normalY == -1 then
+		if normalY == -1 then
 			self.dy = -BOUNCE_FORCE
+		else
+			self:hitByProjectileResponse()
 		end
 	end
 end

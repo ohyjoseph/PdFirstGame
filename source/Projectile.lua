@@ -21,7 +21,6 @@ function Projectile:init(x, y)
 	self:setImage(rectImage)
     self:setCollideRect(0, 0, self:getSize())
 	self:setGroups(3)
-	self:setCollidesWithGroups(1)
 	self:add()
     self:moveWithCollisions(self.x, self.y)
 end
