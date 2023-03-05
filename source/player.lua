@@ -51,7 +51,11 @@ function Player:collisionResponse(other)
 	if other:isa(Wall) then
 		return gfx.sprite.kCollisionTypeSlide
 	elseif other:isa(Projectile) then
-		return gfx.sprite.kCollisionTypeBounce
+		if other.isDangerous then
+			return gfx.sprite.kCollisionTypeBounce
+		else
+			return gfx.sprite.kCollisionTypeSlide
+		end
 	end
 end
 
