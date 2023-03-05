@@ -40,7 +40,7 @@ function Projectile:update()
 	self:moveWithCollisions(self.x, self.y)
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
-    self:removeSelf()
+    self:removeSelfIfFarAway()
 end
 
 function Projectile:applyVelocities()
@@ -49,9 +49,7 @@ function Projectile:applyVelocities()
 end
 
 function Projectile:playerCollisionResponse(otherSprite, normalX, normalY)
-	print("INSIDE")
 	if otherSprite:isa(Player) then
-		print("WHYYY")
 		otherSprite:hitByProjectileResponse()
 	end
 end
@@ -62,7 +60,7 @@ function Projectile:fall()
 	self.dy = 6
 end
 
-function Projectile:removeSelf()
+function Projectile:removeSelfIfFarAway()
     if self.x > 500 or self.x < -50 then
         self:remove()
     end
@@ -71,16 +69,11 @@ end
 function Projectile:executeCollisionResponses(collisions)
 	for i, collision in pairs(collisions) do
 		if collision then
-			print("LKJKLJ")
 			local normalCoor = collision["normal"]
 			local normalX, normalY = normalCoor:unpack()
 			local otherSprite = collision["other"]
 
 			self:playerCollisionResponse(otherSprite, normalX, normalY)
-
-			if isTouchingAFloor == false then
-				isTouchingAFloor = isStandingOnOther
-			end 
 		end
 	end
 end
