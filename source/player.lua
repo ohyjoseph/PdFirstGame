@@ -170,7 +170,11 @@ end
 function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 	if otherSprite:isa(Projectile) then
 		if normalY == -1 then
-			self.dy = -BOUNCE_FORCE
+			if self.dy < -BOUNCE_FORCE then
+				self.dy += -BOUNCE_FORCE
+			else 
+				self.dy = -BOUNCE_FORCE
+			end
 			otherSprite:fall()
 		else
 			if otherSprite.isDangerous then
