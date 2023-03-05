@@ -8,6 +8,7 @@ local MAX_DY = 10
 local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.6
+local WALK_FORCE = 2
 local JUMP_FORCE = 9
 local CONTINUE_JUMP_FORCE = 0.3
 local MAX_CONTINUE_JUMP_FRAMES = 10
@@ -51,10 +52,10 @@ end
 
 function Player:update()
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
-		self.dx += 2
+		self.dx += WALK_FORCE
 	end
 	if playdate.buttonIsPressed(playdate.kButtonLeft) then
-		self.dx -= 2
+		self.dx -= WALK_FORCE
 	end
 	if playdate.buttonJustPressed(playdate.kButtonA) then
 		self:jump()
