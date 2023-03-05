@@ -70,7 +70,7 @@ function Player:update()
 	local collisions
 
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
-	print(self.dx)
+	print(self.dy)
 	self:executeCollisionResponses(collisions)
 end
 
@@ -142,7 +142,9 @@ function Player:executeCollisionResponses(collisions)
 				self.dx = -WALK_FORCE
 			end
 			if y == 1 then
-				self.dy = 0
+				if self.dy < -CONTINUE_JUMP_FORCE then
+					self.dy = -CONTINUE_JUMP_FORCE
+				end
 			elseif y == -1 then
 				isTouchingAFloor = true
 			end
