@@ -138,6 +138,7 @@ function Player:hitByProjectileResponse()
 	resetGame()
 end
 
+-- returns if Player is touching a floor
 function Player:slideCollisionResponse(collisionType, normalX, normalY)
 	local isTouchingAFloor = false
 
@@ -159,18 +160,7 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 			isTouchingAFloor = true
 		end
 	end
-
-	if isTouchingAFloor then
-		self.onGround = true
-		self.dy = 0
-		self.jumpTimer:pause()
-		self.jumpTimer:reset()
-		self.coyoteTimer:pause()
-		self.coyoteTimer:reset()
-	else
-	    self.onGround = false
-		self.coyoteTimer:start()
-	end
+	return isTouchingAFloor
 end
 
 function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
@@ -185,6 +175,7 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 end
 
 function Player:executeCollisionResponses(collisions)
+	local isTouchingAFloor = false
 	for i, collision in pairs(collisions) do
 		if collision then
 			local normalCoor = collision["normal"]
@@ -192,8 +183,23 @@ function Player:executeCollisionResponses(collisions)
 			local otherSprite = collision["other"]
 			local collisionType = collision["type"]
 
-			self:slideCollisionResponse(collisionType, normalX, normalY)
+			local isStandingOnOther = self:slideCollisionResponse(collisionType, normalX, normalY)
 			self:projectileCollisionResponse(otherSprite, normalX, normalY)
+
+			if isTouchingAFloor == false then
+				isTouchingAFloor = isStandingOnOther
+			end 
 		end
+	end
+	if isTouchingAFloor then
+		self.onGround = true
+		self.dy = 0
+		self.jumpTimer:pause()
+		self.jumpTimer:reset()
+		self.coyoteTimer:pause()
+		self.coyoteTimer:reset()
+	else
+		self.onGround = false
+		self.coyoteTimer:start()
 	end
 end
