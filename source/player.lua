@@ -69,7 +69,6 @@ function Player:update()
 	local collisions
 
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
-	print(length)
 	self:executeCollisionResponses(collisions)
 end
 
@@ -135,7 +134,12 @@ function Player:executeCollisionResponses(collisions)
 		if collision then
 			local coor = collision["normal"]
 			local x, y = coor:unpack()
-			if y == -1 then
+			if x ==1 or x == -1 then 
+				self.dx = 0
+			end
+			if y == 1 then
+				self.dy = 0
+			elseif y == -1 then
 				isTouchingAFloor = true
 			end
 		end
@@ -152,5 +156,4 @@ function Player:executeCollisionResponses(collisions)
 	    self.onGround = false
 		self.coyoteTimer:start()
 	end
-	print(self.coyoteTimer.frame)
 end
