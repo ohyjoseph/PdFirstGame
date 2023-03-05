@@ -47,7 +47,11 @@ function Player:init(x, y, r)
 end
 
 function Player:collisionResponse(other)
-	return gfx.sprite.kCollisionTypeSlide
+	if other:isa(Wall) then
+		return gfx.sprite.kCollisionTypeSlide
+	elseif other:isa(Projectile) then
+		return gfx.sprite.kCollisionTypeBounce
+	end
 end
 
 function Player:update()
@@ -70,7 +74,6 @@ function Player:update()
 	local collisions
 
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
-	print(self.dy)
 	self:executeCollisionResponses(collisions)
 end
 
