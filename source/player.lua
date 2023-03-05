@@ -70,6 +70,7 @@ function Player:update()
 	local collisions
 
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
+	print(self.dx)
 	self:executeCollisionResponses(collisions)
 end
 
@@ -135,8 +136,10 @@ function Player:executeCollisionResponses(collisions)
 		if collision then
 			local coor = collision["normal"]
 			local x, y = coor:unpack()
-			if x ==1 or x == -1 then 
-				self.dx = 0
+			if x == 1 then 
+				self.dx = WALK_FORCE
+			elseif x == -1 then
+				self.dx = -WALK_FORCE
 			end
 			if y == 1 then
 				self.dy = 0
