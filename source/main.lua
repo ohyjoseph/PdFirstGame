@@ -26,7 +26,7 @@ local function initialize()
 	projectileSpawnTimer:start()
 end
 
-local function resetGame()
+function resetGame()
 	gfx.sprite.removeAll()
 	for i, timer in pairs(playdate.frameTimer.allTimers()) do
 		timer:reset()

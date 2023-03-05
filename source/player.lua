@@ -133,48 +133,30 @@ function Player:applyGravity()
 	end
 end
 
-function Player:executeCollisionResponses(collisions)
+function Player:hitByProjectileResponse()
+	print("HIT")
+	resetGame()
+end
+
+function Player:slideCollisionResponse(collisionType, normalX, normalY)
 	local isTouchingAFloor = false
-	
-	for i, collision in pairs(collisions) do
-		if collision then
-			if collision["type"] == gfx.sprite.kCollisionTypeSlide then
-				print("SLIDE")
-			end
-			local coor = collision["normal"]
-			local x, y = coor:unpack()
 
-			-- Walking into sprite
-			if x == 1 then 
-				if collision["type"] == gfx.sprite.kCollisionTypeSlide then
-					self.dx = WALK_FORCE
-				elseif collision["type"] == gfx.sprite.kCollisionTypeBounce then
-					print("DEAD")
-				end
-			elseif x == -1 then
-				if collision["type"] == gfx.sprite.kCollisionTypeSlide then
-					self.dx = -WALK_FORCE
-				elseif collision["type"] == gfx.sprite.kCollisionTypeBounce then
-					print("DEAD")
-				end
+	if collisionType == gfx.sprite.kCollisionTypeSlide then
+		-- Walking into sprite
+		if normalX == 1 then 
+			self.dx = WALK_FORCE
+		elseif normalX == -1 then 
+			self.dx = -WALK_FORCE
+		end
+		
+		-- Head touching sprite
+		if normalY == 1 then
+			if self.dy < -CONTINUE_JUMP_FORCE then
+				self.dy = -CONTINUE_JUMP_FORCE
 			end
-
-			-- Head touching sprite
-			if y == 1 then
-				if self.dy < -CONTINUE_JUMP_FORCE then
-					if collision["type"] == gfx.sprite.kCollisionTypeBounce then
-						print("DEAD")
-					end
-					self.dy = -CONTINUE_JUMP_FORCE
-				end
-			-- Feet touching sprite
-			elseif y == -1 then
-				if collision["type"] == gfx.sprite.kCollisionTypeSlide then
-					isTouchingAFloor = true
-				elseif collision["type"] == gfx.sprite.kCollisionTypeBounce then
-					self.dy = -BOUNCE_FORCE
-				end
-			end
+		-- Feet touching sprite
+		elseif normalY == -1 then
+			isTouchingAFloor = true
 		end
 	end
 
@@ -188,5 +170,36 @@ function Player:executeCollisionResponses(collisions)
 	else
 	    self.onGround = false
 		self.coyoteTimer:start()
+	end
+end
+
+function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
+	if otherSprite:isa(Projectile) then
+		if normalX == 1 then 
+			self:hitByProjectileResponse()
+		elseif normalX == -1 then
+			self:hitByProjectileResponse()
+		end
+
+		if normalY == 1 then
+			self:hitByProjectileResponse()
+		elseif normalY == -1 then
+			self.dy = -BOUNCE_FORCE
+		end
+	end
+end
+
+function Player:executeCollisionResponses(collisions)
+	for i, collision in pairs(collisions) do
+		if collision then
+			local normalCoor = collision["normal"]
+			local normalX, normalY = normalCoor:unpack()
+			local otherSprite = collision["other"]
+			local collisionType = collision["type"]
+			print(otherSprite)
+
+			self:slideCollisionResponse(collisionType, normalX, normalY)
+			self:projectileCollisionResponse(otherSprite, normalX, normalY)
+		end
 	end
 end
