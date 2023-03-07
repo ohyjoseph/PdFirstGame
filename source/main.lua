@@ -14,6 +14,7 @@ local projectileSpawnTimer = playdate.frameTimer.new(200)
 
 local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
+	lowestY = 300
 	local player = Player(200, 120, 12)
 	player:add()
 	player:moveTo(200, 120)
@@ -45,9 +46,9 @@ function playdate.update()
 	gfx.sprite.update()
 
 	if projectileSpawnTimer.frame >= 150 then
-		local projectile = Projectile(-20, 180, 4.5)
+		local projectile = Projectile(-20, lowestY - 20, 4.5)
+		projectile:moveTo(-20, lowestY - 20)
 		projectile:add()
-		projectile:moveTo(-20, 180)
 		projectileSpawnTimer:reset()
 	end
 end
