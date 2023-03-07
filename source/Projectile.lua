@@ -28,6 +28,10 @@ end
 
 function Projectile:collisionResponse(other)
 	if other:isa(Projectile) or other:isa(Wall) then
+		if not self.isDangerous then
+			self:setUpdatesEnabled(false)
+			self.dy = 0
+		end
 		return gfx.sprite.kCollisionTypeSlide
 	elseif other:isa(Player) then
 		return gfx.sprite.kCollisionTypeOverlap
