@@ -6,11 +6,14 @@ import 'CoreLibs/frameTimer'
 import "Player"
 import "Wall"
 import "Projectile"
+import "Score"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
 local projectileSpawnTimer = playdate.frameTimer.new(200)
+
+local score
 
 local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
@@ -24,6 +27,9 @@ local function initialize()
 	local wall2 = Wall(200, 230, 100, 50)
 	wall2:add()
 	wall2:moveTo(200, 230)
+	score = Score()
+	score:setZIndex(900)
+	score:addSprite()
 	projectileSpawnTimer:start()
 end
 
@@ -41,6 +47,7 @@ initialize()
 function playdate.update()
 	-- updateGame()
 	-- drawGame()
+	score:setScore((196 - lowestY) / 20)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
