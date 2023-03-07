@@ -34,7 +34,7 @@ function Projectile:collisionResponse(other)
 			self:setZIndex(0)
 			return gfx.sprite.kCollisionTypeSlide
 		else
-			return gfx.sprite.kCollisionTypeOverlap
+			self:remove()
 		end
 	elseif other:isa(Player) then
 		return gfx.sprite.kCollisionTypeOverlap
