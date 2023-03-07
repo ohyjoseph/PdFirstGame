@@ -56,8 +56,12 @@ function playdate.update()
 	gfx.sprite.update()
 
 	if projectileSpawnTimer.frame >= 150 then
-		local projectile = Projectile(-20, player.y - 5, 4.5)
-		projectile:moveTo(-20, player.y - 5)
+		local projectileY = player.y - 5
+		if projectileY < lowestY - 5 then
+			projectileY = lowestY - 5
+		end
+		local projectile = Projectile(-20, projectileY, 4.5)
+		projectile:moveTo(-20, projectileY)
 		projectile:add()
 		projectileSpawnTimer:reset()
 	end
