@@ -1,8 +1,8 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-local WIDTH = 20
-local HEIGHT = 20
+local WIDTH = 25
+local HEIGHT = 25
 
 class("Projectile").extends(gfx.sprite)
 
@@ -31,8 +31,11 @@ function Projectile:collisionResponse(other)
 		if not self.isDangerous then
 			self:setUpdatesEnabled(false)
 			self.dy = 0
+			self:setZIndex(0)
+			return gfx.sprite.kCollisionTypeSlide
+		else
+			return gfx.sprite.kCollisionTypeOverlap
 		end
-		return gfx.sprite.kCollisionTypeSlide
 	elseif other:isa(Player) then
 		return gfx.sprite.kCollisionTypeOverlap
 	end
