@@ -19,9 +19,9 @@ local score
 local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
 	lowestY = 300
-	player = Player(200, 120, 12)
+	player = Player(200, 196, 12)
 	player:add()
-	player:moveTo(200, 120)
+	player:moveTo(200, 196)
 	local wall = Wall(180, 250, 500, 30)
 	wall:setZIndex(0)
 	wall:add()
@@ -33,6 +33,7 @@ local function initialize()
 	score = Score()
 	score:setZIndex(900)
 	score:addSprite()
+	score:setIgnoresDrawOffset(true)
 	projectileSpawnTimer:start()
 end
 
@@ -50,7 +51,8 @@ initialize()
 function playdate.update()
 	-- updateGame()
 	-- drawGame()
-	score:setScore((196 - lowestY) / 25)
+	score:setScore(math.floor((196 - lowestY) / 25))
+	gfx.setDrawOffset(0, 170 - lowestY)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
