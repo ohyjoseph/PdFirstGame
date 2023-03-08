@@ -38,7 +38,7 @@ function Player:init(x, y)
 	self.playerImages = gfx.image.new('images/gaery')
 
 	self:setImage(self.playerImages)
-	self:setCollideRect(0, 0, 32, 45)
+	self:setCollideRect(0, 0, 45, 63)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
