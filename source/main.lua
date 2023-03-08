@@ -19,7 +19,7 @@ local score
 local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
 	lowestY = 300
-	player = Player(200, 196, 12)
+	player = Player(200, 196)
 	player:add()
 	player:moveTo(200, 196)
 	local wall = Wall(180, 250, 500, 30)

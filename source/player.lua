@@ -15,7 +15,7 @@ local MAX_CONTINUE_JUMP_FRAMES = 10
 local MAX_COYOTE_FRAMES = 7
 local BOUNCE_FORCE = 6
 
-function Player:init(x, y, r)
+function Player:init(x, y)
 	Player.super.init(self)
 
 	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
@@ -35,12 +35,10 @@ function Player:init(x, y, r)
 
 	self.onGround = false
 
-	local circleImage = gfx.image.new(self.r*2, self.r*2)
-	gfx.pushContext(circleImage)
-		gfx.fillCircleAtPoint(self.r, self.r ,self.r)
-	gfx.popContext()
-	self:setImage(circleImage)
-	self:setCollideRect(3, 3, self.r*2 - 6, self.r*2 - 6)
+	self.playerImages = gfx.image.new('images/gaery')
+
+	self:setImage(self.playerImages)
+	self:setCollideRect(0, 0, 32, 45)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
