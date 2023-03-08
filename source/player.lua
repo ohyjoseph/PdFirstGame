@@ -26,8 +26,6 @@ function Player:init(x, y)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
-	self.r = r
-
 	self.x = x
 	self.y = y
 	self.dx = 0
@@ -78,6 +76,11 @@ function Player:update()
 
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
+	if self.dx > 0 then
+		self:setImage(self.playerImages)
+	elseif self.dx < 0 then
+		self:setImage(self.playerImages, "flipX")
+	end
 end
 
 function Player:jump()
