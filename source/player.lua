@@ -201,15 +201,15 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 	if collisionType == gfx.sprite.kCollisionTypeSlide then
 		-- Walking into sprite
 		if normalX == 1 then 
-			self.dx = WALK_FORCE
+			self.dx = 0
 		elseif normalX == -1 then 
-			self.dx = -WALK_FORCE
+			self.dx = 0
 		end
 		
 		-- Head touching sprite
 		if normalY == 1 then
 			if self.dy < -CONTINUE_JUMP_FORCE then
-				self.dy = -CONTINUE_JUMP_FORCE
+				self.dy = 0
 			end
 		-- Feet touching sprite
 		elseif normalY == -1 then
