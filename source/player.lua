@@ -11,7 +11,7 @@ local FRICTION = 1.63
 local WALK_FORCE = 1.9
 local JUMP_FORCE = 7.5
 local CONTINUE_JUMP_FORCE = 0.2
-local IDLE_FRAMES = 80
+local IDLE_FRAMES = 100
 local MAX_CONTINUE_JUMP_FRAMES = 10
 local MAX_COYOTE_FRAMES = 7
 local BOUNCE_FORCE = 6
@@ -95,27 +95,22 @@ function Player:updateIsFacingRight()
 end
 
 function Player:updateSprite()
-	if self.dx == 0 and self.isOnGround then
-		if self.idleTimer.frame == 1 or self.idleTimer.frame == 2 or
-		self.idleTimer.frame == 3 or self.idleTimer.frame == 4 or
-		self.idleTimer.frame == 5 or self.idleTimer.frame == 6 or
-		self.idleTimer.frame == 7 or self.idleTimer.frame == 8 or
-		self.idleTimer.frame == 41 or self.idleTimer.frame == 42 or
-		self.idleTimer.frame == 43 or self.idleTimer.frame == 44 or
-		self.idleTimer.frame == 45 or self.idleTimer.frame == 46 or
-		self.idleTimer.frame == 47 or self.idleTimer.frame == 48 then
+	print(self.idleTimer.frame)
+	if self.dx == 0 and self.isOnGround and self.idleTimer.frame > 20 then
+		if (self.idleTimer.frame >= 21 and self.idleTimer.frame <= 28) or
+		(self.idleTimer.frame >= 61 and self.idleTimer.frame <= 68) then
 			if self.isFacingRight then
 				self:setImage(self.playerImages:getImage(1))
 			else
 				self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
 			end
-		elseif self.idleTimer.frame <= 40 then
+		elseif self.idleTimer.frame <= 60 then
 			if self.isFacingRight then
 				self:setImage(self.playerImages:getImage(2))
 			else
 				self:setImage(self.playerImages:getImage(2), gfx.kImageFlippedX)
 			end
-		elseif self.idleTimer.frame <= 80 then
+		elseif self.idleTimer.frame <= 100 then
 			if self.isFacingRight then
 				self:setImage(self.playerImages:getImage(3))
 			else
@@ -129,7 +124,7 @@ function Player:updateSprite()
 			self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
 		end
 	end
-	if (self.idleTimer.frame == IDLE_FRAMES) then
+	if (self.idleTimer.frame == IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
 		self.idleTimer:reset()
 	end
 end
