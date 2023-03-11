@@ -11,12 +11,15 @@ local FRICTION = 1.63
 local WALK_FORCE = 1.9
 local JUMP_FORCE = 7.5
 local CONTINUE_JUMP_FORCE = 0.2
+local IDLE_FRAMES = 80
 local MAX_CONTINUE_JUMP_FRAMES = 10
 local MAX_COYOTE_FRAMES = 7
 local BOUNCE_FORCE = 6
 
 function Player:init(x, y)
 	Player.super.init(self)
+
+	self.idleTimer = pd.frameTimer.new(IDLE_FRAMES)
 
 	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
@@ -31,11 +34,12 @@ function Player:init(x, y)
 	self.dx = 0
 	self.dy = 0
 
-	self.onGround = false
+	self.isOnGround = false
+	self.isFacingRight = true
 
-	self.playerImages = gfx.image.new('images/gaeryMiner')
+	self.playerImages = gfx.imagetable.new('images/gaery')
 
-	self:setImage(self.playerImages)
+	self:setImage(self.playerImages:getImage(1))
 	self:setZIndex(1000)
 	self:setCollideRect(4, 0, 23, 44)
 	self:setGroups(1)
@@ -77,15 +81,61 @@ function Player:update()
 
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
+
+	self:updateIsFacingRight()
+	self:updateSprite()
+end
+
+function Player:updateIsFacingRight()
 	if self.dx > 0 then
-		self:setImage(self.playerImages)
+		self.isFacingRight = true
 	elseif self.dx < 0 then
-		self:setImage(self.playerImages, "flipX")
+		self.isFacingRight = false
+	end
+end
+
+function Player:updateSprite()
+	if self.dx == 0 and self.isOnGround then
+		if self.idleTimer.frame == 1 or self.idleTimer.frame == 2 or
+		self.idleTimer.frame == 3 or self.idleTimer.frame == 4 or
+		self.idleTimer.frame == 5 or self.idleTimer.frame == 6 or
+		self.idleTimer.frame == 7 or self.idleTimer.frame == 8 or
+		self.idleTimer.frame == 41 or self.idleTimer.frame == 42 or
+		self.idleTimer.frame == 43 or self.idleTimer.frame == 44 or
+		self.idleTimer.frame == 45 or self.idleTimer.frame == 46 or
+		self.idleTimer.frame == 47 or self.idleTimer.frame == 48 then
+			if self.isFacingRight then
+				self:setImage(self.playerImages:getImage(1))
+			else
+				self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
+			end
+		elseif self.idleTimer.frame <= 40 then
+			if self.isFacingRight then
+				self:setImage(self.playerImages:getImage(2))
+			else
+				self:setImage(self.playerImages:getImage(2), gfx.kImageFlippedX)
+			end
+		elseif self.idleTimer.frame <= 80 then
+			if self.isFacingRight then
+				self:setImage(self.playerImages:getImage(3))
+			else
+				self:setImage(self.playerImages:getImage(3), gfx.kImageFlippedX)
+			end
+		end
+	else
+		if self.isFacingRight then
+			self:setImage(self.playerImages:getImage(1))
+		else
+			self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
+		end
+	end
+	if (self.idleTimer.frame == IDLE_FRAMES) then
+		self.idleTimer:reset()
 	end
 end
 
 function Player:jump()
-	if ((self.coyoteTimer.frame > 0 and self.coyoteTimer.frame < MAX_COYOTE_FRAMES) or self.onGround) and self.jumpTimer.frame == 0 then
+	if ((self.coyoteTimer.frame > 0 and self.coyoteTimer.frame < MAX_COYOTE_FRAMES) or self.isOnGround) and self.jumpTimer.frame == 0 then
 		self.jumpTimer:reset()
 		self.jumpTimer:start()
 		self.dy = -JUMP_FORCE
@@ -204,7 +254,7 @@ function Player:executeCollisionResponses(collisions)
 		end
 	end
 	if isTouchingAFloor then
-		self.onGround = true
+		self.isOnGround = true
 		self.dy = 0
 		self.jumpTimer:pause()
 		self.jumpTimer:reset()
@@ -216,7 +266,7 @@ function Player:executeCollisionResponses(collisions)
 			print(lowestY)
 		end
 	else
-		self.onGround = false
+		self.isOnGround = false
 		self.coyoteTimer:start()
 	end
 end
