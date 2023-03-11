@@ -16,9 +16,11 @@ function Projectile:init(x, y, dx)
 	self.isDangerous = true
 
 	local rectImage = gfx.image.new(WIDTH, HEIGHT)
+	gfx.setColor(gfx.kColorWhite)
 	gfx.pushContext(rectImage)
 		gfx.fillRect(0, 0, WIDTH, HEIGHT)
 	gfx.popContext()
+	gfx.setColor(gfx.kColorBlack)
 	self:setImage(rectImage)
     self:setCollideRect(0, 0, self:getSize())
 	self:setGroups(3)

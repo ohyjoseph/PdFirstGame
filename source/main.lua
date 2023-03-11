@@ -17,6 +17,7 @@ local player
 local score
 
 local function initialize()
+	gfx.setBackgroundColor(gfx.kColorBlack)
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
 	lowestY = 300
 	player = Player(200, 196)

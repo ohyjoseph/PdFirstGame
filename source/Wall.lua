@@ -11,10 +11,12 @@ function Wall:init(x, y, w, h)
     self.w = w
     self.h = h
 
+	gfx.setColor(gfx.kColorWhite)
 	local rectImage = gfx.image.new(self.w, self.h)
 	gfx.pushContext(rectImage)
 		gfx.fillRect(0, 0, self.w, self.h)
 	gfx.popContext()
+	gfx.setColor(gfx.kColorBlack)
 	self:setImage(rectImage)
     self:setCollideRect(0, 0, self:getSize())
 	self:setGroups(2)

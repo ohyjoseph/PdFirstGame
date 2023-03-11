@@ -33,11 +33,11 @@ function Player:init(x, y)
 
 	self.onGround = false
 
-	self.playerImages = gfx.image.new('images/gaery')
+	self.playerImages = gfx.image.new('images/gaeryMiner')
 
 	self:setImage(self.playerImages)
 	self:setZIndex(1000)
-	self:setCollideRect(8, 0, 29, 63)
+	self:setCollideRect(4, 0, 23, 44)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
