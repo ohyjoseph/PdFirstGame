@@ -114,6 +114,8 @@ function Player:updateSprite()
 		else
 			self:setImage(self.playerImages:getImage(5), self:getSpriteOrientation())
 		end
+	elseif self.jumpTimer.frame ~= 0 then
+		self:setImage(self.playerImages:getImage(6), self:getSpriteOrientation())
 	end
 	if self.runTimer.frame == MAX_RUN_FRAMES or self.dx == 0 then
 		self.runTimer:reset()
