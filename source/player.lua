@@ -100,43 +100,19 @@ function Player:updateSprite()
 	if self.dx == 0 and self.isOnGround and self.idleTimer.frame > 20 then
 		if (self.idleTimer.frame >= 21 and self.idleTimer.frame <= 28) or
 		(self.idleTimer.frame >= 61 and self.idleTimer.frame <= 68) then
-			if self.isFacingRight then
-				self:setImage(self.playerImages:getImage(1))
-			else
-				self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
-			end
+			self:setImage(self.playerImages:getImage(1), self:getSpriteOrientation())
 		elseif self.idleTimer.frame <= 60 then
-			if self.isFacingRight then
-				self:setImage(self.playerImages:getImage(2))
-			else
-				self:setImage(self.playerImages:getImage(2), gfx.kImageFlippedX)
-			end
+			self:setImage(self.playerImages:getImage(2), self:getSpriteOrientation())
 		elseif self.idleTimer.frame <= 100 then
-			if self.isFacingRight then
-				self:setImage(self.playerImages:getImage(3))
-			else
-				self:setImage(self.playerImages:getImage(3), gfx.kImageFlippedX)
-			end
+			self:setImage(self.playerImages:getImage(3), self:getSpriteOrientation())
 		end
 	elseif self.dx == 0 and self.isOnGround then
-		if self.isFacingRight then
-			self:setImage(self.playerImages:getImage(1))
-		else
-			self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
-		end
+		self:setImage(self.playerImages:getImage(1), self:getSpriteOrientation())
 	elseif self.dx ~= 0 and self.isOnGround then
-		if self.isFacingRight then
-			if self.runTimer.frame <= 10 then
-				self:setImage(self.playerImages:getImage(4))
-			else
-				self:setImage(self.playerImages:getImage(5))
-			end
+		if self.runTimer.frame <= 10 then
+			self:setImage(self.playerImages:getImage(4), self:getSpriteOrientation())
 		else
-			if self.runTimer.frame <= 10 then
-				self:setImage(self.playerImages:getImage(4), gfx.kImageFlippedX)
-			else
-				self:setImage(self.playerImages:getImage(5), gfx.kImageFlippedX)
-			end
+			self:setImage(self.playerImages:getImage(5), self:getSpriteOrientation())
 		end
 	end
 	if self.runTimer.frame == MAX_RUN_FRAMES or self.dx == 0 then
@@ -144,6 +120,14 @@ function Player:updateSprite()
 	end
 	if (self.idleTimer.frame == MAX_IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
 		self.idleTimer:reset()
+	end
+end
+
+function Player:getSpriteOrientation()
+	if self.isFacingRight then
+		return gfx.kImageUnflipped
+	else
+		return gfx.kImageFlippedX
 	end
 end
 
