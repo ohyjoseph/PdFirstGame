@@ -155,6 +155,7 @@ function Player:jump()
 		self.jumpTimer:reset()
 		self.jumpTimer:start()
 		self.dy = -JUMP_FORCE
+		SoundManager:playSound(SoundManager.kSoundJump)
 	end
 end
 
@@ -207,6 +208,8 @@ end
 
 function Player:hitByProjectileResponse()
 	self.deathTimer:start()
+	self:setCollisionsEnabled(false)
+	SoundManager:playSound(SoundManager.kSoundBump)
 end
 
 -- returns if Player is touching a floor
@@ -235,12 +238,13 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 end
 
 function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
-	if otherSprite:isa(Projectile) then
+	if otherSprite:isa(Projectile) and otherSprite.isDangerous then
 		if normalY == -1 then
 			if self.dy < -BOUNCE_FORCE then
 				self.dy += -BOUNCE_FORCE
 			else 
 				self.dy = -BOUNCE_FORCE
+				SoundManager:playSound(SoundManager.kSoundStomp)
 			end
 			otherSprite:fall()
 		else

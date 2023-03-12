@@ -7,6 +7,7 @@ import "Player"
 import "Wall"
 import "Projectile"
 import "Score"
+import "SoundManager"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -23,7 +24,7 @@ local function initialize()
 	player = Player(200, 196)
 	player:add()
 	player:moveTo(200, 196)
-	local wall = Wall(180, 250, 500, 30)
+	local wall = Wall(180, 250, 1000, 30)
 	wall:setZIndex(0)
 	wall:add()
 	wall:moveTo(180, 250)
