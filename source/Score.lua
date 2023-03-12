@@ -33,6 +33,7 @@ end
 function Score:draw(x, y, width, height)
 	
 	gfx.setFont(self.scoreFont)
+	gfx.setImageDrawMode(gfx.kDrawModeInverted)
 	gfx.drawText(self.score, 0, 0);
 		
 end
