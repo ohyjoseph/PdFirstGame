@@ -15,6 +15,7 @@ local MAX_IDLE_FRAMES = 100
 local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
+local MAX_DEATH_FRAMES = 100
 local BOUNCE_FORCE = 6
 
 function Player:init(x, y)
@@ -30,6 +31,9 @@ function Player:init(x, y)
 	self.coyoteTimer = pd.frameTimer.new(MAX_COYOTE_FRAMES)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
+
+	self.deathTimer = pd.frameTimer.new(200)
+	self.deathTimer:pause()
 
 	self.x = x
 	self.y = y
@@ -63,17 +67,7 @@ function Player:collisionResponse(other)
 end
 
 function Player:update()
-	if playdate.buttonIsPressed(playdate.kButtonRight) then
-		self.dx += WALK_FORCE
-	end
-	if playdate.buttonIsPressed(playdate.kButtonLeft) then
-		self.dx -= WALK_FORCE
-	end
-	if playdate.buttonJustPressed(playdate.kButtonA) then
-		self:jump()
-	elseif playdate.buttonIsPressed(playdate.kButtonA) then
-		self:continueJump()
-	end
+	self:respondToControls()
 
 	self:applyFriction()
 	self:applyGravity()
@@ -86,6 +80,25 @@ function Player:update()
 
 	self:updateIsFacingRight()
 	self:updateSprite()
+	if self.deathTimer.frame == MAX_DEATH_FRAMES then
+		resetGame()
+	end
+end
+
+function Player:respondToControls()
+	if self.deathTimer.frame <= 1 then
+		if playdate.buttonIsPressed(playdate.kButtonRight) then
+			self.dx += WALK_FORCE
+		end
+		if playdate.buttonIsPressed(playdate.kButtonLeft) then
+			self.dx -= WALK_FORCE
+		end
+		if playdate.buttonJustPressed(playdate.kButtonA) then
+			self:jump()
+		elseif playdate.buttonIsPressed(playdate.kButtonA) then
+			self:continueJump()
+		end
+	end
 end
 
 function Player:updateIsFacingRight()
@@ -97,6 +110,10 @@ function Player:updateIsFacingRight()
 end
 
 function Player:updateSprite()
+	if self.deathTimer.frame > 1 then
+		self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
+		return
+	end
 	if self.dx == 0 and self.isOnGround and self.idleTimer.frame > 20 then
 		if (self.idleTimer.frame >= 21 and self.idleTimer.frame <= 28) or
 		(self.idleTimer.frame >= 61 and self.idleTimer.frame <= 68) then
@@ -189,8 +206,7 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse()
-	print("HIT")
-	resetGame()
+	self.deathTimer:start()
 end
 
 -- returns if Player is touching a floor
