@@ -27,10 +27,10 @@ local function initialize()
 	wall:setZIndex(0)
 	wall:add()
 	wall:moveTo(180, 250)
-	-- local wall2 = Wall(200, 230, 100, 50)
-	-- wall2:add()
-	-- wall2:moveTo(200, 230)
-	-- wall2:setZIndex(0)
+	local wall2 = Wall(200, 230, 100, 50)
+	wall2:add()
+	wall2:moveTo(200, 230)
+	wall2:setZIndex(0)
 	score = Score()
 	score:setZIndex(900)
 	score:addSprite()
@@ -50,22 +50,20 @@ end
 initialize()
 
 function playdate.update()
-	-- updateGame()
-	-- drawGame()
 	score:setScore(math.floor((196 - lowestY) / 25))
 	gfx.setDrawOffset(0, 140 - lowestY)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
 
-	-- if projectileSpawnTimer.frame >= 150 then
-	-- 	local projectileY = player.y - 5
-	-- 	if projectileY < lowestY - 5 then
-	-- 		projectileY = lowestY - 5
-	-- 	end
-	-- 	local projectile = Projectile(-20, projectileY, 4.5)
-	-- 	projectile:moveTo(-20, projectileY)
-	-- 	projectile:add()
-	-- 	projectileSpawnTimer:reset()
-	-- end
+	if projectileSpawnTimer.frame >= 150 then
+		local projectileY = player.y - 5
+		if projectileY < lowestY - 5 then
+			projectileY = lowestY - 5
+		end
+		local projectile = Projectile(-20, projectileY, 4.5)
+		projectile:moveTo(-20, projectileY)
+		projectile:add()
+		projectileSpawnTimer:reset()
+	end
 end

@@ -12,7 +12,7 @@ local WALK_FORCE = 1.8
 local JUMP_FORCE = 8.5
 local CONTINUE_JUMP_FORCE = 0.3
 local MAX_IDLE_FRAMES = 100
-local MAX_RUN_FRAMES = 30
+local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
 local BOUNCE_FORCE = 6
@@ -43,7 +43,7 @@ function Player:init(x, y)
 
 	self:setImage(self.playerImages:getImage(1))
 	self:setZIndex(1000)
-	self:setCollideRect(4, 0, 23, 44)
+	self:setCollideRect(4, 0, 22, 44)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
@@ -126,26 +126,19 @@ function Player:updateSprite()
 		end
 	elseif self.dx ~= 0 and self.isOnGround then
 		if self.isFacingRight then
-			if self.runTimer.frame <= 15 then
+			if self.runTimer.frame <= 10 then
 				self:setImage(self.playerImages:getImage(4))
 			else
 				self:setImage(self.playerImages:getImage(5))
 			end
 		else
-			if self.runTimer.frame <= 15 then
+			if self.runTimer.frame <= 10 then
 				self:setImage(self.playerImages:getImage(4), gfx.kImageFlippedX)
 			else
 				self:setImage(self.playerImages:getImage(5), gfx.kImageFlippedX)
 			end
 		end
 	end
-	-- if self.dx == 0 and self.isOnGround then
-	-- 	if self.isFacingRight then
-	-- 		self:setImage(self.playerImages:getImage(1))
-	-- 	else
-	-- 		self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
-	-- 	end
-	-- end
 	if self.runTimer.frame == MAX_RUN_FRAMES or self.dx == 0 then
 		self.runTimer:reset()
 	end
