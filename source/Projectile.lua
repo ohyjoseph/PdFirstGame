@@ -1,9 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-local WIDTH = 30
-local HEIGHT = 20
-
 class("Projectile").extends(gfx.sprite)
 
 function Projectile:init(x, y, dx)
@@ -11,18 +8,18 @@ function Projectile:init(x, y, dx)
 
 	self.x = x
 	self.y = y
+	self.r = 20
     self.dx = dx
 	self.dy = 0
 	self.isDangerous = true
 
-	local rectImage = gfx.image.new(WIDTH, HEIGHT)
 	gfx.setColor(gfx.kColorWhite)
-	gfx.pushContext(rectImage)
-		gfx.fillRect(0, 0, WIDTH, HEIGHT)
+	local circleImage = gfx.image.new(self.r*2, self.r*2)
+	gfx.pushContext(circleImage)
+		gfx.fillCircleAtPoint(self.r, self.r ,self.r)
 	gfx.popContext()
-	gfx.setColor(gfx.kColorBlack)
-	self:setImage(rectImage)
-    self:setCollideRect(0, 0, self:getSize())
+	self:setImage(circleImage)
+	self:setCollideRect(4, 4, self.r*2 - 8, self.r*2 - 8)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
 	self:add()
