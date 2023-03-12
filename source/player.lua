@@ -11,7 +11,8 @@ local FRICTION = 1.63
 local WALK_FORCE = 1.9
 local JUMP_FORCE = 7.5
 local CONTINUE_JUMP_FORCE = 0.2
-local IDLE_FRAMES = 100
+local MAX_IDLE_FRAMES = 100
+local MAX_RUN_FRAMES = 30
 local MAX_CONTINUE_JUMP_FRAMES = 10
 local MAX_COYOTE_FRAMES = 7
 local BOUNCE_FORCE = 6
@@ -19,7 +20,8 @@ local BOUNCE_FORCE = 6
 function Player:init(x, y)
 	Player.super.init(self)
 
-	self.idleTimer = pd.frameTimer.new(IDLE_FRAMES)
+	self.idleTimer = pd.frameTimer.new(MAX_IDLE_FRAMES)
+	self.runTimer = pd.frameTimer.new(MAX_RUN_FRAMES)
 
 	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
@@ -117,14 +119,33 @@ function Player:updateSprite()
 				self:setImage(self.playerImages:getImage(3), gfx.kImageFlippedX)
 			end
 		end
-	else
+	end
+	if self.dx ~= 0 and self.isOnGround then
+		if self.isFacingRight then
+			if self.runTimer.frame <= 15 then
+				self:setImage(self.playerImages:getImage(4))
+			else
+				self:setImage(self.playerImages:getImage(5))
+			end
+		else
+			if self.runTimer.frame <= 15 then
+				self:setImage(self.playerImages:getImage(4), gfx.kImageFlippedX)
+			else
+				self:setImage(self.playerImages:getImage(5), gfx.kImageFlippedX)
+			end
+		end
+	end
+	if self.dx == 0 and self.isOnGround then
 		if self.isFacingRight then
 			self:setImage(self.playerImages:getImage(1))
 		else
 			self:setImage(self.playerImages:getImage(1), gfx.kImageFlippedX)
 		end
 	end
-	if (self.idleTimer.frame == IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
+	if self.runTimer.frame == MAX_RUN_FRAMES or self.dx == 0 then
+		self.runTimer:reset()
+	end
+	if (self.idleTimer.frame == MAX_IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
 		self.idleTimer:reset()
 	end
 end
