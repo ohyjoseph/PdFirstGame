@@ -9,7 +9,7 @@ class("Projectile").extends(gfx.sprite)
 function Projectile:init(x, y, dx)
 	Projectile.super.init(self)
 
-	self.rotationTimer = pd.frameTimer.new(120, 0, 360)
+	self.rotationTimer = pd.frameTimer.new(90, 1, 360)
 	self.rotationTimer.repeats = true
 
 	self.x = x
@@ -52,6 +52,7 @@ function Projectile:update()
 end
 
 function Projectile:updateSprite()
+	print(self.rotationTimer.value)
 	self:setImage(ROTATED_IMAGE_TABLE:getImage(math.floor(self.rotationTimer.value)))
 end
 
