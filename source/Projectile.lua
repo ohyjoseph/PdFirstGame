@@ -1,15 +1,13 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
-
-IMAGE = gfx.image.new('images/boulder-dithered')
-local ROTATED_IMAGE_TABLE = gfx.imagetable.new(360)
+local IMAGES = gfx.imagetable.new("images/boulder")
 
 class("Projectile").extends(gfx.sprite)
 
 function Projectile:init(x, y, dx)
 	Projectile.super.init(self)
 
-	self.rotationTimer = pd.frameTimer.new(90, 1, 360)
+	self.rotationTimer = pd.frameTimer.new(#IMAGES - 1)
 	self.rotationTimer.repeats = true
 
 	self.x = x
@@ -20,7 +18,7 @@ function Projectile:init(x, y, dx)
 	self.isDangerous = true
 
 	self.image = gfx.image.new('images/boulder-dithered')
-	self:setImage(self.image)
+	self:setImage(IMAGES:getImage(1))
 	self:setCollideRect(0, 0, 34, 34)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
@@ -52,8 +50,7 @@ function Projectile:update()
 end
 
 function Projectile:updateSprite()
-	print(self.rotationTimer.value)
-	self:setImage(ROTATED_IMAGE_TABLE:getImage(math.floor(self.rotationTimer.value)))
+	self:setImage(IMAGES:getImage(self.rotationTimer.frame + 1))
 end
 
 function Projectile:applyVelocities()
@@ -90,10 +87,3 @@ function Projectile:executeCollisionResponses(collisions)
 		end
 	end
 end
-
-local function createRotatedImageTable()
-	for deg = 1, 360, 1 do
-		ROTATED_IMAGE_TABLE:setImage(deg, IMAGE:rotatedImage(deg))
-	end
-end
-createRotatedImageTable()
