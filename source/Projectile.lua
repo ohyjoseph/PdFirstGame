@@ -1,28 +1,25 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
-
-local WIDTH = 30
-local HEIGHT = 20
+local IMAGES = gfx.imagetable.new("images/boulder")
 
 class("Projectile").extends(gfx.sprite)
 
 function Projectile:init(x, y, dx)
 	Projectile.super.init(self)
 
+	self.rotationTimer = pd.frameTimer.new(#IMAGES - 1)
+	self.rotationTimer.repeats = true
+
 	self.x = x
 	self.y = y
+	self.r = 20
     self.dx = dx
 	self.dy = 0
 	self.isDangerous = true
 
-	local rectImage = gfx.image.new(WIDTH, HEIGHT)
-	gfx.setColor(gfx.kColorWhite)
-	gfx.pushContext(rectImage)
-		gfx.fillRect(0, 0, WIDTH, HEIGHT)
-	gfx.popContext()
-	gfx.setColor(gfx.kColorBlack)
-	self:setImage(rectImage)
-    self:setCollideRect(0, 0, self:getSize())
+	self.image = gfx.image.new('images/boulder-dithered')
+	self:setImage(IMAGES:getImage(1))
+	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
 	self:add()
@@ -48,7 +45,12 @@ function Projectile:update()
 	self:moveWithCollisions(self.x, self.y)
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
+	self:updateSprite()
     self:removeSelfIfFarAway()
+end
+
+function Projectile:updateSprite()
+	self:setImage(IMAGES:getImage(self.rotationTimer.frame + 1))
 end
 
 function Projectile:applyVelocities()
