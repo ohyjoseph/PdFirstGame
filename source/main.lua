@@ -51,7 +51,7 @@ end
 initialize()
 
 function playdate.update()
-	score:setScore(math.floor((196 - lowestY) / 32))
+	score:setScore(math.floor((196 - lowestY) / 22))
 	gfx.setDrawOffset(0, 140 - lowestY)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()

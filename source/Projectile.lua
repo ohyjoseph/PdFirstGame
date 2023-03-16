@@ -19,7 +19,7 @@ function Projectile:init(x, y, dx)
 
 	self.image = gfx.image.new('images/boulder-dithered')
 	self:setImage(IMAGES:getImage(1))
-	self:setCollideRect(0, 0, 34, 34)
+	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
 	self:add()
