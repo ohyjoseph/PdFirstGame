@@ -5,7 +5,7 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 -- Resolution of simulation (THIS IMPACTS PERFOMANCE A GOOD AMOUNT)
-local NUM_POINTS = 20
+local NUM_POINTS = 10
 -- Width of simulation
 local WIDTH = 420 -- Blaze it
 -- Spring constant for forces applied by adjacent points
@@ -82,11 +82,12 @@ end
 function Water:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
-    local waterImage = gfx.image.new(450, 240 - self.yOffset - 20)
+    local waterImage = gfx.image.new(500, 500 - self.yOffset - 20)
     -- Couldn't find a good way to optimize the drawing of the wave. I currently have it
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
     local points = {}
+    table.insert(points, pd.geometry.point.new(-50, self.yOffset + 50))
     gfx.pushContext(waterImage)
         for n,p in ipairs(self.wavePoints) do
             if n == 1 then
@@ -120,10 +121,12 @@ function Water:update()
         --         gfx.drawLine(points[n-1].x, points[n-1].y - self.yOffset, p.x, p.y - self.yOffset)
         --     end
         -- end
+        table.insert(points, pd.geometry.point.new(420, self.yOffset + 50))
+        table.insert(points, pd.geometry.point.new(-100, self.yOffset))
         local poly = pd.geometry.polygon.new(table.unpack(points))
-        -- poly:close()
+        poly:close()
         print(poly)
-        gfx.drawPolygon(poly)
+        gfx.fillPolygon(poly)
     gfx.popContext()
     self:setImage(waterImage)
 end
