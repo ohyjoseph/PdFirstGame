@@ -276,7 +276,7 @@ function Player:executeCollisionResponses(collisions)
 
 		if self.y < lowestY then
 			lowestY = self.y
-			print(lowestY)
+			-- print(lowestY)
 		end
 	else
 		self.isOnGround = false
