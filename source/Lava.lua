@@ -94,12 +94,9 @@ function Lava:update()
             if n == 1 then
                 table.insert(points, pd.geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
             else
-                local leftPoint = self.wavePoints[n-1]
-                local x1 = leftPoint.x
-                local y1 = leftPoint.y + self:overlapSines(leftPoint.x)
-                local x2 = p.x
-                local y2 = p.y + self:overlapSines(p.x) - self.yOffset
-                table.insert(points, pd.geometry.point.new(x2, y2))
+                local x1 = p.x
+                local y1 = p.y + self:overlapSines(p.x) - self.yOffset
+                table.insert(points, pd.geometry.point.new(x1, y1))
                 gfx.setColor(gfx.kColorWhite)
                 -- local rectHeight = 20
                 -- local rectWidth = x2 - x1
