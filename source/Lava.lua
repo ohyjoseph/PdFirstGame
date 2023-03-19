@@ -5,7 +5,7 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 -- Resolution of simulation (THIS IMPACTS PERFOMANCE A GOOD AMOUNT)
-local NUM_POINTS = 6
+local NUM_POINTS = 4
 -- Width of simulation
 local WIDTH = 420 -- Blaze it
 -- Spring constant for forces applied by adjacent points
@@ -21,7 +21,7 @@ local DAMPING = 0.98
 -- (THIS IMPACTS PERFORMANCE A DECENT AMOUNT)
 local ITERATIONS = 1
 
-local NUM_BACKGROUND_WAVES = 2
+local NUM_BACKGROUND_WAVES = 3
 local BACKGROUND_WAVE_MAX_HEIGHT = 2
 local BACKGROUND_WAVE_COMPRESSION = 1/5
 -- Amounts by which a particular sine is offset
@@ -135,6 +135,13 @@ end
 -- Make points to go on the wave
 function Lava:makeWavePoints(numPoints)
     local t = {}
+    -- first point is so it goes across the whole screen
+    t[1] = {
+        x    = 0,
+        y    = Y_OFFSET,
+        spd = {y=0}, -- speed with vertical component zero
+        mass = 1
+    }
     for n = 1,numPoints do
         -- This represents a point on the wave
         local newPoint = {
@@ -143,7 +150,7 @@ function Lava:makeWavePoints(numPoints)
             spd = {y=0}, -- speed with vertical component zero
             mass = 1
         }
-        t[n] = newPoint
+        t[n + 1] = newPoint
     end
     return t
 end

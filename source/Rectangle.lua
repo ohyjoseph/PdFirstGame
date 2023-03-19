@@ -11,7 +11,8 @@ function Rectangle:init(x, y, w, h)
     self.w = w
     self.h = h
 
-	gfx.setColor(gfx.kColorWhite)
+	self:setZIndex(300)
+    gfx.setColor(gfx.kColorWhite)
 	local rectImage = gfx.image.new(self.w, self.h)
     self:setCenter(0, 0)
 	gfx.pushContext(rectImage)
