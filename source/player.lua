@@ -168,9 +168,6 @@ end
 function Player:applyVelocities()
 	self.x += self.dx
 	self.y += self.dy
-	if self.y > 240 then
-		self.y = 240
-	end
 end
 
 function Player:applyFriction()
@@ -195,9 +192,6 @@ end
 
 function Player:applyGravity()
 	self.dy += G
-	if self.y >= 240 and self.dy > 0 then
-		self.dy = 0
-	end
 	if self.dy < -MAX_DY then
 		self.dy = -MAX_DY
 	end
