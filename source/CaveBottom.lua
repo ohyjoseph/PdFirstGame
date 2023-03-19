@@ -1,6 +1,5 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
-local IMAGES = gfx.image.new("images/caveBottom")
 
 class("CaveBottom").extends(gfx.sprite)
 

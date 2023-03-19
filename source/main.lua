@@ -4,7 +4,7 @@ import "CoreLibs/sprites"
 import 'CoreLibs/frameTimer'
 
 import "Player"
-import "Wall"
+import "Platform"
 import "Rectangle"
 import "Projectile"
 import "Score"
@@ -36,10 +36,10 @@ local function initialize()
 	player = Player(210, 100)
 	player:add()
 	player:moveTo(210, 100)
-	local wall = Wall(210, 210, 180, 62)
-	wall:setZIndex(0)
-	wall:add()
-	wall:moveTo(210, 210)
+	local platform = Platform(200, 220, 180, 62)
+	platform:setZIndex(0)
+	platform:add()
+	platform:moveTo(200, 220)
 	-- local rect = Rectangle(0, 195, 420, 150)
 	-- lava = Lava()
 
@@ -66,6 +66,7 @@ function playdate.update()
 	score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
 	updateGoalYOffset()
 	moveCameraTowardGoal()
+	print(lowestY)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
@@ -87,7 +88,6 @@ function updateGoalYOffset()
 end
 
 function moveCameraTowardGoal()
-	print(cameraOffsetTimer.frame)
 	if cameraOffsetTimer.frame == 0 then
 		local xOffset, yOffset = gfx.getDrawOffset()
 		-- scroll 2 pixels at a time to prevent flickering from dithering
