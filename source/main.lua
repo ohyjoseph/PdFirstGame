@@ -10,6 +10,7 @@ import "Projectile"
 import "Score"
 import "SoundManager"
 import "Lava"
+import "CaveBottom"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -19,8 +20,9 @@ local projectileSpawnTimer = playdate.frameTimer.new(200)
 local player
 local score
 local lava
+local caveBottom
 
-local STARTING_LOWEST_Y = 162
+local STARTING_LOWEST_Y = 157
 
 local function initialize()
 	gfx.setBackgroundColor(gfx.kColorBlack)
@@ -35,6 +37,8 @@ local function initialize()
 	wall:moveTo(210, 210)
 	-- local rect = Rectangle(0, 195, 420, 150)
 	-- lava = Lava()
+
+	caveBottom = CaveBottom()
 
 	score = Score()
 	score:setZIndex(900)
