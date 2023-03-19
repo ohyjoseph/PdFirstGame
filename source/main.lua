@@ -16,7 +16,7 @@ local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
 local projectileSpawnTimer = playdate.frameTimer.new(200)
-local cameraOffsetTimer = playdate.frameTimer.new(4)
+local cameraOffsetTimer = playdate.frameTimer.new(9)
 cameraOffsetTimer.discardOnCompletion = false
 cameraOffsetTimer.repeats = true
 
@@ -90,12 +90,13 @@ function moveCameraTowardGoal()
 	print(cameraOffsetTimer.frame)
 	if cameraOffsetTimer.frame == 0 then
 		local xOffset, yOffset = gfx.getDrawOffset()
-		if goalYOffset == yOffset then
+		-- scroll 2 pixels at a time to prevent flickering from dithering
+		if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
 			return
 		elseif goalYOffset > yOffset then
-			gfx.setDrawOffset(0, yOffset + 1)
+			gfx.setDrawOffset(0, yOffset + 2)
 		elseif goalYOffset < yOffset then
-			gfx.setDrawOffset(0, yOffset - 1)
+			gfx.setDrawOffset(0, yOffset - 2)
 		
 		end
 	end
