@@ -26,7 +26,7 @@ function Projectile:init(x, y, dx)
 end
 
 function Projectile:collisionResponse(other)
-	if other:isa(Projectile) or other:isa(Wall) then
+	if other:isa(Projectile) or other:isa(Platform) then
 		if not self.isDangerous then
 			self:setUpdatesEnabled(false)
 			self.dy = 0
