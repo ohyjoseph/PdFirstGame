@@ -5,7 +5,7 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 -- Resolution of simulation (THIS IMPACTS PERFOMANCE A GOOD AMOUNT)
-local NUM_POINTS = 6
+local NUM_POINTS = 4
 -- Width of simulation
 local WIDTH = 420 -- Blaze it
 -- Spring constant for forces applied by adjacent points
@@ -21,7 +21,7 @@ local DAMPING = 0.98
 -- (THIS IMPACTS PERFORMANCE A DECENT AMOUNT)
 local ITERATIONS = 1
 
-local NUM_BACKGROUND_WAVES = 2
+local NUM_BACKGROUND_WAVES = 3
 local BACKGROUND_WAVE_MAX_HEIGHT = 2
 local BACKGROUND_WAVE_COMPRESSION = 1/5
 -- Amounts by which a particular sine is offset
@@ -82,7 +82,7 @@ end
 function Lava:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
-    local waterImage = gfx.image.new(500, self.yOffset - 145)
+    local waterImage = gfx.image.new(500, 25)
     -- Couldn't find a good way to optimize the drawing of the wave. I currently have it
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
@@ -94,12 +94,9 @@ function Lava:update()
             if n == 1 then
                 table.insert(points, pd.geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
             else
-                local leftPoint = self.wavePoints[n-1]
-                local x1 = leftPoint.x
-                local y1 = leftPoint.y + self:overlapSines(leftPoint.x)
-                local x2 = p.x
-                local y2 = p.y + self:overlapSines(p.x) - self.yOffset
-                table.insert(points, pd.geometry.point.new(x2, y2))
+                local x1 = p.x
+                local y1 = p.y + self:overlapSines(p.x) - self.yOffset
+                table.insert(points, pd.geometry.point.new(x1, y1))
                 gfx.setColor(gfx.kColorWhite)
                 -- local rectHeight = 20
                 -- local rectWidth = x2 - x1
@@ -135,6 +132,13 @@ end
 -- Make points to go on the wave
 function Lava:makeWavePoints(numPoints)
     local t = {}
+    -- first point is so it goes across the whole screen
+    t[1] = {
+        x    = 0,
+        y    = Y_OFFSET,
+        spd = {y=0}, -- speed with vertical component zero
+        mass = 1
+    }
     for n = 1,numPoints do
         -- This represents a point on the wave
         local newPoint = {
@@ -143,7 +147,7 @@ function Lava:makeWavePoints(numPoints)
             spd = {y=0}, -- speed with vertical component zero
             mass = 1
         }
-        t[n] = newPoint
+        t[n + 1] = newPoint
     end
     return t
 end
