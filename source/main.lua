@@ -9,7 +9,7 @@ import "Rectangle"
 import "Projectile"
 import "Score"
 import "SoundManager"
-import "Water"
+import "Lava"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -18,7 +18,7 @@ local projectileSpawnTimer = playdate.frameTimer.new(200)
 
 local player
 local score
-local water
+local lava
 
 local function initialize()
 	gfx.setBackgroundColor(gfx.kColorBlack)
@@ -42,7 +42,7 @@ local function initialize()
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
 	projectileSpawnTimer:start()
-	water = Water()
+	lava = Lava()
 end
 
 function resetGame()

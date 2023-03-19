@@ -1,4 +1,4 @@
--- Handles drawing the water. Adapted from https://gamedev.stackexchange.com/questions/44547/how-do-i-create-2d-water-with-dynamic-waves
+-- Handles drawing the lava. Adapted from https://gamedev.stackexchange.com/questions/44547/how-do-i-create-2d-lava-with-dynamic-waves
 -- I did a lot of optimizations to make this performant, and it still kinda drops the frames down to like 25-27 fps sometimes
 
 local pd <const> = playdate
@@ -40,13 +40,13 @@ for i=1,NUM_BACKGROUND_WAVES do
     table.insert(offsetStretches, math.random()*BACKGROUND_WAVE_COMPRESSION)
 end
 
-class('Water').extends(gfx.sprite)
+class('Lava').extends(gfx.sprite)
 
-function Water:init()
+function Lava:init()
     -- A phase difference to apply to each sine
     self.offset = 0
 
-    -- local waterImage = gfx.image.new("images/game/water")
+    -- local lavaImage = gfx.image.new("images/game/lava")
     -- self:setImage(waterImage)
     self:setZIndex(300)
     self:setCenter(0, 0)
@@ -60,7 +60,7 @@ end
 -- This creates that cool splash effect. Since the wave resolution (NUM_POINTS) isn't
 -- super high for performance reasons, it sometimes splashes to the side of where the hook
 -- is, which is fine for the sake of performance
-function Water:impulse(hookX)
+function Lava:impulse(hookX)
     local closestPoint = nil
     local closestDistance = nil
     for _,p in ipairs(self.wavePoints) do
@@ -79,7 +79,7 @@ function Water:impulse(hookX)
     closestPoint.y += (hookX / 12)
 end
 
-function Water:update()
+function Lava:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
     local waterImage = gfx.image.new(500, self.yOffset - 145)
@@ -106,8 +106,8 @@ function Water:update()
                 -- local rectX = x1 + rectWidth / 2
                 -- local rectY = y2
                 -- -- So I actually draw a bunch of thin white rectangles beneath the wave, to cover
-                -- -- up the pier stilts and also the fishing line when it goes into the water. This has
-                -- -- a big performance impact, but I think it's maybe necessary to get that realistic water
+                -- -- up the pier stilts and also the fishing line when it goes into the lava. This has
+                -- -- a big performance impact, but I think it's maybe necessary to get that realistic lava
                 -- -- cover up. Definetly a better way to do this
                 -- gfx.fillRect(rectX, rectY - self.yOffset, rectWidth + 1, rectHeight)
                 -- -- Actual wave line drawn here
@@ -133,7 +133,7 @@ function Water:update()
 end
 
 -- Make points to go on the wave
-function Water:makeWavePoints(numPoints)
+function Lava:makeWavePoints(numPoints)
     local t = {}
     for n = 1,numPoints do
         -- This represents a point on the wave
@@ -151,7 +151,7 @@ end
 -- Update the positions of each wave point
 -- Basically each point is like a spring and pulls on adjacent points.
 -- IDK just copied the code kekW
-function Water:updateWavePoints(points)
+function Lava:updateWavePoints(points)
     for i=1,ITERATIONS do
         for n,p in ipairs(points) do
             -- force to apply to this point
@@ -198,7 +198,7 @@ end
 
 -- Creates organic looking waves from basically overlapping a
 -- bunch of sine waves. I think. Not sure.
-function Water:overlapSines(x)
+function Lava:overlapSines(x)
     local result = 0
     for i=1,NUM_BACKGROUND_WAVES do
         result = result
