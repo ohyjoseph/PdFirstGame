@@ -5,6 +5,7 @@ import 'CoreLibs/frameTimer'
 
 import "Player"
 import "Wall"
+import "Rectangle"
 import "Projectile"
 import "Score"
 import "SoundManager"
@@ -30,10 +31,12 @@ local function initialize()
 	wall:setZIndex(0)
 	wall:add()
 	wall:moveTo(180, 250)
-	local wall2 = Wall(200, 230, 100, 50)
+	local wall2 = Wall(200, 230, 200, 50)
 	wall2:add()
 	wall2:moveTo(200, 230)
 	wall2:setZIndex(0)
+	local rect = Rectangle(0, 195, 420, 150)
+
 	score = Score()
 	score:setZIndex(900)
 	score:addSprite()
