@@ -12,6 +12,6 @@ function CaveBottom:init(x, y, dx)
 	self:add()
     self:setZIndex(-1)
 
-    self:setCenter(0, 0)
-    self:moveTo(0, 0)
+    self:setCenter(1, 1)
+    self:moveTo(400, 240)
 end
