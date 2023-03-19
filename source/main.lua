@@ -20,29 +20,27 @@ local player
 local score
 local lava
 
+local STARTING_LOWEST_Y = 162
+
 local function initialize()
 	gfx.setBackgroundColor(gfx.kColorBlack)
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
-	lowestY = 300
-	player = Player(200, 196)
+	lowestY = STARTING_LOWEST_Y
+	player = Player(210, 100)
 	player:add()
-	player:moveTo(200, 196)
-	local wall = Wall(180, 250, 1000, 30)
+	player:moveTo(210, 100)
+	local wall = Wall(210, 210, 180, 62)
 	wall:setZIndex(0)
 	wall:add()
-	wall:moveTo(180, 250)
-	local wall2 = Wall(200, 230, 200, 50)
-	wall2:add()
-	wall2:moveTo(200, 230)
-	wall2:setZIndex(0)
-	local rect = Rectangle(0, 195, 420, 150)
+	wall:moveTo(210, 210)
+	-- local rect = Rectangle(0, 195, 420, 150)
+	-- lava = Lava()
 
 	score = Score()
 	score:setZIndex(900)
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
 	projectileSpawnTimer:start()
-	lava = Lava()
 end
 
 function resetGame()
@@ -57,8 +55,9 @@ end
 initialize()
 
 function playdate.update()
-	score:setScore(math.floor((196 - lowestY) / 22))
-	gfx.setDrawOffset(0, 140 - lowestY)
+	score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
+	gfx.setDrawOffset(0, STARTING_LOWEST_Y - lowestY)
+	print(player.y)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
