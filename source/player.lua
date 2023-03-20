@@ -15,8 +15,8 @@ local MAX_IDLE_FRAMES = 100
 local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
-local MAX_DEATH_FRAMES = 100
 local BOUNCE_FORCE = 6
+local DEATH_FRAMES = 100
 
 function Player:init(x, y)
 	Player.super.init(self)
@@ -32,8 +32,7 @@ function Player:init(x, y)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
-	self.deathTimer = pd.frameTimer.new(200)
-	self.deathTimer:pause()
+	self.isDead = false
 
 	self.x = x
 	self.y = y
@@ -82,24 +81,22 @@ function Player:update()
 
 	self:updateIsFacingRight()
 	self:updateSprite()
-	if self.deathTimer.frame == MAX_DEATH_FRAMES then
-		resetGame()
-	end
 end
 
 function Player:respondToControls()
-	if self.deathTimer.frame <= 1 then
-		if playdate.buttonIsPressed(playdate.kButtonRight) then
-			self.dx += WALK_FORCE
-		end
-		if playdate.buttonIsPressed(playdate.kButtonLeft) then
-			self.dx -= WALK_FORCE
-		end
-		if playdate.buttonJustPressed(playdate.kButtonA) then
-			self:jump()
-		elseif playdate.buttonIsPressed(playdate.kButtonA) then
-			self:continueJump()
-		end
+	if self.isDead then
+		return
+	end
+	if playdate.buttonIsPressed(playdate.kButtonRight) then
+		self.dx += WALK_FORCE
+	end
+	if playdate.buttonIsPressed(playdate.kButtonLeft) then
+		self.dx -= WALK_FORCE
+	end
+	if playdate.buttonJustPressed(playdate.kButtonA) then
+		self:jump()
+	elseif playdate.buttonIsPressed(playdate.kButtonA) then
+		self:continueJump()
 	end
 end
 
@@ -112,9 +109,7 @@ function Player:updateIsFacingRight()
 end
 
 function Player:updateSprite()
-	print("lastGround", self.lastGroundY)
-	if self.deathTimer.frame > 1 then
-		self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
+	if self.isDead then
 		return
 	end
 
@@ -208,9 +203,17 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse()
-	self.deathTimer:start()
+	self:startDeath()
+end
+
+function Player:startDeath()
+	self.isDead = true
+	self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
 	self:setCollisionsEnabled(false)
 	SoundManager:playSound(SoundManager.kSoundBump)
+	pd.frameTimer.new(DEATH_FRAMES, function()
+		resetGame()
+	end)
 end
 
 -- returns if Player is touching a floor
