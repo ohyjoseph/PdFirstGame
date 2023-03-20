@@ -3,9 +3,9 @@ local gfx <const> = pd.graphics
 local IMAGES = gfx.imagetable.new("images/cannon")
 
 local PROJECTILE_DX = 4.5
-local MAX_SHOOT_PREP_FRAMES = 40
-local MAX_SHOOT_FRAMES = 10
-local MAX_COOLDOWN_FRAMES = 30
+local SHOOT_PREP_FRAMES = 35
+local SHOOT_FRAMES = 10
+local COOLDOWN_FRAMES = 20
 local PROJECTILE_X_OFFSET = 45
 
 class("Cannon").extends(gfx.sprite)
@@ -22,6 +22,8 @@ function Cannon:init(x, y, isFacingRight)
 
     self.projectileDx = PROJECTILE_DX
     self.projectileXOffset = PROJECTILE_X_OFFSET
+    self.movementAllowed = true
+
     if not self.isFacingRight then
         self.projectileDx *= -1
         self.projectileXOffset *= -1
@@ -39,9 +41,6 @@ function Cannon:init(x, y, isFacingRight)
 end
 
 function Cannon:update()
-
-
-    self:applyVelocities()
     self:moveTowardGoalY()
 	self:moveTo(self.x, self.y)
 end
@@ -54,12 +53,10 @@ function Cannon:getSpriteOrientation()
 	end
 end
 
-function Cannon:applyVelocities()
-	self.x += self.dx
-	self.y += self.dy
-end
-
 function Cannon:moveTowardGoalY()
+    if not self.movementAllowed then
+        return
+    end
     if self.y == self.goalY then
         return
     elseif self.y < self.goalY then
@@ -75,7 +72,8 @@ end
 
 function Cannon:startShootingProjectile()
     self:setImage(IMAGES:getImage(2), self:getSpriteOrientation())
-    pd.frameTimer.new(MAX_SHOOT_PREP_FRAMES, function()
+    self.movementAllowed = false
+    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:shootProjectile()
     end)
 end
@@ -84,14 +82,15 @@ function Cannon:shootProjectile()
     self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
     local projectile = Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
     projectile:moveTo(self.x + self.projectileXOffset, self.y)
-    pd.frameTimer.new(MAX_SHOOT_FRAMES, function()
+    pd.frameTimer.new(SHOOT_FRAMES, function()
         self:cooldown()
     end)
 end
 
 function Cannon:cooldown()
     self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
-    pd.frameTimer.new(MAX_COOLDOWN_FRAMES, function()
+    pd.frameTimer.new(COOLDOWN_FRAMES, function()
+        self.movementAllowed = true
         self:setImage(IMAGES:getImage(1), self:getSpriteOrientation())
     end)
 end
