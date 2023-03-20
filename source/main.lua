@@ -6,6 +6,7 @@ import 'CoreLibs/frameTimer'
 import "Player"
 import "Platform"
 import "Rectangle"
+import "Cannon"
 import "Projectile"
 import "Score"
 import "SoundManager"
@@ -24,7 +25,7 @@ local player
 local score
 local lava
 local caveBottom
-
+local cannon
 local STARTING_LOWEST_Y = 157
 local goalYOffset = 0
 
@@ -32,6 +33,7 @@ local function initialize()
 	gfx.setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
+	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	player = Player(210, 100)
 	player:add()
@@ -42,8 +44,8 @@ local function initialize()
 	platform:moveTo(200, 220)
 	-- local rect = Rectangle(0, 195, 420, 150)
 	-- lava = Lava()
-
-	caveBottom = CaveBottom()
+	cannon = Cannon(player.x, player.y)
+	cannon:moveTo(0, player.y)
 
 	score = Score()
 	score:setZIndex(900)
@@ -71,16 +73,16 @@ function playdate.update()
 	FrameTimer_update()
 	gfx.sprite.update()
 
+	updateCannon()
+
 	if projectileSpawnTimer.frame >= 150 then
-		local projectileY = player.y - 5
-		if projectileY < lowestY - 5 then
-			projectileY = lowestY - 5
-		end
-		local projectile = Projectile(-20, projectileY, 4.5)
-		projectile:moveTo(-20, projectileY)
-		projectile:add()
+		cannon:shootProjectile()
 		projectileSpawnTimer:reset()
 	end
+end
+
+function updateCannon()
+	cannon:updateGoalY(player.y)
 end
 
 function updateGoalYOffset()
