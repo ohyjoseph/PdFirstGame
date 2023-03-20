@@ -7,8 +7,7 @@ class("Projectile").extends(gfx.sprite)
 function Projectile:init(x, y, dx)
 	Projectile.super.init(self)
 
-	self.rotationTimer = pd.frameTimer.new(#IMAGES - 1)
-	self.rotationTimer.repeats = true
+	self.rotationCounter = math.random(1, #IMAGES)
 
 	self.x = x
 	self.y = y
@@ -49,7 +48,17 @@ function Projectile:update()
 end
 
 function Projectile:updateSprite()
-	self:setImage(IMAGES:getImage(self.rotationTimer.frame + 1))
+	self:updateRotationCounter()
+	self:setImage(IMAGES:getImage(self.rotationCounter))
+end
+
+function Projectile:updateRotationCounter()
+	if self.rotationCounter >= #IMAGES then
+		self.rotationCounter = 1
+	else
+		self.rotationCounter += 1
+	end
+
 end
 
 function Projectile:applyVelocities()

@@ -40,6 +40,8 @@ function Player:init(x, y)
 	self.dx = 0
 	self.dy = 0
 
+	self.lastGroundY = self.y
+
 	self.isOnGround = false
 	self.isFacingRight = true
 
@@ -110,26 +112,31 @@ function Player:updateIsFacingRight()
 end
 
 function Player:updateSprite()
+	print("lastGround", self.lastGroundY)
 	if self.deathTimer.frame > 1 then
 		self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
 		return
 	end
-	if self.dx == 0 and self.isOnGround and self.idleTimer.frame > 20 then
-		if (self.idleTimer.frame >= 21 and self.idleTimer.frame <= 28) or
-		(self.idleTimer.frame >= 61 and self.idleTimer.frame <= 68) then
+
+	if self.isOnGround then
+		self.lastGroundY = self.y
+		if self.dx == 0 and self.idleTimer.frame > 20 then
+			if (self.idleTimer.frame >= 21 and self.idleTimer.frame <= 28) or
+			(self.idleTimer.frame >= 61 and self.idleTimer.frame <= 68) then
+				self:setImage(self.playerImages:getImage(1), self:getSpriteOrientation())
+			elseif self.idleTimer.frame <= 60 then
+				self:setImage(self.playerImages:getImage(2), self:getSpriteOrientation())
+			elseif self.idleTimer.frame <= 100 then
+				self:setImage(self.playerImages:getImage(3), self:getSpriteOrientation())
+			end
+		elseif self.dx == 0 then
 			self:setImage(self.playerImages:getImage(1), self:getSpriteOrientation())
-		elseif self.idleTimer.frame <= 60 then
-			self:setImage(self.playerImages:getImage(2), self:getSpriteOrientation())
-		elseif self.idleTimer.frame <= 100 then
-			self:setImage(self.playerImages:getImage(3), self:getSpriteOrientation())
-		end
-	elseif self.dx == 0 and self.isOnGround then
-		self:setImage(self.playerImages:getImage(1), self:getSpriteOrientation())
-	elseif self.dx ~= 0 and self.isOnGround then
-		if self.runTimer.frame <= 10 then
-			self:setImage(self.playerImages:getImage(4), self:getSpriteOrientation())
-		else
-			self:setImage(self.playerImages:getImage(5), self:getSpriteOrientation())
+		elseif self.dx ~= 0 then
+			if self.runTimer.frame <= 10 then
+				self:setImage(self.playerImages:getImage(4), self:getSpriteOrientation())
+			else
+				self:setImage(self.playerImages:getImage(5), self:getSpriteOrientation())
+			end
 		end
 	elseif self.jumpTimer.frame ~= 0 then
 		self:setImage(self.playerImages:getImage(6), self:getSpriteOrientation())
