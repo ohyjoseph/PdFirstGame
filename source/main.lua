@@ -26,7 +26,7 @@ local score
 local lava
 local caveBottom
 local cannon
-local STARTING_LOWEST_Y = 157
+local STARTING_LOWEST_Y = 168
 local goalYOffset = 0
 
 local function initialize()
@@ -36,9 +36,9 @@ local function initialize()
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
-	player = Player(210, 100)
+	player = Player(210, 168)
 	player:add()
-	player:moveTo(210, 100)
+	player:moveTo(210, 168)
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
@@ -69,7 +69,6 @@ function playdate.update()
 	score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
 	updateGoalYOffset()
 	moveCameraTowardGoal()
-	print(lowestY)
 	playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
@@ -87,20 +86,22 @@ function updateCannon()
 end
 
 function updateGoalYOffset()
-	goalYOffset = STARTING_LOWEST_Y - lowestY
+	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
+	print("goal", goalYOffset)
 end
 
 function moveCameraTowardGoal()
-	if cameraOffsetTimer.frame == 0 then
-		local xOffset, yOffset = gfx.getDrawOffset()
-		-- scroll 2 pixels at a time to prevent flickering from dithering
-		if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
-			return
-		elseif goalYOffset > yOffset then
+	local xOffset, yOffset = gfx.getDrawOffset()
+	-- scroll 2 pixels at a time to prevent flickering from dithering
+	if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
+		return
+	elseif goalYOffset > yOffset then
+		if cameraOffsetTimer.frame == 0 then
 			gfx.setDrawOffset(0, yOffset + 2)
-		elseif goalYOffset < yOffset then
+		end
+	elseif goalYOffset < yOffset then
+		if cameraOffsetTimer.frame %2 == 0 then
 			gfx.setDrawOffset(0, yOffset - 2)
-		
 		end
 	end
 end
