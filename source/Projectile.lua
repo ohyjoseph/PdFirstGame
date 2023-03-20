@@ -4,14 +4,14 @@ local IMAGES = gfx.imagetable.new("images/boulder")
 
 class("Projectile").extends(gfx.sprite)
 
-function Projectile:init(x, y, dx)
+function Projectile:init(x, y, dx, rotatesClockwise)
 	Projectile.super.init(self)
 
 	self.rotationCounter = math.random(1, #IMAGES)
 
 	self.x = x
 	self.y = y
-	self.r = 20
+	self.rotatesClockwise = rotatesClockwise
     self.dx = dx
 	self.dy = 0
 	self.isDangerous = true
@@ -55,10 +55,14 @@ end
 function Projectile:updateRotationCounter()
 	if self.rotationCounter >= #IMAGES then
 		self.rotationCounter = 1
-	else
-		self.rotationCounter += 1
+	elseif self.rotationCounter <= 1 then
+		self.rotationCounter = #IMAGES
 	end
-
+	if self.rotatesClockwise then
+		self.rotationCounter += 1
+	else
+		self.rotationCounter -= 1
+	end
 end
 
 function Projectile:applyVelocities()

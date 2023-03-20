@@ -6,7 +6,7 @@ local PROJECTILE_DX = 4.5
 
 class("Cannon").extends(gfx.sprite)
 
-function Cannon:init(x, y)
+function Cannon:init(x, y, isFacingRight)
 	Cannon.super.init(self)
 
 	self.x = x
@@ -14,10 +14,16 @@ function Cannon:init(x, y)
     self.dx = 0
 	self.dy = 0
     self.goalY = 0
+    self.isFacingRight = isFacingRight
 
-	self:setImage(IMAGES:getImage(1))
+	self:setImage(IMAGES:getImage(1), self:getSpriteOrientation())
 	self:add()
-    self:setCenter(0, 0.5)
+    if self.isFacingRight then
+        self:setCenter(0, 0.5)
+    else
+        self:setCenter(1, 0.5)
+    end
+        
     self:moveTo(self.x, self.y)
 end
 
@@ -25,6 +31,14 @@ function Cannon:update()
     self:applyVelocities()
     self:moveTowardGoalY()
 	self:moveTo(self.x, self.y)
+end
+
+function Cannon:getSpriteOrientation()
+	if self.isFacingRight then
+		return gfx.kImageUnflipped
+	else
+		return gfx.kImageFlippedX
+	end
 end
 
 function Cannon:applyVelocities()
@@ -47,6 +61,10 @@ function Cannon:updateGoalY(y)
 end
 
 function Cannon:shootProjectile()
-    local projectile = Projectile(self.x, self.y, PROJECTILE_DX)
+    local projectileDx = PROJECTILE_DX
+    if self.isFacingRight == false then
+        projectileDx = - PROJECTILE_DX
+    end
+    local projectile = Projectile(self.x, self.y, projectileDx, self.isFacingRight)
     projectile:moveTo(self.x, self.y)
 end

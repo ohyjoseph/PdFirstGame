@@ -25,7 +25,8 @@ local player
 local score
 local lava
 local caveBottom
-local cannon
+local cannonLeft
+local cannonRight
 local STARTING_LOWEST_Y = 168
 local goalYOffset = 0
 
@@ -45,8 +46,10 @@ local function initialize()
 	platform:moveTo(200, 220)
 	-- local rect = Rectangle(0, 195, 420, 150)
 	-- lava = Lava()
-	cannon = Cannon(player.x, player.y)
-	cannon:moveTo(0, player.y)
+	cannonLeft = Cannon(0, player.y, true)
+	cannonLeft:moveTo(0, player.y)
+	cannonRight = Cannon(400, player.y, false)
+	cannonRight:moveTo(400, player.y, false)
 
 	score = Score()
 	score:setZIndex(900)
@@ -73,16 +76,21 @@ function playdate.update()
 	FrameTimer_update()
 	gfx.sprite.update()
 
-	updateCannon()
+	updateCannons()
 
 	if projectileSpawnTimer.frame >= 150 then
-		cannon:shootProjectile()
+		if math.random(1, 2) == 1 then
+			cannonRight:shootProjectile()
+		else
+			cannonLeft:shootProjectile()
+		end
 		projectileSpawnTimer:reset()
 	end
 end
 
-function updateCannon()
-	cannon:updateGoalY(player.y)
+function updateCannons()
+	cannonLeft:updateGoalY(player.y)
+	cannonRight:updateGoalY(player.y)
 end
 
 function updateGoalYOffset()
