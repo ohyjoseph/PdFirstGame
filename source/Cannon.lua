@@ -16,6 +16,11 @@ function Cannon:init(x, y, isFacingRight)
     self.goalY = 0
     self.isFacingRight = isFacingRight
 
+    self.projectileDx = PROJECTILE_DX
+    if not self.isFacingRight then
+        self.projectileDx *= -1
+    end
+
 	self:setImage(IMAGES:getImage(1), self:getSpriteOrientation())
 	self:add()
     if self.isFacingRight then
@@ -61,10 +66,6 @@ function Cannon:updateGoalY(y)
 end
 
 function Cannon:shootProjectile()
-    local projectileDx = PROJECTILE_DX
-    if self.isFacingRight == false then
-        projectileDx = - PROJECTILE_DX
-    end
-    local projectile = Projectile(self.x, self.y, projectileDx, self.isFacingRight)
+    local projectile = Projectile(self.x, self.y, self.projectileDx, self.isFacingRight)
     projectile:moveTo(self.x, self.y)
 end
