@@ -16,10 +16,8 @@ import "CaveBottom"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
-local projectileSpawnTimer = playdate.frameTimer.new(200)
-local cameraOffsetTimer = playdate.frameTimer.new(9)
-cameraOffsetTimer.discardOnCompletion = false
-cameraOffsetTimer.repeats = true
+local projectileSpawnTimer
+local cameraOffsetTimer
 
 local player
 local score
@@ -55,13 +53,18 @@ local function initialize()
 	score:setZIndex(900)
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
+
+	projectileSpawnTimer = playdate.frameTimer.new(200)
 	projectileSpawnTimer:start()
+	cameraOffsetTimer = playdate.frameTimer.new(9)
+	cameraOffsetTimer.discardOnCompletion = false
+	cameraOffsetTimer.repeats = true
 end
 
 function resetGame()
 	gfx.sprite.removeAll()
 	for i, timer in pairs(playdate.frameTimer.allTimers()) do
-		timer:reset()
+		timer:remove()
 	end
 	initialize()
 end
