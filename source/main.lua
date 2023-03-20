@@ -80,9 +80,9 @@ function playdate.update()
 
 	if projectileSpawnTimer.frame >= 150 then
 		if math.random(1, 2) == 1 then
-			cannonRight:shootProjectile()
+			cannonRight:startShootingProjectile()
 		else
-			cannonLeft:shootProjectile()
+			cannonLeft:startShootingProjectile()
 		end
 		projectileSpawnTimer:reset()
 	end
