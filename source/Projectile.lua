@@ -7,7 +7,7 @@ class("Projectile").extends(gfx.sprite)
 function Projectile:init(x, y, dx, rotatesClockwise)
 	Projectile.super.init(self)
 
-	self.rotationCounter = math.random(1, #IMAGES)
+	self.rotationCounter = math.random(1, #IMAGES - 1)
 
 	self.x = x
 	self.y = y
