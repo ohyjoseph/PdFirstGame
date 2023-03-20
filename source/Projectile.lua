@@ -53,15 +53,15 @@ function Projectile:updateSprite()
 end
 
 function Projectile:updateRotationCounter()
-	if self.rotationCounter >= #IMAGES then
-		self.rotationCounter = 1
-	elseif self.rotationCounter <= 1 then
-		self.rotationCounter = #IMAGES
-	end
 	if self.rotatesClockwise then
 		self.rotationCounter += 1
 	else
 		self.rotationCounter -= 1
+	end
+	if self.rotationCounter > #IMAGES then
+		self.rotationCounter = 1
+	elseif self.rotationCounter < 1 then
+		self.rotationCounter = #IMAGES
 	end
 end
 
