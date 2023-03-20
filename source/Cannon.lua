@@ -49,5 +49,4 @@ end
 function Cannon:shootProjectile()
     local projectile = Projectile(self.x, self.y, PROJECTILE_DX)
     projectile:moveTo(self.x, self.y)
-    
 end

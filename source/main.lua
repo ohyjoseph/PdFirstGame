@@ -30,6 +30,7 @@ local STARTING_LOWEST_Y = 157
 local goalYOffset = 0
 
 local function initialize()
+	math.randomseed(playdate.getSecondsSinceEpoch())
 	gfx.setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
 	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
