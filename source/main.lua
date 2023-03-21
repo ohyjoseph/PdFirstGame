@@ -23,8 +23,8 @@ local player
 local score
 local lava
 local caveBottom
-local cannonLeft
-local cannonRight
+local leftCannon
+local rightCannon
 local STARTING_LOWEST_Y = 168
 local goalYOffset = 0
 
@@ -44,10 +44,10 @@ local function initialize()
 	platform:moveTo(200, 220)
 	-- local rect = Rectangle(0, 195, 420, 150)
 	-- lava = Lava()
-	cannonLeft = Cannon(0, player.y, true)
-	cannonLeft:moveTo(0, player.y)
-	cannonRight = Cannon(400, player.y, false)
-	cannonRight:moveTo(400, player.y, false)
+	leftCannon = Cannon(0, player.y, true)
+	leftCannon:moveTo(0, player.y)
+	rightCannon = Cannon(400, player.y, false)
+	rightCannon:moveTo(400, player.y, false)
 
 	score = Score()
 	score:setZIndex(900)
@@ -80,25 +80,35 @@ function playdate.update()
 	gfx.sprite.update()
 
 	updateCannons()
+	chooseAndFireCannon()
+end
 
+function chooseAndFireCannon()
 	if projectileSpawnTimer.frame >= 150 then
-		if math.random(1, 2) == 1 then
-			cannonRight:startShootingProjectile()
+		local leftCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
+		local rightCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
+		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
+			if math.random(1, 2) == 1 then
+				leftCannon:startShootingProjectile()
+			else
+				rightCannon:startShootingProjectile()
+			end
+		elseif (leftCannonHasClearShot) then
+			leftCannon:startShootingProjectile()
 		else
-			cannonLeft:startShootingProjectile()
+			rightCannon:startShootingProjectile()
 		end
 		projectileSpawnTimer:reset()
 	end
 end
 
 function updateCannons()
-	cannonLeft:updateGoalY(player.y)
-	cannonRight:updateGoalY(player.y)
+	leftCannon:updateGoalY(player.y)
+	rightCannon:updateGoalY(player.y)
 end
 
 function updateGoalYOffset()
 	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
-	print("goal", goalYOffset)
 end
 
 function moveCameraTowardGoal()
