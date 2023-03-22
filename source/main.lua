@@ -8,6 +8,7 @@ import "Platform"
 import "Rectangle"
 import "Cannon"
 import "Projectile"
+import "Gem"
 import "Score"
 import "SoundManager"
 import "Lava"
@@ -59,6 +60,9 @@ local function initialize()
 	cameraOffsetTimer = playdate.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
+
+	local gem = Gem(100, 100)
+	gem:moveTo(100, 100)
 end
 
 function resetGame()
@@ -81,6 +85,8 @@ function playdate.update()
 
 	updateCannons()
 	chooseAndFireCannon()
+	print("MULT", score.multiplier)
+
 end
 
 function chooseAndFireCannon()
@@ -109,6 +115,10 @@ end
 
 function updateGoalYOffset()
 	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
+end
+
+function addOneToMultiplier()
+	score:addOneToMultiplier()
 end
 
 function moveCameraTowardGoal()
