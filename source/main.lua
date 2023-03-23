@@ -8,6 +8,8 @@ import "Platform"
 import "Rectangle"
 import "Cannon"
 import "Projectile"
+import "Gem"
+import "GemSpawner"
 import "Score"
 import "SoundManager"
 import "Lava"
@@ -16,19 +18,20 @@ import "CaveBottom"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
-local projectileSpawnTimer = playdate.frameTimer.new(200)
-local cameraOffsetTimer = playdate.frameTimer.new(9)
-cameraOffsetTimer.discardOnCompletion = false
-cameraOffsetTimer.repeats = true
+local projectileSpawnTimer
+local cameraOffsetTimer
 
+local PROJECTILE_FREQUENCY = 120
 local player
 local score
 local lava
 local caveBottom
-local cannonLeft
-local cannonRight
+local leftCannon
+local rightCannon
 local STARTING_LOWEST_Y = 168
+local lowestY
 local goalYOffset = 0
+local gemSpawner
 
 local function initialize()
 	math.randomseed(playdate.getSecondsSinceEpoch())
@@ -46,22 +49,31 @@ local function initialize()
 	platform:moveTo(200, 220)
 	-- local rect = Rectangle(0, 195, 420, 150)
 	-- lava = Lava()
-	cannonLeft = Cannon(0, player.y, true)
-	cannonLeft:moveTo(0, player.y)
-	cannonRight = Cannon(400, player.y, false)
-	cannonRight:moveTo(400, player.y, false)
+	leftCannon = Cannon(0, player.y, true)
+	leftCannon:moveTo(0, player.y)
+	rightCannon = Cannon(400, player.y, false)
+	rightCannon:moveTo(400, player.y, false)
 
 	score = Score()
+	score:setScore(0)
 	score:setZIndex(900)
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
+
+	projectileSpawnTimer = playdate.frameTimer.new(PROJECTILE_FREQUENCY)
 	projectileSpawnTimer:start()
+	cameraOffsetTimer = playdate.frameTimer.new(9)
+	cameraOffsetTimer.discardOnCompletion = false
+	cameraOffsetTimer.repeats = true
+
+	gemSpawner = GemSpawner(player.y, 240)
+	gemSpawner:moveWithCollisions(0, player.y)
 end
 
 function resetGame()
 	gfx.sprite.removeAll()
 	for i, timer in pairs(playdate.frameTimer.allTimers()) do
-		timer:reset()
+		timer:remove()
 	end
 	initialize()
 end
@@ -69,7 +81,7 @@ end
 initialize()
 
 function playdate.update()
-	score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
+	-- score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
 	updateGoalYOffset()
 	moveCameraTowardGoal()
 	playdate.drawFPS(0,0) -- FPS widget
@@ -77,25 +89,31 @@ function playdate.update()
 	gfx.sprite.update()
 
 	updateCannons()
+	chooseAndFireCannon()
+end
 
-	if projectileSpawnTimer.frame >= 150 then
-		if math.random(1, 2) == 1 then
-			cannonRight:startShootingProjectile()
+function chooseAndFireCannon()
+	if projectileSpawnTimer.frame >= PROJECTILE_FREQUENCY then
+		local leftCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
+		local rightCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
+		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
+			if math.random(1, 2) == 1 then
+				leftCannon:startShootingProjectile()
+			else
+				rightCannon:startShootingProjectile()
+			end
+		elseif (leftCannonHasClearShot) then
+			leftCannon:startShootingProjectile()
 		else
-			cannonLeft:startShootingProjectile()
+			rightCannon:startShootingProjectile()
 		end
 		projectileSpawnTimer:reset()
 	end
 end
 
 function updateCannons()
-	cannonLeft:updateGoalY(player.y)
-	cannonRight:updateGoalY(player.y)
-end
-
-function updateGoalYOffset()
-	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
-	print("goal", goalYOffset)
+	leftCannon:updateGoalY(player.y)
+	rightCannon:updateGoalY(player.y)
 end
 
 function moveCameraTowardGoal()
@@ -112,4 +130,28 @@ function moveCameraTowardGoal()
 			gfx.setDrawOffset(0, yOffset - 2)
 		end
 	end
+end
+
+function updateGoalYOffset()
+	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
+end
+
+function addToScore(value)
+	score:addToScore(value)
+end
+
+function addToMultiplier(value)
+	score:addToMultiplier(value)
+end
+
+function getMutliplier()
+	return score.multiplier
+end
+
+function getLowestY() 
+	return lowestY
+end
+
+function setLowestY(value)
+	lowestY = value
 end

@@ -40,7 +40,6 @@ end
 
 function Projectile:update()
     self:applyVelocities()
-	self:moveWithCollisions(self.x, self.y)
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
 	self:updateSprite()
