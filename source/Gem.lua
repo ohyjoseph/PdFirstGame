@@ -11,7 +11,7 @@ function Gem:init(x, y)
 	self.y = y
 
 	self:setImage(IMAGES:getImage(1))
-	self:setCollideRect(-4, -4, 35, 28)
+	self:setCollideRect(0, 0, 27, 20)
 	self:setGroups(4)
 	self:setCollidesWithGroups(1)
 	self:add()
