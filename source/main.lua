@@ -9,6 +9,7 @@ import "Rectangle"
 import "Cannon"
 import "Projectile"
 import "Gem"
+import "GemSpawner"
 import "Score"
 import "SoundManager"
 import "Lava"
@@ -29,6 +30,7 @@ local rightCannon
 local STARTING_LOWEST_Y = 168
 local lowestY
 local goalYOffset = 0
+local gemSpawner
 
 local function initialize()
 	math.randomseed(playdate.getSecondsSinceEpoch())
@@ -63,8 +65,8 @@ local function initialize()
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
 
-	local gem = Gem(100, 100)
-	gem:moveTo(100, 100)
+	gemSpawner = GemSpawner(player.y, 300)
+	gemSpawner:moveTo(0, player.y)
 end
 
 function resetGame()
@@ -87,7 +89,6 @@ function playdate.update()
 
 	updateCannons()
 	chooseAndFireCannon()
-	print("MULT", score.multiplier)
 end
 
 function chooseAndFireCannon()
