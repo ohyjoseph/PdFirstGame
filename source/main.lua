@@ -21,6 +21,7 @@ local FrameTimer_update = playdate.frameTimer.updateTimers
 local projectileSpawnTimer
 local cameraOffsetTimer
 
+local PROJECTILE_FREQUENCY = 120
 local player
 local score
 local lava
@@ -59,7 +60,7 @@ local function initialize()
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
 
-	projectileSpawnTimer = playdate.frameTimer.new(200)
+	projectileSpawnTimer = playdate.frameTimer.new(PROJECTILE_FREQUENCY)
 	projectileSpawnTimer:start()
 	cameraOffsetTimer = playdate.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
@@ -92,7 +93,7 @@ function playdate.update()
 end
 
 function chooseAndFireCannon()
-	if projectileSpawnTimer.frame >= 150 then
+	if projectileSpawnTimer.frame >= PROJECTILE_FREQUENCY then
 		local leftCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
 		local rightCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
 		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
