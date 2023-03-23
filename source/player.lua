@@ -284,9 +284,8 @@ function Player:executeCollisionResponses(collisions)
 		self.coyoteTimer:pause()
 		self.coyoteTimer:reset()
 
-		if self.y < lowestY then
-			lowestY = self.y
-			-- print(lowestY)
+		if self.y < getLowestY() then
+			setLowestY(self.y)
 		end
 	else
 		self.isOnGround = false

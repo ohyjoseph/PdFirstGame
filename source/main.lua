@@ -27,6 +27,7 @@ local caveBottom
 local leftCannon
 local rightCannon
 local STARTING_LOWEST_Y = 168
+local lowestY
 local goalYOffset = 0
 
 local function initialize()
@@ -86,7 +87,14 @@ function playdate.update()
 	updateCannons()
 	chooseAndFireCannon()
 	print("MULT", score.multiplier)
+end
 
+function getLowestY() 
+	return lowestY
+end
+
+function setLowestY(value)
+	lowestY = value
 end
 
 function chooseAndFireCannon()
