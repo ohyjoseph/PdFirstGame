@@ -66,7 +66,7 @@ local function initialize()
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
 
-	gemSpawner = GemSpawner(player.y, 300)
+	gemSpawner = GemSpawner(player.y, 240)
 	gemSpawner:moveTo(0, player.y)
 end
 
