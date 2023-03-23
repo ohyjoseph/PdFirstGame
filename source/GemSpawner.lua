@@ -36,7 +36,10 @@ function GemSpawner:executeCollisionResponses(collisions)
                 local gemNewX = math.random(GEM_SPAWN_X_OFFSET, 400 - GEM_SPAWN_X_OFFSET)
                 local gem = Gem(gemNewX, newY)
                 gem:moveTo(gemNewX, newY)
-                self:moveWithCollisions(0, newY)
+
+                local gemSpawner = GemSpawner(newY, self.yBetweenTriggers)
+                gemSpawner:moveTo(0, newY)
+                self:remove()
             end
         end
     end
