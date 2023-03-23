@@ -7,6 +7,9 @@ class("Gem").extends(gfx.sprite)
 function Gem:init(x, y)
 	Gem.super.init(self)
 
+    self.rotationTimer = pd.frameTimer.new(#IMAGES * 8, 1, #IMAGES)
+    self.rotationTimer.repeats = true
+
 	self.x = x
 	self.y = y
 
@@ -27,8 +30,7 @@ end
 
 function Gem:update()
 	self:moveWithCollisions(self.x, self.y)
-
-    self:removeSelfIfFarAway()
+    self:updateSprite()
 end
 
 -- function Gem:playerCollisionResponse(otherSprite, normalX, normalY)
@@ -37,8 +39,7 @@ end
 -- 	end
 -- end
 
-function Gem:removeSelfIfFarAway()
-    if self.x > 500 or self.x < -50 then
-        self:remove()
-    end
+function Gem:updateSprite()
+    print(math.floor(self.rotationTimer.value + 0.5))
+    self:setImage(IMAGES:getImage(math.floor(self.rotationTimer.value + 0.5)))
 end
