@@ -67,7 +67,7 @@ local function initialize()
 	cameraOffsetTimer.repeats = true
 
 	gemSpawner = GemSpawner(player.y, 240)
-	gemSpawner:moveTo(0, player.y)
+	gemSpawner:moveWithCollisions(0, player.y)
 end
 
 function resetGame()
