@@ -19,7 +19,7 @@ end
 
 function Gem:collisionResponse(other)
 	if other:isa(Player) then
-        addOneToMultiplier()
+        addToMultiplier(1)
         self:remove()
         return gfx.sprite.kCollisionTypeOverlap
     end

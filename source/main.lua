@@ -52,6 +52,7 @@ local function initialize()
 	rightCannon:moveTo(400, player.y, false)
 
 	score = Score()
+	score:setScore(0)
 	score:setZIndex(900)
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
@@ -77,7 +78,7 @@ end
 initialize()
 
 function playdate.update()
-	score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
+	-- score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
 	updateGoalYOffset()
 	moveCameraTowardGoal()
 	playdate.drawFPS(0,0) -- FPS widget
@@ -87,14 +88,6 @@ function playdate.update()
 	updateCannons()
 	chooseAndFireCannon()
 	print("MULT", score.multiplier)
-end
-
-function getLowestY() 
-	return lowestY
-end
-
-function setLowestY(value)
-	lowestY = value
 end
 
 function chooseAndFireCannon()
@@ -121,14 +114,6 @@ function updateCannons()
 	rightCannon:updateGoalY(player.y)
 end
 
-function updateGoalYOffset()
-	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
-end
-
-function addOneToMultiplier()
-	score:addOneToMultiplier()
-end
-
 function moveCameraTowardGoal()
 	local xOffset, yOffset = gfx.getDrawOffset()
 	-- scroll 2 pixels at a time to prevent flickering from dithering
@@ -143,4 +128,28 @@ function moveCameraTowardGoal()
 			gfx.setDrawOffset(0, yOffset - 2)
 		end
 	end
+end
+
+function updateGoalYOffset()
+	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
+end
+
+function addToScore(value)
+	score:addToScore(value)
+end
+
+function addToMultiplier(value)
+	score:addToMultiplier(value)
+end
+
+function getMutliplier()
+	return score.multiplier
+end
+
+function getLowestY() 
+	return lowestY
+end
+
+function setLowestY(value)
+	lowestY = value
 end
