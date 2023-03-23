@@ -3,12 +3,12 @@ local gfx <const> = pd.graphics
 
 class("Player").extends(gfx.sprite)
 
-local MAX_DX = 4.5
+local MAX_DX = 4
 local MAX_DY = 12
 local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.5
-local WALK_FORCE = 1.8
+local WALK_FORCE = 1.75
 local JUMP_FORCE = 8.5
 local CONTINUE_JUMP_FORCE = 0.3
 local MAX_IDLE_FRAMES = 100
