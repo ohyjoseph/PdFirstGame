@@ -40,6 +40,5 @@ end
 -- end
 
 function Gem:updateSprite()
-    print(math.floor(self.rotationTimer.value + 0.5))
     self:setImage(IMAGES:getImage(math.floor(self.rotationTimer.value + 0.5)))
 end

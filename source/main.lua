@@ -22,6 +22,7 @@ local projectileSpawnTimer
 local cameraOffsetTimer
 
 local PROJECTILE_FREQUENCY = 120
+local LAVA_STARTING_Y = 210
 local player
 local score
 local lava
@@ -45,8 +46,7 @@ local function initialize()
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
-	-- local rect = Rectangle(0, 195, 420, 150)
-	-- lava = Lava()
+	
 	leftCannon = Cannon(0, player.y, true)
 	rightCannon = Cannon(400, player.y, false)
 
@@ -64,6 +64,9 @@ local function initialize()
 
 	gemSpawner = GemSpawner(player.y, 240)
 	gemSpawner:moveWithCollisions(0, player.y)
+
+	-- local rect = Rectangle(0, 195, 420, 150)
+	lava = Lava(LAVA_STARTING_Y)
 end
 
 function resetGame()
@@ -125,6 +128,11 @@ function moveCameraTowardGoal()
 		if cameraOffsetTimer.frame %2 == 0 then
 			gfx.setDrawOffset(0, yOffset - 2)
 		end
+	end
+	print("yOffset", lava.y, yOffset)
+	if lava.y + yOffset >= 210 then
+		lava.y =  -yOffset + 210
+		lava:moveWithCollisions(0, lava.y)
 	end
 end
 

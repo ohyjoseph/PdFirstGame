@@ -42,7 +42,7 @@ end
 
 class('Lava').extends(gfx.sprite)
 
-function Lava:init()
+function Lava:init(y)
     -- A phase difference to apply to each sine
     self.offset = 0
 
@@ -50,8 +50,13 @@ function Lava:init()
     -- self:setImage(waterImage)
     self:setZIndex(300)
     self:setCenter(0, 0)
+    self.y = y
     self.yOffset = 170
     self:moveTo(-20, self.yOffset)
+    self:setCollideRect(0, 24, 400, 50)
+    self:setGroups(7)
+    self:moveTo(0, y)
+    self:setCollidesWithGroups(1)
     self:add()
 
     self.wavePoints = self:makeWavePoints(NUM_POINTS)
@@ -123,10 +128,31 @@ function Lava:update()
         table.insert(points, startingPoint)
         local poly = pd.geometry.polygon.new(table.unpack(points))
         poly:close()
-        print(poly)
         gfx.fillPolygon(poly)
     gfx.popContext()
     self:setImage(waterImage)
+
+    unused, unused2, collisions, length = self:checkCollisions(0, self.y)
+    self:executeCollisionResponses(collisions)
+end
+
+function Lava:executeCollisionResponses(collisions)
+    for i, collision in pairs(collisions) do
+		if collision then
+            local otherSprite = collision["other"]
+            if otherSprite:isa(Player) then
+                otherSprite.dx = 0
+                otherSprite.dy = 0
+                otherSprite:startDeath()
+            end
+        end
+    end
+end
+
+function Lava:collisionResponse(other)
+	if other:isa(Player) then
+		return gfx.sprite.kCollisionTypeOverlap
+	end
 end
 
 -- Make points to go on the wave
