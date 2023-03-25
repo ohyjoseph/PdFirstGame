@@ -40,7 +40,7 @@ local function initialize()
 	math.randomseed(playdate.getSecondsSinceEpoch())
 	gfx.setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
-	playdate.display.setRefreshRate(75) -- Sets framerate to 50 fps
+	playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	player = Player(210, 168)
