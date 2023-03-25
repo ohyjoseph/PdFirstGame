@@ -5,7 +5,7 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 -- Resolution of simulation (THIS IMPACTS PERFOMANCE A GOOD AMOUNT)
-local NUM_POINTS = 4
+local NUM_POINTS = 2
 -- Width of simulation
 local WIDTH = 420 -- Blaze it
 -- Spring constant for forces applied by adjacent points
@@ -21,7 +21,7 @@ local DAMPING = 0.98
 -- (THIS IMPACTS PERFORMANCE A DECENT AMOUNT)
 local ITERATIONS = 1
 
-local NUM_BACKGROUND_WAVES = 3
+local NUM_BACKGROUND_WAVES = 2
 local BACKGROUND_WAVE_MAX_HEIGHT = 2
 local BACKGROUND_WAVE_COMPRESSION = 1/5
 -- Amounts by which a particular sine is offset
@@ -92,7 +92,7 @@ end
 function Lava:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
-    local waterImage = gfx.image.new(500, 240)
+    local waterImage = gfx.image.new(400, 240)
     -- Couldn't find a good way to optimize the drawing of the wave. I currently have it
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
