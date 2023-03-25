@@ -88,7 +88,7 @@ function playdate.update()
 	-- score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
 	updateGoalYOffset()
 	moveCameraTowardGoal()
-	playdate.drawFPS(0,0) -- FPS widget
+	-- playdate.drawFPS(0,0) -- FPS widget
 	FrameTimer_update()
 	gfx.sprite.update()
 
