@@ -59,11 +59,6 @@ function Lava:init(y)
     self:setCollidesWithGroups(1)
     self:add()
 
-    local rectImage = gfx.image.new(400, 240)
-    gfx.pushContext(rectImage)
-        gfx.fillRect(0, 0, 400, 100)
-    gfx.popContext(rectImage)
-    self:setImage(rectImage)
     self.wavePoints = self:makeWavePoints(NUM_POINTS)
 end
 
