@@ -135,7 +135,7 @@ function moveCameraTowardGoal()
 end
 
 function moveLavaWithCamera(yOffset)
-	if lava.y >= MIN_LAVA_CAMERA_Y_OFFSET - yOffset then
+	if lava.y > MIN_LAVA_CAMERA_Y_OFFSET - yOffset then
 		lava.y = MIN_LAVA_CAMERA_Y_OFFSET - yOffset
 		lava:moveWithCollisions(0, lava.y)
 	end
