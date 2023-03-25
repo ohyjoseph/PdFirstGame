@@ -59,6 +59,11 @@ function Lava:init(y)
     self:setCollidesWithGroups(1)
     self:add()
 
+    local rectImage = gfx.image.new(400, 240)
+    gfx.pushContext(rectImage)
+        gfx.fillRect(0, 0, 400, 100)
+    gfx.popContext(rectImage)
+    self:setImage(rectImage)
     self.wavePoints = self:makeWavePoints(NUM_POINTS)
 end
 
@@ -87,7 +92,7 @@ end
 function Lava:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
-    local waterImage = gfx.image.new(500, 25)
+    local waterImage = gfx.image.new(500, 240)
     -- Couldn't find a good way to optimize the drawing of the wave. I currently have it
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
@@ -95,6 +100,8 @@ function Lava:update()
     local startingPoint  = pd.geometry.point.new(-50, self.yOffset - 145)
     table.insert(points, startingPoint)
     gfx.pushContext(waterImage)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(0, 25, 400, 240)
         for n,p in ipairs(self.wavePoints) do
             if n == 1 then
                 table.insert(points, pd.geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
@@ -102,7 +109,6 @@ function Lava:update()
                 local x1 = p.x
                 local y1 = p.y + self:overlapSines(p.x) - self.yOffset
                 table.insert(points, pd.geometry.point.new(x1, y1))
-                gfx.setColor(gfx.kColorWhite)
                 -- local rectHeight = 20
                 -- local rectWidth = x2 - x1
                 -- local rectX = x1 + rectWidth / 2
