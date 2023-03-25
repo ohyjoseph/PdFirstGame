@@ -87,7 +87,7 @@ end
 function Lava:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
-    local waterImage = gfx.image.new(400, 240)
+    local waterImage = gfx.image.new(400, 100)
     -- Couldn't find a good way to optimize the drawing of the wave. I currently have it
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
@@ -96,7 +96,7 @@ function Lava:update()
     table.insert(points, startingPoint)
     gfx.pushContext(waterImage)
         gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(0, 25, 400, 240)
+        gfx.fillRect(0, 25, 400, 100)
         for n,p in ipairs(self.wavePoints) do
             if n == 1 then
                 table.insert(points, pd.geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
