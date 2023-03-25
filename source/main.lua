@@ -23,6 +23,7 @@ local cameraOffsetTimer
 
 local PROJECTILE_FREQUENCY = 120
 local LAVA_STARTING_Y = 210
+local MIN_LAVA_CAMERA_Y_OFFSET = 210
 local player
 local score
 local lava
@@ -130,8 +131,8 @@ function moveCameraTowardGoal()
 		end
 	end
 	print("yOffset", lava.y, yOffset)
-	if lava.y + yOffset >= 210 then
-		lava.y =  -yOffset + 210
+	if lava.y >= MIN_LAVA_CAMERA_Y_OFFSET - yOffset then
+		lava.y = MIN_LAVA_CAMERA_Y_OFFSET - yOffset
 		lava:moveWithCollisions(0, lava.y)
 	end
 end
