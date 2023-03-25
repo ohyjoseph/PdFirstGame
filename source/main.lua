@@ -90,6 +90,7 @@ function playdate.update()
 
 	updateCannons()
 	chooseAndFireCannon()
+	removeProjectilesAndGemsBelowLava()
 end
 
 function chooseAndFireCannon()
@@ -130,10 +131,25 @@ function moveCameraTowardGoal()
 			gfx.setDrawOffset(0, yOffset - 2)
 		end
 	end
-	print("yOffset", lava.y, yOffset)
+	moveLavaWithCamera(yOffset)
+end
+
+function moveLavaWithCamera(yOffset)
 	if lava.y >= MIN_LAVA_CAMERA_Y_OFFSET - yOffset then
 		lava.y = MIN_LAVA_CAMERA_Y_OFFSET - yOffset
 		lava:moveWithCollisions(0, lava.y)
+	end
+end
+
+function removeProjectilesAndGemsBelowLava()
+	local sprites = gfx.sprite.getAllSprites()
+	for i = 1, #sprites do
+		local sprite = sprites[i]
+		-- makes sure sprite is far enough below lava before deleting
+		if (sprite:isa(Projectile) or sprite:isa(Gem)) and sprite.y > lava.y + 50 then
+			print("REMOVED SPRITE")
+			sprite:remove()
+		end
 	end
 end
 

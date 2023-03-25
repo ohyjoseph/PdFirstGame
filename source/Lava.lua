@@ -48,7 +48,7 @@ function Lava:init(y)
 
     -- local lavaImage = gfx.image.new("images/game/lava")
     -- self:setImage(waterImage)
-    self:setZIndex(300)
+    self:setZIndex(1001)
     self:setCenter(0, 0)
     self.y = y
     self.yOffset = 170
