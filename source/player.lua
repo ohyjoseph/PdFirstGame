@@ -39,7 +39,7 @@ function Player:init(x, y)
 	self.dx = 0
 	self.dy = 0
 
-	self.lastGroundY = self.y
+	self.lastGroundY = y
 
 	self.isOnGround = false
 	self.isFacingRight = true
@@ -52,7 +52,7 @@ function Player:init(x, y)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
-	self:moveWithCollisions(self.x, self.y)
+	self:moveWithCollisions(x, y)
 end
 
 function Player:collisionResponse(other)

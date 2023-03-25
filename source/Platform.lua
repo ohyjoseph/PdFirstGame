@@ -14,5 +14,6 @@ function Platform:init(x, y)
     self:setCollideRect(0, 0, self:getSize())
 	self:setGroups(2)
 	self:setCollidesWithGroups(1)
+	self:moveTo(x, y)
 	self:add()
 end

@@ -20,6 +20,7 @@ function Projectile:init(x, y, dx, rotatesClockwise)
 	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
+	self:moveTo(x, y)
 	self:add()
 end
 
