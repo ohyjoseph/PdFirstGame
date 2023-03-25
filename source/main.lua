@@ -23,6 +23,7 @@ local cameraOffsetTimer
 
 local PROJECTILE_FREQUENCY = 120
 local LAVA_STARTING_Y = 210
+local LAVA_RISE_COUNTER_FRAMES = 10
 local MIN_LAVA_CAMERA_Y_OFFSET = 210
 local player
 local score
@@ -39,7 +40,7 @@ local function initialize()
 	math.randomseed(playdate.getSecondsSinceEpoch())
 	gfx.setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
-	playdate.display.setRefreshRate(50) -- Sets framerate to 50 fps
+	playdate.display.setRefreshRate(75) -- Sets framerate to 50 fps
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	player = Player(210, 168)
@@ -62,6 +63,9 @@ local function initialize()
 	cameraOffsetTimer = playdate.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
+	lavaRiseTimer = playdate.frameTimer.new(LAVA_RISE_COUNTER_FRAMES)
+	lavaRiseTimer.discardOnCompletion = false
+	lavaRiseTimer.repeats = true
 
 	gemSpawner = GemSpawner(player.y, 240)
 	gemSpawner:moveWithCollisions(0, player.y)
@@ -88,8 +92,11 @@ function playdate.update()
 	FrameTimer_update()
 	gfx.sprite.update()
 
+	moveLava()
+
 	updateCannons()
 	chooseAndFireCannon()
+
 	removeProjectilesAndGemsBelowLava()
 end
 
@@ -132,6 +139,13 @@ function moveCameraTowardGoal()
 		end
 	end
 	moveLavaWithCamera(yOffset)
+end
+
+function moveLava()
+	if lavaRiseTimer.frame >= LAVA_RISE_COUNTER_FRAMES then
+		lava.y -= 1
+		lava:moveWithCollisions(0, lava.y)
+	end
 end
 
 function moveLavaWithCamera(yOffset)
