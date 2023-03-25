@@ -3,6 +3,7 @@
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local geometry <const> = pd.geometry
 
 -- Resolution of simulation (THIS IMPACTS PERFOMANCE A GOOD AMOUNT)
 local NUM_POINTS = 2
@@ -92,18 +93,18 @@ function Lava:update()
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
     local points = {}
-    local startingPoint  = pd.geometry.point.new(-50, self.yOffset - 145)
+    local startingPoint  = geometry.point.new(-50, self.yOffset - 145)
     table.insert(points, startingPoint)
     gfx.pushContext(waterImage)
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(0, 25, 400, 100)
         for n,p in ipairs(self.wavePoints) do
             if n == 1 then
-                table.insert(points, pd.geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
+                table.insert(points, geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
             else
                 local x1 = p.x
                 local y1 = p.y + self:overlapSines(p.x) - self.yOffset
-                table.insert(points, pd.geometry.point.new(x1, y1))
+                table.insert(points, geometry.point.new(x1, y1))
                 -- local rectHeight = 20
                 -- local rectWidth = x2 - x1
                 -- local rectX = x1 + rectWidth / 2
@@ -125,9 +126,9 @@ function Lava:update()
         --         gfx.drawLine(points[n-1].x, points[n-1].y - self.yOffset, p.x, p.y - self.yOffset)
         --     end
         -- end
-        table.insert(points, pd.geometry.point.new(420, self.yOffset - 145))
+        table.insert(points, geometry.point.new(420, self.yOffset - 145))
         table.insert(points, startingPoint)
-        local poly = pd.geometry.polygon.new(table.unpack(points))
+        local poly = geometry.polygon.new(table.unpack(points))
         poly:close()
         gfx.fillPolygon(poly)
     gfx.popContext()
