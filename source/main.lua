@@ -24,7 +24,7 @@ local cameraOffsetTimer
 local PROJECTILE_FREQUENCY = 120
 local LAVA_STARTING_Y = 210
 local LAVA_RISE_COUNTER_FRAMES = 10
-local MIN_LAVA_CAMERA_Y_OFFSET = 210
+local MIN_LAVA_CAMERA_Y_OFFSET = 230
 local player
 local score
 local lava
