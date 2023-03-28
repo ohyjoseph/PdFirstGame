@@ -8,7 +8,7 @@ local MAX_DY = 12
 local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.6
-local EXTERNAL_FRICTION = 0.2
+local EXTERNAL_FRICTION = 0.175
 local WALK_FORCE = 1.8
 local JUMP_FORCE = 8.5
 local CONTINUE_JUMP_FORCE = 0.3
@@ -16,6 +16,7 @@ local MAX_IDLE_FRAMES = 100
 local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
+local STUNNED_FRAMES = 50
 local BOUNCE_FORCE = 6
 local DEATH_FRAMES = 100
 
@@ -90,7 +91,7 @@ function Player:update()
 
 	if self.isOnGround and self.isStunned then
 		if not self.unstunTimer then
-			self.unstunTimer = pd.frameTimer.new(45, function()
+			self.unstunTimer = pd.frameTimer.new(STUNNED_FRAMES, function()
 				self.isStunned = false
 				self.unstunTimer = nil
 			end)
