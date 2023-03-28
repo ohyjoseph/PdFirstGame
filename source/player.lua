@@ -160,7 +160,6 @@ function Player:updateSprite()
 	elseif self.jumpTimer.frame ~= 0 then
 		self:setImage(self.playerImages:getImage(6), self:getSpriteOrientation())
 	end
-	print("RUN", self.runTimer.frame)
 	if self.runTimer.frame >= MAX_RUN_FRAMES or self.dx == 0 then
 		self.runTimer:reset()
 	end
@@ -289,7 +288,6 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 	end
 	if otherSprite:isa(Projectile) and otherSprite.isDangerous then
 		if normalY == -1 then
-			print("why", normalX, normalY)
 			if self.dy < -BOUNCE_FORCE then
 				self.dy += -BOUNCE_FORCE
 			else 
