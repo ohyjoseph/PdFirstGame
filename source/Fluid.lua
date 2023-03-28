@@ -23,6 +23,7 @@ function Fluid:init(x, y, width, height, options)
 	self:setGroups(7)
 	self:setCollidesWithGroups(1)
 	self:setCenter(0, 0)
+	self:setOpaque(true)
 	self:setZIndex(1001)
 	
 	options = options or {}

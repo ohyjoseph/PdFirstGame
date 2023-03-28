@@ -71,7 +71,7 @@ local function initialize()
 	gemSpawner:moveWithCollisions(0, player.y)
 
 	-- local rect = Rectangle(0, 195, 420, 150)
-	lava = Fluid(0, LAVA_STARTING_Y, 400, 100)
+	lava = Fluid(0, LAVA_STARTING_Y, 400, 70)
 end
 
 function resetGame()
