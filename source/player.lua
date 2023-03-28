@@ -250,6 +250,8 @@ end
 function Player:startDeath()
 	self.isDead = true
 	self:setCollisionsEnabled(false)
+	self.dy = self.dy * 0.04
+	self.g = 0
 	SoundManager:playSound(SoundManager.kSoundBump)
 	pd.frameTimer.new(DEATH_FRAMES, function()
 		resetGame()
