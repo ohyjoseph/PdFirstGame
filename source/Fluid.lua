@@ -148,9 +148,9 @@ function Fluid:checkCollisionsResponse(collisions)
 			
 			-- end
 			if otherSprite:isa(Player) then
-				self:touch(otherSprite.x, otherSprite.dy + 2)
-                otherSprite.dx = 0
-                otherSprite.dy = 0
+				self:touch(otherSprite.x, otherSprite.dy * 0.5 + 2)
+                otherSprite.dy = otherSprite.dy * 0.04
+				otherSprite.g = 0
                 otherSprite:startDeath()
             end
         end

@@ -6,7 +6,6 @@ class("Player").extends(gfx.sprite)
 local MAX_DX = 4
 local MAX_DY = 12
 local TERMINAL_Y = 16
-local G = 0.6
 local FRICTION = 1.6
 local EXTERNAL_FRICTION = 0.175
 local WALK_FORCE = 1.8
@@ -45,6 +44,8 @@ function Player:init(x, y)
 	self.y = y
 	self.dx = 0
 	self.dy = 0
+	
+	self.g = 0.6
 
 	self.externalDx = 0
 
@@ -231,7 +232,7 @@ function Player:applyExternalFriction()
 end
 
 function Player:applyGravity()
-	self.dy += G
+	self.dy += self.g
 	if self.dy < -MAX_DY then
 		self.dy = -MAX_DY
 	end
