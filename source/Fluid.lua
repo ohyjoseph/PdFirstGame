@@ -27,7 +27,7 @@ function Fluid:init(x, y, width, height, options)
 	
 	options = options or {}
 
-	self.updatePolygonTimer = playdate.frameTimer.new(2)
+	self.updatePolygonTimer = playdate.frameTimer.new(3)
 	self.updatePolygonTimer.discardOnCompletion = false
 	self.updatePolygonTimer.repeats = true
 	
@@ -122,9 +122,9 @@ function Fluid:collisionResponse(other)
 end
 
 function Fluid:update()
-	if self.updatePolygonTimer.frame >= self.updatePolygonTimer.duration then
+	-- if self.updatePolygonTimer.frame >= self.updatePolygonTimer.duration then
 		self:updatePolygon()
-	end
+	-- end
 	self:fill()
 	x, y, collisions = self:checkCollisions(self.x, self.y)
 	self:checkCollisionsResponse(collisions)
@@ -158,15 +158,24 @@ end
 
 function Fluid:updatePolygon()
 	-- Simulate springs on each vertex.
-	for _, v in ipairs(self.vertices) do
-		v.velocity += self.tension * (v.natural_height - v.height) - v.velocity * self.dampening
-		v.height += v.velocity
+	print(self.updatePolygonTimer.frame)
+	if self.updatePolygonTimer.frame == 1 or self.updatePolygonTimer.frame == 3  then
+		return
+	end
+	local index = 0
+	if self.updatePolygonTimer.frame == 2 then
+		index = 1
+	end
+	for i = index + 1, self.vertex_count, 2 do
+		local vertex <const> = self.vertices[i]
+		vertex.velocity += self.tension * (vertex.natural_height - vertex.height) - vertex.velocity * self.dampening
+		vertex.height += vertex.velocity
 	end
 	
 	-- Propagate changes to the left and right to create a waves.
 
 	-- Propagate to the left.
-	for i = self.vertex_count, 1, -1 do
+	for i = self.vertex_count - index, 1, -2 do
 		local vertex <const> = self.vertices[i]
 		if i > 1 then
 			local left_vertex <const> = self.vertices[i - 1]
@@ -177,7 +186,8 @@ function Fluid:updatePolygon()
 	end
 		
 	-- Propagate to the right
-	for i, vertex in ipairs(self.vertices) do
+	for i = index + 1, self.vertex_count, 2 do
+		local vertex <const> = self.vertices[i]
 		if i < self.vertex_count then
 			local right_vertex <const> = self.vertices[i + 1]
 			local right_change <const> = self.speed * (vertex.height - right_vertex.height)
