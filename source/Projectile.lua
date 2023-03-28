@@ -73,8 +73,7 @@ end
 
 function Projectile:playerCollisionResponse(otherSprite, normalX, normalY)
 	if otherSprite:isa(Player) then
-		otherSprite:hitByProjectileResponse()
-		self:remove()
+		otherSprite:hitByProjectileResponse(self)
 	end
 end
 

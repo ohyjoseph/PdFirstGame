@@ -8,6 +8,7 @@ local MAX_DY = 12
 local TERMINAL_Y = 16
 local G = 0.6
 local FRICTION = 1.6
+local EXTERNAL_FRICTION = 0.2
 local WALK_FORCE = 1.8
 local JUMP_FORCE = 8.5
 local CONTINUE_JUMP_FORCE = 0.3
@@ -42,6 +43,8 @@ function Player:init(x, y)
 	self.dx = 0
 	self.dy = 0
 
+	self.externalDx = 0
+
 	self.lastGroundY = y
 
 	self.isOnGround = false
@@ -74,6 +77,7 @@ function Player:update()
 	self:respondToControls()
 
 	self:applyFriction()
+	self:applyExternalFriction()
 	self:applyGravity()
 	self:applyVelocities()
 
@@ -184,7 +188,7 @@ function Player:continueJump()
 end
 
 function Player:applyVelocities()
-	self.x += self.dx
+	self.x += (self.dx + self.externalDx)
 	self.y += self.dy
 end
 
@@ -208,6 +212,20 @@ function Player:applyFriction()
 	end
 end
 
+function Player:applyExternalFriction()
+	if self.externalDx > 0 then
+		self.externalDx -= EXTERNAL_FRICTION
+		if self.externalDx < 0 then
+			self.externalDx = 0
+		end
+	elseif self.externalDx < 0 then
+		self.externalDx += EXTERNAL_FRICTION
+		if self.externalDx > 0 then
+			self.externalDx = 0
+		end
+	end
+end
+
 function Player:applyGravity()
 	self.dy += G
 	if self.dy < -MAX_DY then
@@ -218,8 +236,10 @@ function Player:applyGravity()
 	end
 end
 
-function Player:hitByProjectileResponse()
+function Player:hitByProjectileResponse(projectile)
 	self.isStunned = true
+	self.externalDx += projectile.dx
+	projectile:remove()
 end
 
 function Player:startDeath()
@@ -272,8 +292,7 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 			otherSprite:fall()
 		else
 			if otherSprite.isDangerous then
-				otherSprite:remove()
-				self:hitByProjectileResponse()
+				self:hitByProjectileResponse(otherSprite)
 			end
 		end
 	end
