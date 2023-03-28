@@ -26,6 +26,10 @@ function Fluid:init(x, y, width, height, options)
 	self:setZIndex(1001)
 	
 	options = options or {}
+
+	self.updatePolygonTimer = playdate.frameTimer.new(2)
+	self.updatePolygonTimer.discardOnCompletion = false
+	self.updatePolygonTimer.repeats = true
 	
 	-- setmetatable(fluid, Fluid)
 	
@@ -118,7 +122,9 @@ function Fluid:collisionResponse(other)
 end
 
 function Fluid:update()
-	self:updatePolygon()
+	if self.updatePolygonTimer.frame >= self.updatePolygonTimer.duration then
+		self:updatePolygon()
+	end
 	self:fill()
 	x, y, collisions = self:checkCollisions(self.x, self.y)
 	self:checkCollisionsResponse(collisions)
