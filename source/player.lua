@@ -23,7 +23,9 @@ function Player:init(x, y)
 	Player.super.init(self)
 
 	self.idleTimer = pd.frameTimer.new(MAX_IDLE_FRAMES)
+	self.idleTimer.discardOnCompletion = false
 	self.runTimer = pd.frameTimer.new(MAX_RUN_FRAMES)
+	self.runTimer.discardOnCompletion = false
 
 	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
@@ -156,10 +158,11 @@ function Player:updateSprite()
 	elseif self.jumpTimer.frame ~= 0 then
 		self:setImage(self.playerImages:getImage(6), self:getSpriteOrientation())
 	end
-	if self.runTimer.frame == MAX_RUN_FRAMES or self.dx == 0 then
+	print("RUN", self.runTimer.frame)
+	if self.runTimer.frame >= MAX_RUN_FRAMES or self.dx == 0 then
 		self.runTimer:reset()
 	end
-	if (self.idleTimer.frame == MAX_IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
+	if (self.idleTimer.frame >= MAX_IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
 		self.idleTimer:reset()
 	end
 end
