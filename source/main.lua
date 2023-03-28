@@ -12,7 +12,7 @@ import "Gem"
 import "GemSpawner"
 import "Score"
 import "SoundManager"
-import "Lava"
+import "Fluid"
 import "CaveBottom"
 
 local gfx <const> = playdate.graphics
@@ -22,7 +22,7 @@ local projectileSpawnTimer
 local cameraOffsetTimer
 
 local PROJECTILE_FREQUENCY = 120
-local LAVA_STARTING_Y = 210
+local LAVA_STARTING_Y = 180
 local LAVA_RISE_COUNTER_FRAMES = 10
 local MIN_LAVA_CAMERA_Y_OFFSET = 230
 local player
@@ -71,7 +71,7 @@ local function initialize()
 	gemSpawner:moveWithCollisions(0, player.y)
 
 	-- local rect = Rectangle(0, 195, 420, 150)
-	lava = Lava(LAVA_STARTING_Y)
+	lava = Fluid(0, LAVA_STARTING_Y, 400, 100)
 end
 
 function resetGame()
@@ -143,15 +143,13 @@ end
 
 function moveLava()
 	if lavaRiseTimer.frame >= LAVA_RISE_COUNTER_FRAMES then
-		lava.y -= 1
-		lava:moveWithCollisions(0, lava.y)
+		lava:moveWithCollisions(lava.x, lava.y - 1)
 	end
 end
 
 function moveLavaWithCamera(yOffset)
 	if lava.y > MIN_LAVA_CAMERA_Y_OFFSET - yOffset then
-		lava.y = MIN_LAVA_CAMERA_Y_OFFSET - yOffset
-		lava:moveWithCollisions(0, lava.y)
+		lava:moveWithCollisions(lava.x, MIN_LAVA_CAMERA_Y_OFFSET - yOffset)
 	end
 end
 
