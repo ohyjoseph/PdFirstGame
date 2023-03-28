@@ -238,7 +238,9 @@ end
 
 function Player:hitByProjectileResponse(projectile)
 	self.isStunned = true
-	self.externalDx += projectile.dx
+	if (self.dx >= 0 and projectile.dx < 0) or (self.dx <= 0 and projectile.dx > 0)  then
+		self.externalDx += projectile.dx
+	end
 	projectile:remove()
 end
 
