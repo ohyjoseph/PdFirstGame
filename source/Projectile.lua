@@ -29,6 +29,7 @@ function Projectile:collisionResponse(other)
 	if other:isa(Projectile) or other:isa(Platform) then
 		if not self.isDangerous then
 			self:setUpdatesEnabled(false)
+			self:setCollidesWithGroups({1, 3})
 			self.dy = 0
 			self:setZIndex(0)
 			return gfx.sprite.kCollisionTypeSlide
