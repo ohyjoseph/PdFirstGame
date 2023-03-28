@@ -85,7 +85,7 @@ end
 initialize()
 
 function playdate.update()
-	-- score:setScore(math.floor((STARTING_LOWEST_Y - lowestY) / 22))
+	score:setScore(playdate.getFPS())
 	updateGoalYOffset()
 	moveCameraTowardGoal()
 	-- playdate.drawFPS(0,0) -- FPS widget
@@ -158,7 +158,7 @@ function removeProjectilesAndGemsBelowLava()
 	for i = 1, #sprites do
 		local sprite = sprites[i]
 		-- makes sure sprite is far enough below lava before deleting
-		if (sprite:isa(Projectile) or sprite:isa(Gem)) and sprite.y > lava.y + 50 then
+		if (sprite:isa(Projectile) or sprite:isa(Gem)) and sprite.y > lava.y + 100 then
 			print("REMOVED SPRITE")
 			sprite:remove()
 		end

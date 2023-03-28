@@ -15,6 +15,7 @@ function Projectile:init(x, y, dx, rotatesClockwise)
     self.dx = dx
 	self.dy = 0
 	self.isDangerous = true
+	self.hasTouchedLava = false
 
 	self:setImage(IMAGES:getImage(1))
 	self:setCollideRect(4, 4, 26, 26)

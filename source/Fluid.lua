@@ -3,7 +3,7 @@ local geometry <const> = playdate.geometry
 local X_OFFSET = 0
 local Y_OFFSET = 50
 
-local COLLISION_Y_OFFSET = 120
+local COLLISION_Y_OFFSET = 124
 
 local function round(num)
 	return num + 0.5 - (num + 0.5) % 1
@@ -23,6 +23,7 @@ function Fluid:init(x, y, width, height, options)
 	self:setGroups(7)
 	self:setCollidesWithGroups(1)
 	self:setCenter(0, 0)
+	self:setZIndex(1001)
 	
 	options = options or {}
 	
@@ -32,8 +33,7 @@ function Fluid:init(x, y, width, height, options)
 	self.tension = options.tension or 0.03 -- Wave stiffness.
 	self.dampening = options.dampening or 0.0025 -- Wave oscillation.
 	self.speed = options.speed or 0.06 -- Wave speed.
-	self.vertex_count = options.vertices or 20
-	print("OPTIONS", options.collisionResponseCb)
+	self.vertex_count = options.vertices or 10
 
 	self.collisionResponseCb = options.collisionResponseCb or function() end
 	-- Allocate vertices.
@@ -48,7 +48,7 @@ function Fluid:init(x, y, width, height, options)
 
 	self:setCollideRect(x, y - COLLISION_Y_OFFSET, width, 1)
 	self:setGroups(7)
-    self:setCollidesWithGroups(1)
+    self:setCollidesWithGroups({1, 3})
 	
 	-- Initialize.
 	self:reset()
@@ -111,10 +111,10 @@ function Fluid:touch(x, velocity)
 end
 
 function Fluid:collisionResponse(other)
-	if other:isa(Player) then
-		return gfx.sprite.kCollisionTypeOverlap
-	end
-	return self.collisionResponseCb(self, other)
+	
+	return gfx.sprite.kCollisionTypeOverlap
+	
+	-- return self.collisionResponseCb(self, other)
 end
 
 function Fluid:update()
@@ -133,15 +133,19 @@ function Fluid:checkCollisionsResponse(collisions)
 			-- elseif otherSprite.dy < 0 then
 			-- 	self:touch(otherSprite.x, -8)
 			-- else
-			self:touch(otherSprite.x, otherSprite.dy + 2)
-				
+			if otherSprite:isa(Projectile) and not otherSprite.hasTouchedLava then
+				otherSprite.hasTouchedLava = true
+				self:touch(otherSprite.x, otherSprite.dy + 3)
+			end
+
+			
 			-- end
 			if otherSprite:isa(Player) then
+				self:touch(otherSprite.x, otherSprite.dy + 2)
                 otherSprite.dx = 0
                 otherSprite.dy = 0
                 otherSprite:startDeath()
             end
-			return gfx.sprite.kCollisionTypeOverlap
         end
     end
 end
