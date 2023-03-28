@@ -32,6 +32,8 @@ function Player:init(x, y)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
+	self.unstunTimer = nil
+
 	self.isStunned = false
 	self.isDead = false
 
@@ -80,12 +82,21 @@ function Player:update()
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
 
+	if self.isOnGround and self.isStunned then
+		if not self.unstunTimer then
+			self.unstunTimer = pd.frameTimer.new(45, function()
+				self.isStunned = false
+				self.unstunTimer = nil
+			end)
+		end
+	end
+
 	self:updateIsFacingRight()
 	self:updateSprite()
 end
 
 function Player:respondToControls()
-	if self.isDead then
+	if self.isStunned or self.isDead then
 		return
 	end
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
@@ -208,7 +219,7 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse()
-	self:startDeath()
+	self.isStunned = true
 end
 
 function Player:startDeath()
@@ -228,7 +239,7 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 		-- Walking into sprite
 		if normalX == 1 then 
 			self.dx = 0
-		elseif normalX == -1 then 
+		elseif normalX == -1 then
 			self.dx = 0
 		end
 		
@@ -246,8 +257,12 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 end
 
 function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
+	if self.isStunned then
+		return
+	end
 	if otherSprite:isa(Projectile) and otherSprite.isDangerous then
 		if normalY == -1 then
+			print("why", normalX, normalY)
 			if self.dy < -BOUNCE_FORCE then
 				self.dy += -BOUNCE_FORCE
 			else 
@@ -257,6 +272,7 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 			otherSprite:fall()
 		else
 			if otherSprite.isDangerous then
+				otherSprite:remove()
 				self:hitByProjectileResponse()
 			end
 		end

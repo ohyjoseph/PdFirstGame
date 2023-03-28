@@ -158,7 +158,6 @@ end
 
 function Fluid:updatePolygon()
 	-- Simulate springs on each vertex.
-	print(self.updatePolygonTimer.frame)
 	if self.updatePolygonTimer.frame == 1 or self.updatePolygonTimer.frame == 3  then
 		return
 	end
