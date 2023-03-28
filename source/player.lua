@@ -32,6 +32,7 @@ function Player:init(x, y)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
+	self.isStunned = false
 	self.isDead = false
 
 	self.x = x
@@ -110,6 +111,10 @@ end
 
 function Player:updateSprite()
 	if self.isDead then
+		self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
+		return
+	elseif self.isStunned then
+		self:setImage(self.playerImages:getImage(8), self:getSpriteOrientation())
 		return
 	end
 
@@ -208,7 +213,6 @@ end
 
 function Player:startDeath()
 	self.isDead = true
-	self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
 	self:setCollisionsEnabled(false)
 	SoundManager:playSound(SoundManager.kSoundBump)
 	pd.frameTimer.new(DEATH_FRAMES, function()
