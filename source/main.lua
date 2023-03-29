@@ -65,3 +65,20 @@ function reset()
 		timer:remove()
 	end
 end
+
+function SAVE_HIGH_SCORE(newScore)
+    local gameData = {
+        highScore = newScore
+    }
+    playdate.datastore.write(gameData)
+end
+
+function LOAD_HIGH_SCORE()
+    local gameData = playdate.datastore.read()
+    if gameData then
+        return gameData.highScore
+    end
+	return 0
+end
+
+HIGH_SCORE = LOAD_HIGH_SCORE()

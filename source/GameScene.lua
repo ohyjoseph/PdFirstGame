@@ -43,7 +43,7 @@ function GameScene:init()
 end
 
 function GameScene:update()
-	score:setScore(playdate.getFPS())
+	print("HIGHSCORE", HIGH_SCORE)
 	updateGoalYOffset()
 	moveCameraTowardGoal()
 	-- playdate.drawFPS(0,0) -- FPS widget
@@ -63,20 +63,20 @@ function initialize()
 	playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
-	player = Player(210, 168)
-	player:add()
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
-	
-	leftCannon = Cannon(0, player.y, true)
-	rightCannon = Cannon(400, player.y, false)
 
 	score = Score()
 	score:setScore(0)
 	score:setZIndex(900)
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
+
+	player = Player(210, 168, score)
+
+	leftCannon = Cannon(0, player.y, true)
+	rightCannon = Cannon(400, player.y, false)
 
 	projectileSpawnTimer = playdate.frameTimer.new(PROJECTILE_FREQUENCY)
 	projectileSpawnTimer:start()

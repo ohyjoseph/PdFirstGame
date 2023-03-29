@@ -20,7 +20,7 @@ local STUNNED_FRAMES = 50
 local BOUNCE_FORCE = 6
 local DEATH_FRAMES = 100
 
-function Player:init(x, y)
+function Player:init(x, y, score)
 	Player.super.init(self)
 
 	self.idleTimer = pd.frameTimer.new(MAX_IDLE_FRAMES)
@@ -43,6 +43,8 @@ function Player:init(x, y)
 	self.isHoldingGem = false
 
 	self.isOnRope = false
+
+	self.score = score
 
 	self.x = x
 	self.y = y
@@ -82,7 +84,6 @@ function Player:collisionResponse(other)
 end
 
 function Player:update()
-	print("PLAYER", self.x)
 	self:respondToControls()
 
 	self:applyFriction()
@@ -200,6 +201,13 @@ function Player:getSpriteOrientation()
 	end
 end
 
+function Player:saveHighScore()
+	if self.score.score > HIGH_SCORE then
+		SAVE_HIGH_SCORE(self.score.score)
+		HIGH_SCORE = self.score.score
+	end
+end
+
 function Player:jump()
 	if ((self.coyoteTimer.frame > 0 and self.coyoteTimer.frame < MAX_COYOTE_FRAMES) or self.isOnGround) and self.jumpTimer.frame == 0 then
 		self.jumpTimer:reset()
@@ -275,6 +283,9 @@ function Player:startDeath()
 	self:setCollisionsEnabled(false)
 	self.dy = self.dy * 0.04
 	self.g = 0
+
+	self:saveHighScore()
+
 	SoundManager:playSound(SoundManager.kSoundBump)
 	pd.frameTimer.new(DEATH_FRAMES, function()
 		resetGame()
