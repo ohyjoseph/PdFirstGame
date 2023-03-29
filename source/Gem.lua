@@ -7,7 +7,7 @@ class("Gem").extends(gfx.sprite)
 function Gem:init(x, y)
 	Gem.super.init(self)
 
-    self.rotationTimer = pd.frameTimer.new(#IMAGES * 8, 1, #IMAGES)
+    self.rotationTimer = pd.frameTimer.new(#IMAGES * 6, 1, #IMAGES)
     self.rotationTimer.repeats = true
 
 	self:setImage(IMAGES:getImage(1))
