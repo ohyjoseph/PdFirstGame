@@ -15,6 +15,7 @@ import "Fluid"
 import "CaveBottom"
 import "Rope"
 import "MenuGem"
+import "Pillar"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -62,13 +63,13 @@ function startUp()
     player.g = 0.015
     player.dy = 1.1
 
-	local platform = Platform(200, 220, 180, 62)
+	local platform = Platform(200, 220)
 	platform:setZIndex(0)
-	platform:add()
+
+    local pillar = Pillar(200, 177)
 
     local rope = Rope(ROPE_X, -75)
     platform:setZIndex(0)
-    rope:add()
 
-    local menuGem = MenuGem(200, 150)
+    local menuGem = MenuGem(200, 160)
 end

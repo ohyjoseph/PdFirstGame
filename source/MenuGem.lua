@@ -34,9 +34,9 @@ function MenuGem:checkCollisionsResponse(collisions)
                         otherSprite.isHoldingGem = true
                         self:setZIndex(1001)
                         if otherSprite.isFacingRight then
-                            self:moveTo(otherSprite.x + 11, self.y)
+                            self:moveTo(otherSprite.x + 11, self.y - 10)
                         else
-                            self:moveTo(otherSprite.x - 11, self.y)
+                            self:moveTo(otherSprite.x - 11, self.y - 10)
                         end
                         pd.frameTimer.new(TRANSTION_FRAMES, function()
                             isMenuGemCollected = true
