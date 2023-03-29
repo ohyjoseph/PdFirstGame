@@ -8,14 +8,13 @@ import "Platform"
 import "Rectangle"
 import "Cannon"
 import "Projectile"
-import "Gem"
 import "GemSpawner"
 import "Score"
 import "SoundManager"
 import "Fluid"
 import "CaveBottom"
 import "Rope"
-import "Gem"
+import "MenuGem"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -71,5 +70,5 @@ function startUp()
     platform:setZIndex(0)
     rope:add()
 
-    local gem = Gem(200, 150)
+    local menuGem = MenuGem(200, 150)
 end

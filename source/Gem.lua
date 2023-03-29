@@ -15,7 +15,6 @@ function Gem:init(x, y)
 	self:setGroups(4)
 	self:setCollidesWithGroups(1)
 	self:add()
-	self:moveTo(x, y)
 end
 
 function Gem:collisionResponse(other)

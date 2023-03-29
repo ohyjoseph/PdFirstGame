@@ -21,9 +21,18 @@ import "GameScene"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
+isMenuGemCollected = false
+
+local isInGameScene = false
+
 local scene = MenuScene()
 
 function playdate.update()
+	if isMenuGemCollected and not isInGameScene then
+		scene = GameScene()
+		isInGameScene = true
+	end
+
 	scene:update()
 
 	gfx.sprite.update()
