@@ -6,8 +6,9 @@ class("Player").extends(gfx.sprite)
 local MAX_DX = 4
 local MAX_DY = 12
 local TERMINAL_Y = 16
-local G = 0.6
 local FRICTION = 1.6
+local DEFAULT_GRAVITY = 0.6
+local EXTERNAL_FRICTION = 0.175
 local WALK_FORCE = 1.8
 local JUMP_FORCE = 8.5
 local CONTINUE_JUMP_FORCE = 0.3
@@ -15,6 +16,7 @@ local MAX_IDLE_FRAMES = 100
 local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
+local STUNNED_FRAMES = 50
 local BOUNCE_FORCE = 6
 local DEATH_FRAMES = 100
 
@@ -22,7 +24,9 @@ function Player:init(x, y)
 	Player.super.init(self)
 
 	self.idleTimer = pd.frameTimer.new(MAX_IDLE_FRAMES)
+	self.idleTimer.discardOnCompletion = false
 	self.runTimer = pd.frameTimer.new(MAX_RUN_FRAMES)
+	self.runTimer.discardOnCompletion = false
 
 	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
@@ -32,14 +36,23 @@ function Player:init(x, y)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
+	self.unstunTimer = nil
+
+	self.isStunned = false
 	self.isDead = false
+
+	self.isOnRope = false
 
 	self.x = x
 	self.y = y
 	self.dx = 0
 	self.dy = 0
+	
+	self.g = DEFAULT_GRAVITY
 
-	self.lastGroundY = self.y
+	self.externalDx = 0
+
+	self.lastGroundY = y
 
 	self.isOnGround = false
 	self.isFacingRight = true
@@ -52,7 +65,7 @@ function Player:init(x, y)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
-	self:moveWithCollisions(self.x, self.y)
+	self:moveWithCollisions(x, y)
 end
 
 function Player:collisionResponse(other)
@@ -71,6 +84,7 @@ function Player:update()
 	self:respondToControls()
 
 	self:applyFriction()
+	self:applyExternalFriction()
 	self:applyGravity()
 	self:applyVelocities()
 
@@ -79,12 +93,34 @@ function Player:update()
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
 
+	self:getOffRope()
+
+	self:unstunPlayer()
+
 	self:updateIsFacingRight()
 	self:updateSprite()
 end
 
+function Player:unstunPlayer()
+	if self.isOnGround and self.isStunned then
+		if not self.unstunTimer then
+			self.unstunTimer = pd.frameTimer.new(STUNNED_FRAMES, function()
+				self.isStunned = false
+				self.unstunTimer = nil
+			end)
+		end
+	end
+end
+
+function Player:getOffRope()
+	if self.isOnGround and self.isOnRope then
+		self.isOnRope = false
+		self.g = DEFAULT_GRAVITY
+	end
+end
+
 function Player:respondToControls()
-	if self.isDead then
+	if self.isStunned or self.isDead or self.isOnRope then
 		return
 	end
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
@@ -110,6 +146,13 @@ end
 
 function Player:updateSprite()
 	if self.isDead then
+		self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
+		return
+	elseif self.isStunned then
+		self:setImage(self.playerImages:getImage(8), self:getSpriteOrientation())
+		return
+	elseif self.isOnRope then
+		self:setImage(self.playerImages:getImage(9))
 		return
 	end
 
@@ -136,10 +179,10 @@ function Player:updateSprite()
 	elseif self.jumpTimer.frame ~= 0 then
 		self:setImage(self.playerImages:getImage(6), self:getSpriteOrientation())
 	end
-	if self.runTimer.frame == MAX_RUN_FRAMES or self.dx == 0 then
+	if self.runTimer.frame >= MAX_RUN_FRAMES or self.dx == 0 then
 		self.runTimer:reset()
 	end
-	if (self.idleTimer.frame == MAX_IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
+	if (self.idleTimer.frame >= MAX_IDLE_FRAMES or self.dx ~= 0 or self.isOnGround == false) then
 		self.idleTimer:reset()
 	end
 end
@@ -168,7 +211,7 @@ function Player:continueJump()
 end
 
 function Player:applyVelocities()
-	self.x += self.dx
+	self.x += (self.dx + self.externalDx)
 	self.y += self.dy
 end
 
@@ -192,8 +235,22 @@ function Player:applyFriction()
 	end
 end
 
+function Player:applyExternalFriction()
+	if self.externalDx > 0 then
+		self.externalDx -= EXTERNAL_FRICTION
+		if self.externalDx < 0 then
+			self.externalDx = 0
+		end
+	elseif self.externalDx < 0 then
+		self.externalDx += EXTERNAL_FRICTION
+		if self.externalDx > 0 then
+			self.externalDx = 0
+		end
+	end
+end
+
 function Player:applyGravity()
-	self.dy += G
+	self.dy += self.g
 	if self.dy < -MAX_DY then
 		self.dy = -MAX_DY
 	end
@@ -202,14 +259,17 @@ function Player:applyGravity()
 	end
 end
 
-function Player:hitByProjectileResponse()
-	self:startDeath()
+function Player:hitByProjectileResponse(projectile)
+	self.isStunned = true
+	self.externalDx += projectile.dx
+	projectile:remove()
 end
 
 function Player:startDeath()
 	self.isDead = true
-	self:setImage(self.playerImages:getImage(7), self:getSpriteOrientation())
 	self:setCollisionsEnabled(false)
+	self.dy = self.dy * 0.04
+	self.g = 0
 	SoundManager:playSound(SoundManager.kSoundBump)
 	pd.frameTimer.new(DEATH_FRAMES, function()
 		resetGame()
@@ -224,7 +284,7 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 		-- Walking into sprite
 		if normalX == 1 then 
 			self.dx = 0
-		elseif normalX == -1 then 
+		elseif normalX == -1 then
 			self.dx = 0
 		end
 		
@@ -242,6 +302,9 @@ function Player:slideCollisionResponse(collisionType, normalX, normalY)
 end
 
 function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
+	if self.isStunned then
+		return
+	end
 	if otherSprite:isa(Projectile) and otherSprite.isDangerous then
 		if normalY == -1 then
 			if self.dy < -BOUNCE_FORCE then
@@ -253,7 +316,7 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 			otherSprite:fall()
 		else
 			if otherSprite.isDangerous then
-				self:hitByProjectileResponse()
+				self:hitByProjectileResponse(otherSprite)
 			end
 		end
 	end
@@ -284,9 +347,11 @@ function Player:executeCollisionResponses(collisions)
 		self.coyoteTimer:pause()
 		self.coyoteTimer:reset()
 
-		if self.y < getLowestY() then
-			addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
-			setLowestY(self.y)
+		if getLowestY() then
+			if self.y < getLowestY() then
+				addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
+				setLowestY(self.y)
+			end
 		end
 	else
 		self.isOnGround = false

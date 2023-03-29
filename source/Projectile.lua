@@ -15,11 +15,13 @@ function Projectile:init(x, y, dx, rotatesClockwise)
     self.dx = dx
 	self.dy = 0
 	self.isDangerous = true
+	self.hasTouchedLava = false
 
 	self:setImage(IMAGES:getImage(1))
 	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
+	self:moveTo(x, y)
 	self:add()
 end
 
@@ -27,6 +29,7 @@ function Projectile:collisionResponse(other)
 	if other:isa(Projectile) or other:isa(Platform) then
 		if not self.isDangerous then
 			self:setUpdatesEnabled(false)
+			self:setCollidesWithGroups({1, 3})
 			self.dy = 0
 			self:setZIndex(0)
 			return gfx.sprite.kCollisionTypeSlide
@@ -71,7 +74,7 @@ end
 
 function Projectile:playerCollisionResponse(otherSprite, normalX, normalY)
 	if otherSprite:isa(Player) then
-		otherSprite:hitByProjectileResponse()
+		otherSprite:hitByProjectileResponse(self)
 	end
 end
 

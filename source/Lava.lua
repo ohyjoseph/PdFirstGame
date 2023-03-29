@@ -3,9 +3,10 @@
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local geometry <const> = pd.geometry
 
 -- Resolution of simulation (THIS IMPACTS PERFOMANCE A GOOD AMOUNT)
-local NUM_POINTS = 4
+local NUM_POINTS = 2
 -- Width of simulation
 local WIDTH = 420 -- Blaze it
 -- Spring constant for forces applied by adjacent points
@@ -21,7 +22,7 @@ local DAMPING = 0.98
 -- (THIS IMPACTS PERFORMANCE A DECENT AMOUNT)
 local ITERATIONS = 1
 
-local NUM_BACKGROUND_WAVES = 3
+local NUM_BACKGROUND_WAVES = 2
 local BACKGROUND_WAVE_MAX_HEIGHT = 2
 local BACKGROUND_WAVE_COMPRESSION = 1/5
 -- Amounts by which a particular sine is offset
@@ -42,16 +43,21 @@ end
 
 class('Lava').extends(gfx.sprite)
 
-function Lava:init()
+function Lava:init(y)
     -- A phase difference to apply to each sine
     self.offset = 0
 
     -- local lavaImage = gfx.image.new("images/game/lava")
     -- self:setImage(waterImage)
-    self:setZIndex(300)
+    self:setZIndex(1001)
     self:setCenter(0, 0)
+    self.y = y
     self.yOffset = 170
     self:moveTo(-20, self.yOffset)
+    self:setCollideRect(0, 24, 400, 50)
+    self:setGroups(7)
+    self:moveTo(0, y)
+    self:setCollidesWithGroups(1)
     self:add()
 
     self.wavePoints = self:makeWavePoints(NUM_POINTS)
@@ -82,22 +88,23 @@ end
 function Lava:update()
     self.offset = self.offset + 1
     self:updateWavePoints(self.wavePoints)
-    local waterImage = gfx.image.new(500, 25)
+    local waterImage = gfx.image.new(400, 100)
     -- Couldn't find a good way to optimize the drawing of the wave. I currently have it
     -- drawing on an image at a fixed height, but ideally the size of the image would dynamically
     -- change based on the actual size needed to draw the wave to not draw unecessarily
     local points = {}
-    local startingPoint  = pd.geometry.point.new(-50, self.yOffset - 145)
+    local startingPoint  = geometry.point.new(-50, self.yOffset - 145)
     table.insert(points, startingPoint)
     gfx.pushContext(waterImage)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(0, 25, 400, 100)
         for n,p in ipairs(self.wavePoints) do
             if n == 1 then
-                table.insert(points, pd.geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
+                table.insert(points, geometry.point.new(self.wavePoints[n].x, self.wavePoints[n].y - self.yOffset))
             else
                 local x1 = p.x
                 local y1 = p.y + self:overlapSines(p.x) - self.yOffset
-                table.insert(points, pd.geometry.point.new(x1, y1))
-                gfx.setColor(gfx.kColorWhite)
+                table.insert(points, geometry.point.new(x1, y1))
                 -- local rectHeight = 20
                 -- local rectWidth = x2 - x1
                 -- local rectX = x1 + rectWidth / 2
@@ -119,14 +126,35 @@ function Lava:update()
         --         gfx.drawLine(points[n-1].x, points[n-1].y - self.yOffset, p.x, p.y - self.yOffset)
         --     end
         -- end
-        table.insert(points, pd.geometry.point.new(420, self.yOffset - 145))
+        table.insert(points, geometry.point.new(420, self.yOffset - 145))
         table.insert(points, startingPoint)
-        local poly = pd.geometry.polygon.new(table.unpack(points))
+        local poly = geometry.polygon.new(table.unpack(points))
         poly:close()
-        print(poly)
         gfx.fillPolygon(poly)
     gfx.popContext()
     self:setImage(waterImage)
+
+    unused, unused2, collisions, length = self:checkCollisions(0, self.y)
+    self:executeCollisionResponses(collisions)
+end
+
+function Lava:executeCollisionResponses(collisions)
+    for i, collision in pairs(collisions) do
+		if collision then
+            local otherSprite = collision["other"]
+            if otherSprite:isa(Player) then
+                otherSprite.dx = 0
+                otherSprite.dy = 0
+                otherSprite:startDeath()
+            end
+        end
+    end
+end
+
+function Lava:collisionResponse(other)
+	if other:isa(Player) then
+		return gfx.sprite.kCollisionTypeOverlap
+	end
 end
 
 -- Make points to go on the wave

@@ -37,7 +37,7 @@ function Cannon:init(x, y, isFacingRight)
         self:setCenter(1, 0.5)
     end
         
-    self:moveTo(self.x, self.y)
+    self:moveTo(x, y)
 end
 
 function Cannon:update()
@@ -80,8 +80,7 @@ end
 
 function Cannon:shootProjectile()
     self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
-    local projectile = Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
-    projectile:moveTo(self.x + self.projectileXOffset, self.y)
+    Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
     pd.frameTimer.new(SHOOT_FRAMES, function()
         self:cooldown()
     end)

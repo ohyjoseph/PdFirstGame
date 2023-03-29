@@ -13,6 +13,7 @@ function GemSpawner:init(y, yBetweenTriggers)
 	self:setCollideRect(0, self.y, 400, 1)
 	self:setGroups(5)
 	self:setCollidesWithGroups(1)
+    self:moveTo(0, y)
 	self:add()
 end
 
