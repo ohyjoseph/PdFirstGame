@@ -1,6 +1,8 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
+local TRANSTION_FRAMES = 75
+
 class("MenuGem").extends(Gem)
 
 function MenuGem:init(x, y)
@@ -29,8 +31,17 @@ function MenuGem:checkCollisionsResponse(collisions)
             if otherSprite:isa(Player) then
                 if otherSprite.isOnGround then
                     if playdate.buttonJustPressed(playdate.kButtonB) then
-                        isMenuGemCollected = true
-                        gfx.sprite.removeAll()
+                        otherSprite.isHoldingGem = true
+                        self:setZIndex(1001)
+                        if otherSprite.isFacingRight then
+                            self:moveTo(otherSprite.x + 11, self.y)
+                        else
+                            self:moveTo(otherSprite.x - 11, self.y)
+                        end
+                        pd.frameTimer.new(TRANSTION_FRAMES, function()
+                            isMenuGemCollected = true
+                            gfx.sprite.removeAll()
+                        end)
                     end
                 end
             end

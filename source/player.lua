@@ -40,6 +40,7 @@ function Player:init(x, y)
 
 	self.isStunned = false
 	self.isDead = false
+	self.isHoldingGem = false
 
 	self.isOnRope = false
 
@@ -81,6 +82,7 @@ function Player:collisionResponse(other)
 end
 
 function Player:update()
+	print("PLAYER", self.x)
 	self:respondToControls()
 
 	self:applyFriction()
@@ -120,7 +122,7 @@ function Player:getOffRope()
 end
 
 function Player:respondToControls()
-	if self.isStunned or self.isDead or self.isOnRope then
+	if self.isStunned or self.isDead or self.isOnRope or self.isHoldingGem  then
 		return
 	end
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
@@ -153,6 +155,9 @@ function Player:updateSprite()
 		return
 	elseif self.isOnRope then
 		self:setImage(self.playerImages:getImage(9))
+		return
+	elseif self.isHoldingGem then
+		self:setImage(self.playerImages:getImage(10), self:getSpriteOrientation())
 		return
 	end
 
