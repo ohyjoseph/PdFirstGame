@@ -10,14 +10,12 @@ function Gem:init(x, y)
     self.rotationTimer = pd.frameTimer.new(#IMAGES * 8, 1, #IMAGES)
     self.rotationTimer.repeats = true
 
-	self.x = x
-	self.y = y
-
 	self:setImage(IMAGES:getImage(1))
 	self:setCollideRect(0, 0, 27, 20)
 	self:setGroups(4)
 	self:setCollidesWithGroups(1)
 	self:add()
+	self:moveTo(x, y)
 end
 
 function Gem:collisionResponse(other)

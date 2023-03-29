@@ -15,6 +15,7 @@ import "SoundManager"
 import "Fluid"
 import "CaveBottom"
 import "Rope"
+import "Gem"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -65,7 +66,10 @@ function startUp()
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
+
     local rope = Rope(ROPE_X, -75)
     platform:setZIndex(0)
     rope:add()
+
+    local gem = Gem(200, 150)
 end
