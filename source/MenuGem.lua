@@ -27,9 +27,11 @@ function MenuGem:checkCollisionsResponse(collisions)
         if collision then
             local otherSprite = collision["other"]
             if otherSprite:isa(Player) then
-                if playdate.buttonJustPressed(playdate.kButtonB) then
-                    isMenuGemCollected = true
-                    gfx.sprite.removeAll()
+                if otherSprite.isOnGround then
+                    if playdate.buttonJustPressed(playdate.kButtonB) then
+                        isMenuGemCollected = true
+                        gfx.sprite.removeAll()
+                    end
                 end
             end
         end
