@@ -328,9 +328,11 @@ function Player:executeCollisionResponses(collisions)
 		self.coyoteTimer:pause()
 		self.coyoteTimer:reset()
 
-		if self.y < getLowestY() then
-			addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
-			setLowestY(self.y)
+		if getLowestY() then
+			if self.y < getLowestY() then
+				addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
+				setLowestY(self.y)
+			end
 		end
 	else
 		self.isOnGround = false

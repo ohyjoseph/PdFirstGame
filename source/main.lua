@@ -14,6 +14,8 @@ import "Score"
 import "SoundManager"
 import "Fluid"
 import "CaveBottom"
+
+import "MenuScene"
 import "GameScene"
 
 local gfx <const> = playdate.graphics

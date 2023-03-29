@@ -183,7 +183,7 @@ function getMutliplier()
 	return score.multiplier
 end
 
-function getLowestY() 
+function getLowestY()
 	return lowestY
 end
 
