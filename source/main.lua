@@ -21,7 +21,7 @@ import "GameScene"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
-local scene = GameScene()
+local scene = MenuScene()
 
 function playdate.update()
 	scene:update()

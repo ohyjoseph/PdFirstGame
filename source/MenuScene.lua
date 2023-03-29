@@ -14,6 +14,7 @@ import "Score"
 import "SoundManager"
 import "Fluid"
 import "CaveBottom"
+import "Rope"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -32,6 +33,8 @@ local caveBottom
 local leftCannon
 local rightCannon
 local STARTING_LOWEST_Y = 168
+local PLAYER_ROPE_X_DIFF = 10
+local ROPE_X = 140
 local lowestY
 local goalYOffset = 0
 local gemSpawner
@@ -43,6 +46,7 @@ function MenuScene:init()
 end
 
 function MenuScene:update()
+    print("PLAYER", player.x)
 end
 
 function startUp()
@@ -52,9 +56,15 @@ function startUp()
 	playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
-	player = Player(210, 168)
+	
+    player = Player(ROPE_X - PLAYER_ROPE_X_DIFF, -10)
 	player:add()
+    player.isOnRope = true
+
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
+    local rope = Rope(ROPE_X, -70)
+    platform:setZIndex(0)
+    rope:add()
 end

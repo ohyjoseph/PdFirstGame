@@ -40,6 +40,8 @@ function Player:init(x, y)
 	self.isStunned = false
 	self.isDead = false
 
+	self.isOnRope = false
+
 	self.x = x
 	self.y = y
 	self.dx = 0
@@ -134,6 +136,10 @@ function Player:updateSprite()
 		return
 	elseif self.isStunned then
 		self:setImage(self.playerImages:getImage(8), self:getSpriteOrientation())
+		return
+	elseif self.isOnRope then
+		self:setImage(self.playerImages:getImage(9))
+		self.dy = 1
 		return
 	end
 
