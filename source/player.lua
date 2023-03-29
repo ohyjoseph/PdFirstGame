@@ -7,6 +7,7 @@ local MAX_DX = 4
 local MAX_DY = 12
 local TERMINAL_Y = 16
 local FRICTION = 1.6
+local DEFAULT_GRAVITY = 0.6
 local EXTERNAL_FRICTION = 0.175
 local WALK_FORCE = 1.8
 local JUMP_FORCE = 8.5
@@ -47,7 +48,7 @@ function Player:init(x, y)
 	self.dx = 0
 	self.dy = 0
 	
-	self.g = 0.6
+	self.g = DEFAULT_GRAVITY
 
 	self.externalDx = 0
 
@@ -92,6 +93,15 @@ function Player:update()
 	self.x, self.y, collisions, length = self:moveWithCollisions(self.x, self.y)
 	self:executeCollisionResponses(collisions)
 
+	self:getOffRope()
+
+	self:unstunPlayer()
+
+	self:updateIsFacingRight()
+	self:updateSprite()
+end
+
+function Player:unstunPlayer()
 	if self.isOnGround and self.isStunned then
 		if not self.unstunTimer then
 			self.unstunTimer = pd.frameTimer.new(STUNNED_FRAMES, function()
@@ -100,13 +110,17 @@ function Player:update()
 			end)
 		end
 	end
+end
 
-	self:updateIsFacingRight()
-	self:updateSprite()
+function Player:getOffRope()
+	if self.isOnGround and self.isOnRope then
+		self.isOnRope = false
+		self.g = DEFAULT_GRAVITY
+	end
 end
 
 function Player:respondToControls()
-	if self.isStunned or self.isDead then
+	if self.isStunned or self.isDead or self.isOnRope then
 		return
 	end
 	if playdate.buttonIsPressed(playdate.kButtonRight) then
@@ -139,7 +153,6 @@ function Player:updateSprite()
 		return
 	elseif self.isOnRope then
 		self:setImage(self.playerImages:getImage(9))
-		self.dy = 1
 		return
 	end
 

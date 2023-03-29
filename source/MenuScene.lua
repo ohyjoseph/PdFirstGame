@@ -46,7 +46,6 @@ function MenuScene:init()
 end
 
 function MenuScene:update()
-    print("PLAYER", player.x)
 end
 
 function startUp()
@@ -57,14 +56,16 @@ function startUp()
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	
-    player = Player(ROPE_X - PLAYER_ROPE_X_DIFF, -10)
+    player = Player(ROPE_X - PLAYER_ROPE_X_DIFF, -40)
 	player:add()
     player.isOnRope = true
+    player.g = 0.015
+    player.dy = 1.1
 
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
-    local rope = Rope(ROPE_X, -70)
+    local rope = Rope(ROPE_X, -75)
     platform:setZIndex(0)
     rope:add()
 end
