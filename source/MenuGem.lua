@@ -42,7 +42,6 @@ function MenuGem:checkCollisionsResponse(collisions)
                         pd.frameTimer.new(SCREEN_SHAKE_DELAY_FRAMES, function()
                             shouldCameraShake = true
                             pd.frameTimer.new(TRANSTION_FRAMES, function()
-                                shouldCameraShake = false
                                 isMenuGemCollected = true
                                 gfx.sprite.removeAll()
                             end)

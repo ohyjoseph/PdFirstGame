@@ -25,6 +25,7 @@ isMenuGemCollected = false
 
 local hasUsedMenuScene = false
 local isInGameScene = false
+local shakeCounter = 0
 
 local scene
 
@@ -64,6 +65,18 @@ function reset()
 	for i, timer in pairs(playdate.frameTimer.allTimers()) do
 		timer:remove()
 	end
+	shouldCameraShake = false
+	shakeCounter = 0
+end
+
+function cameraShake()
+    shakeCounter += 1
+    x, y = gfx.getDrawOffset()
+    if shakeCounter % 6 == 0 then
+        gfx.setDrawOffset(x + 1, y + 1)
+    elseif shakeCounter % 3 == 0 then
+        gfx.setDrawOffset(x - 1, y - 1)
+    end
 end
 
 function SAVE_HIGH_SCORE(newScore)
