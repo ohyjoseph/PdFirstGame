@@ -74,5 +74,8 @@ function startUp()
     local rope = Rope(ROPE_X, -75)
     platform:setZIndex(0)
 
+    local rectangle = Rectangle(-10, 230, 420, 20)
+    
+
     local menuGem = MenuGem(200, 160)
 end

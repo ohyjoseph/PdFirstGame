@@ -3,27 +3,22 @@ local gfx <const> = pd.graphics
 
 class("Rectangle").extends(gfx.sprite)
 
-function Rectangle:init(x, y, w, h)
+function Rectangle:init(x, y, width, height)
 	Rectangle.super.init(self)
 
-	self.x = x
-	self.y = y
-    self.w = w
-    self.h = h
-
-	self:setZIndex(300)
-    gfx.setColor(gfx.kColorWhite)
-	local rectImage = gfx.image.new(self.w, self.h)
+	self:setZIndex(-1)
+	self:setGroups(2)
+	local rectImage = gfx.image.new(width, height)
     self:setCenter(0, 0)
+	self:setCollideRect(0, 0, width, height)
 	gfx.pushContext(rectImage)
-		gfx.fillRect(0, 0, self.w, self.h)
+		gfx.setColor(gfx.kColorWhite)
+		gfx.fillRect(0, 0, width, height)
+		gfx.setLineWidth(2)
+		gfx.setColor(gfx.kColorBlack)
+		gfx.drawRect(0, 0, width, height)
 	gfx.popContext()
-	gfx.setColor(gfx.kColorBlack)
 	self:setImage(rectImage)
 	self:add()
-    self:moveTo(0, 195)
-end
-
-function Rectangle:update()
-	self:moveTo(self.x, self.y)
+    self:moveTo(x, y)
 end

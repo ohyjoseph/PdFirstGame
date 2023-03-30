@@ -72,9 +72,10 @@ function Player:init(x, y, score)
 end
 
 function Player:collisionResponse(other)
-	if other:isa(Platform) then
+	if other:isa(Platform) or other:isa(Rectangle) then
 		return gfx.sprite.kCollisionTypeSlide
-	elseif other:isa(Projectile) then
+	end
+	if other:isa(Projectile) then
 		if other.isDangerous then
 			return gfx.sprite.kCollisionTypeBounce
 		else
