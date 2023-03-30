@@ -16,6 +16,7 @@ import "CaveBottom"
 import "Rope"
 import "MenuGem"
 import "Pillar"
+import "Blackout"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -75,7 +76,6 @@ function startUp()
     platform:setZIndex(0)
 
     local rectangle = Rectangle(-10, 230, 420, 20)
-    
 
     local menuGem = MenuGem(200, 160)
 end

@@ -2,7 +2,8 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 local SCREEN_SHAKE_DELAY_FRAMES = 20
-local TRANSTION_FRAMES = 75
+local TRANSTION_FRAMES = 65
+local BLACKOUT_DELAY_FRAMES = 30
 
 class("MenuGem").extends(Gem)
 
@@ -41,9 +42,12 @@ function MenuGem:checkCollisionsResponse(collisions)
                         end
                         pd.frameTimer.new(SCREEN_SHAKE_DELAY_FRAMES, function()
                             shouldCameraShake = true
-                            pd.frameTimer.new(TRANSTION_FRAMES, function()
-                                isMenuGemCollected = true
-                                gfx.sprite.removeAll()
+                            pd.frameTimer.new(BLACKOUT_DELAY_FRAMES, function()
+                                local blackout = Blackout()
+                                pd.frameTimer.new(TRANSTION_FRAMES, function()
+                                    isMenuGemCollected = true
+                                    gfx.sprite.removeAll()
+                                end)
                             end)
                         end)
                     end
