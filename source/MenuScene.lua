@@ -39,6 +39,8 @@ local ROPE_X = 140
 local lowestY
 local goalYOffset = 0
 local gemSpawner
+shouldCameraShake = false
+local shakeCounter = 0
 
 class("MenuScene").extends(gfx.sprite)
 
@@ -47,6 +49,19 @@ function MenuScene:init()
 end
 
 function MenuScene:update()
+    if shouldCameraShake then
+        self:cameraShake()
+    end
+end
+
+function MenuScene:cameraShake()
+    shakeCounter += 1
+    x, y = gfx.getDrawOffset()
+    if shakeCounter % 6 == 0 then
+        gfx.setDrawOffset(x + 1, y + 1)
+    elseif shakeCounter % 3 == 0 then
+        gfx.setDrawOffset(x - 1, y - 1)
+    end
 end
 
 function startUp()
