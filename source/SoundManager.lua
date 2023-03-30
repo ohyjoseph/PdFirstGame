@@ -2,10 +2,13 @@ local snd = playdate.sound
 
 SoundManager = {}
 
-SoundManager.kSoundBreakBlock = 'breakblock'
+SoundManager.kSoundBreakBlock = 'breakBlock'
 SoundManager.kSoundJump = 'jump'
 SoundManager.kSoundStomp = 'stomp'
 SoundManager.kSoundBump = 'bump'
+SoundManager.kSoundPlayerHit = 'playerHit'
+SoundManager.kSoundCannonShotLeft = 'cannonShotLeft'
+SoundManager.kSoundCannonShotRight = 'cannonShotRight'
 
 local sounds = {}
 

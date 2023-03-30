@@ -273,6 +273,8 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse(projectile)
+	SoundManager:playSound(SoundManager.kSoundPlayerHit)
+
 	self.isStunned = true
 	self.externalDx += projectile.dx
 	projectile:remove()

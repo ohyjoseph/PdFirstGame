@@ -33,8 +33,10 @@ function Cannon:init(x, y, isFacingRight)
 	self:add()
     if self.isFacingRight then
         self:setCenter(0, 0.5)
+        self.kSound = SoundManager.kSoundCannonShotLeft
     else
         self:setCenter(1, 0.5)
+        self.kSound = SoundManager.kSoundCannonShotRight
     end
         
     self:moveTo(x, y)
@@ -79,6 +81,8 @@ function Cannon:startShootingProjectile()
 end
 
 function Cannon:shootProjectile()
+    SoundManager:playSound(self.kSound)
+
     self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
     Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
     pd.frameTimer.new(SHOOT_FRAMES, function()
