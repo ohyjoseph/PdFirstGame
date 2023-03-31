@@ -80,10 +80,13 @@ function cameraShake()
 end
 
 function SAVE_HIGH_SCORE(newScore)
-    local gameData = {
-        highScore = newScore
-    }
-    playdate.datastore.write(gameData)
+	if newScore > HIGH_SCORE then
+		local gameData = {
+			highScore = newScore
+		}
+		playdate.datastore.write(gameData)
+		HIGH_SCORE = newScore
+	end
 end
 
 function LOAD_HIGH_SCORE()

@@ -203,10 +203,7 @@ function Player:getSpriteOrientation()
 end
 
 function Player:saveHighScore()
-	if self.score.score > HIGH_SCORE then
-		SAVE_HIGH_SCORE(self.score.score)
-		HIGH_SCORE = self.score.score
-	end
+	SAVE_HIGH_SCORE(self.score.score)
 end
 
 function Player:jump()
