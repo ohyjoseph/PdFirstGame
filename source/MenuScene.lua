@@ -50,7 +50,6 @@ end
 
 function MenuScene:update()
     if not slideAnimator:ended() then
-        print(slideAnimator:currentValue())
         player.y = slideAnimator:currentValue()
     end
     if shouldCameraShake then
