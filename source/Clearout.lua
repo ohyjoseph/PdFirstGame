@@ -23,7 +23,7 @@ function Clearout:init()
 	self:add()
     self:moveTo(-10, -10)
 
-    pd.frameTimer.new(100, function()
+    pd.frameTimer.new(15, function()
         self:remove()
     end)
 end
