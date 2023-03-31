@@ -224,7 +224,20 @@ end
 function Player:applyVelocities()
 	self.x += (self.dx + self.externalDx)
 	self.y += self.dy
+	self:preventPlayerFromLeavingXBounds()
 end
+
+function Player:preventPlayerFromLeavingXBounds()
+	if self.x < 0 then
+		self.x = 0
+		self.dx = 0
+	end
+	if self.x > 400 then
+		self.x = 400
+		self.dx = 0
+	end
+end
+
 
 function Player:applyFriction()
 	if self.dx > 0 then
