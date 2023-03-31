@@ -32,24 +32,26 @@ function MenuGem:checkCollisionsResponse(collisions)
             local otherSprite = collision["other"]
             if otherSprite:isa(Player) then
                 if otherSprite.isOnGround then
-                    if playdate.buttonJustPressed(playdate.kButtonB) then
-                        otherSprite.isHoldingGem = true
-                        self:setZIndex(1001)
-                        if otherSprite.isFacingRight then
-                            self:moveTo(otherSprite.x + otherSprite.dx + 11, self.y - 10)
-                        else
-                            self:moveTo(otherSprite.x + otherSprite.dx - 11, self.y - 10)
-                        end
-                        pd.frameTimer.new(SCREEN_SHAKE_DELAY_FRAMES, function()
-                            shouldCameraShake = true
-                            pd.frameTimer.new(BLACKOUT_DELAY_FRAMES, function()
-                                local blackout = Blackout()
-                                pd.frameTimer.new(TRANSTION_FRAMES, function()
-                                    isMenuGemCollected = true
-                                    gfx.sprite.removeAll()
+                    if not otherSprite.isHoldingGem then
+                        if playdate.buttonJustPressed(playdate.kButtonB) then
+                            otherSprite.isHoldingGem = true
+                            self:setZIndex(1001)
+                            if otherSprite.isFacingRight then
+                                self:moveTo(otherSprite.x + otherSprite.dx + 11, self.y - 10)
+                            else
+                                self:moveTo(otherSprite.x + otherSprite.dx - 11, self.y - 10)
+                            end
+                            pd.frameTimer.new(SCREEN_SHAKE_DELAY_FRAMES, function()
+                                shouldCameraShake = true
+                                pd.frameTimer.new(BLACKOUT_DELAY_FRAMES, function()
+                                    local blackout = Blackout()
+                                    pd.frameTimer.new(TRANSTION_FRAMES, function()
+                                        isMenuGemCollected = true
+                                        gfx.sprite.removeAll()
+                                    end)
                                 end)
                             end)
-                        end)
+                        end
                     end
                 end
             end
