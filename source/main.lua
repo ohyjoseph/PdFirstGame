@@ -25,7 +25,7 @@ isMenuGemCollected = false
 
 local hasUsedMenuScene = false
 local isInGameScene = false
-local shakeCounter = 0
+local shakeTable = {counter = 0, prevX = 0, prevY = 0}
 
 local scene
 
@@ -66,16 +66,20 @@ function reset()
 		timer:remove()
 	end
 	shouldCameraShake = false
-	shakeCounter = 0
+	x, y = gfx.getDrawOffset()
+	shakeTable = {counter = 0, prevX = x, prevY = y}
 end
 
 function cameraShake()
-    shakeCounter += 1
+    shakeTable.counter += 1
     x, y = gfx.getDrawOffset()
-    if shakeCounter % 6 == 0 then
-        gfx.setDrawOffset(x + 1, y + 1)
-    elseif shakeCounter % 3 == 0 then
-        gfx.setDrawOffset(x - 1, y - 1)
+    if shakeTable.counter % 6 == 0 then
+        gfx.setDrawOffset(x + math.random(-3, 3), y + math.random(-3, 3))
+		shakeTable.prevX = x
+		shakeTable.prevY = y
+    elseif shakeTable.counter % 3 == 0 then
+		print("SHAKE", shakeTable.prevX, shakeTable.prevY)
+        gfx.setDrawOffset(shakeTable.prevX, shakeTable.prevY)
     end
 end
 
