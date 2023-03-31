@@ -14,6 +14,7 @@ function Projectile:init(x, y, dx, rotatesClockwise)
 	self.rotatesClockwise = rotatesClockwise
     self.dx = dx
 	self.dy = 0
+	self.shouldRotate = true
 	self.isDangerous = true
 	self.hasTouchedLava = false
 
@@ -50,8 +51,10 @@ function Projectile:update()
 end
 
 function Projectile:updateSprite()
-	self:updateRotationCounter()
-	self:setImage(IMAGES:getImage(self.rotationCounter))
+	if self.shouldRotate then
+		self:updateRotationCounter()
+		self:setImage(IMAGES:getImage(self.rotationCounter))
+	end
 end
 
 function Projectile:updateRotationCounter()
@@ -64,6 +67,16 @@ function Projectile:updateRotationCounter()
 		self.rotationCounter = 1
 	elseif self.rotationCounter < 1 then
 		self.rotationCounter = #IMAGES
+	end
+end
+
+function Projectile:collideWithLavaResponse()
+	if not self.hasTouchedLava then
+		self.hasTouchedLava = true
+		if self:updatesEnabled() then
+			self.dy = 0.33
+			self.shouldRotate = false
+		end
 	end
 end
 

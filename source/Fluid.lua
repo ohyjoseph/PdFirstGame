@@ -139,9 +139,11 @@ function Fluid:checkCollisionsResponse(collisions)
 			-- elseif otherSprite.dy < 0 then
 			-- 	self:touch(otherSprite.x, -8)
 			-- else
-			if otherSprite:isa(Projectile) and not otherSprite.hasTouchedLava then
-				otherSprite.hasTouchedLava = true
-				self:touch(otherSprite.x, otherSprite.dy + 3)
+			if otherSprite:isa(Projectile) then
+				if not otherSprite.hasTouchedLava then
+					self:touch(otherSprite.x, otherSprite.dy + 3)
+				end
+				otherSprite:collideWithLavaResponse()
 			end
 
 			
