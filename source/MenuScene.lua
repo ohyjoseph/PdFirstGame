@@ -40,6 +40,7 @@ local ROPE_X = 140
 local lowestY
 local goalYOffset = 0
 local gemSpawner
+local slideAnimator
 
 class("MenuScene").extends(gfx.sprite)
 
@@ -48,6 +49,10 @@ function MenuScene:init()
 end
 
 function MenuScene:update()
+    if not slideAnimator:ended() then
+        print(slideAnimator:currentValue())
+        player.y = slideAnimator:currentValue()
+    end
     if shouldCameraShake then
         cameraShake()
     end
@@ -61,6 +66,7 @@ function startUp()
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	
+    slideAnimator = gfx.animator.new(2000, -50, 165, playdate.easingFunctions.outQuad)
     player = Player(ROPE_X - PLAYER_ROPE_X_DIFF, -40)
 	player:add()
     player.isOnRope = true
