@@ -284,8 +284,8 @@ end
 function Player:startDeath()
 	self.isDead = true
 	self:setCollisionsEnabled(false)
-	self.dy = self.dy * 0.04
-	self.g = 0
+	self.dy = self.dy * 0.03
+	self.g = 0.04
 
 	self:saveHighScore()
 
