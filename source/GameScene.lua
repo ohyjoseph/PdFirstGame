@@ -14,6 +14,7 @@ import "Score"
 import "SoundManager"
 import "Fluid"
 import "CaveBottom"
+import "Clearout"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -35,6 +36,7 @@ local STARTING_LOWEST_Y = 168
 local lowestY
 local goalYOffset = 0
 local gemSpawner
+local clearout
 
 class("GameScene").extends(gfx.sprite)
 
@@ -43,7 +45,6 @@ function GameScene:init()
 end
 
 function GameScene:update()
-	print("HIGHSCORE", HIGH_SCORE)
 	updateGoalYOffset()
 	moveCameraTowardGoal()
 	-- playdate.drawFPS(0,0) -- FPS widget
@@ -60,6 +61,7 @@ function initialize()
     math.randomseed(playdate.getSecondsSinceEpoch())
 	gfx.setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
+	Clearout()
 	playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
 	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
