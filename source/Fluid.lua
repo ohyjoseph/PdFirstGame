@@ -52,7 +52,7 @@ function Fluid:init(x, y, width, height, options)
 
 	self:setCollideRect(x, y - COLLISION_Y_OFFSET, width, 1)
 	self:setGroups(7)
-    self:setCollidesWithGroups({1, 3})
+    self:setCollidesWithGroups({1, 2, 3})
 	
 	-- Initialize.
 	self:reset()
@@ -146,7 +146,13 @@ function Fluid:checkCollisionsResponse(collisions)
 				otherSprite:collideWithLavaResponse()
 			end
 
-			
+			if otherSprite:isa(Platform) then
+				if not otherSprite.hasTouchedLava then
+					otherSprite.hasTouchedLava = true
+					self:touch(otherSprite.x, 3.5)
+					self:setCollidesWithGroups({1, 3})
+				end
+			end
 			-- end
 			if otherSprite:isa(Player) then
 				self:touch(otherSprite.x, otherSprite.dy * 0.5 + 2)

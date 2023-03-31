@@ -8,6 +8,7 @@ function Platform:init(x, y)
 
 	self.x = x
 	self.y = y
+	self.hasTouchedLava = false
 
 	self.image = gfx.image.new("images/platform")
 	self:setImage(self.image)
