@@ -66,8 +66,7 @@ function reset()
 		timer:remove()
 	end
 	shouldCameraShake = false
-	x, y = gfx.getDrawOffset()
-	shakeTable = {counter = 0, prevX = x, prevY = y}
+	shakeTable = {counter = 0, prevX = 0, prevY = 0}
 end
 
 function cameraShake()
