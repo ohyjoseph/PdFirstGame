@@ -12,7 +12,7 @@ function Platform:init(x, y)
 
 	self.image = gfx.image.new("images/platform")
 	self:setImage(self.image)
-    self:setCollideRect(0, 0, self:getSize())
+	self:setCollideRect(0, 0, self:getSize())
 	self:setGroups(2)
 	self:setCollidesWithGroups(1)
 	self:moveTo(x, y)

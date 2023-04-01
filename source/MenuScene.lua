@@ -45,7 +45,7 @@ local slideAnimator
 class("MenuScene").extends(gfx.sprite)
 
 function MenuScene:init()
-	startUp()
+    startUp()
 end
 
 function MenuScene:update()
@@ -59,21 +59,21 @@ end
 
 function startUp()
     math.randomseed(playdate.getSecondsSinceEpoch())
-	gfx.setDrawOffset(0, 0)
-	gfx.setBackgroundColor(gfx.kColorBlack)
-	playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
-	caveBottom = CaveBottom()
-	lowestY = STARTING_LOWEST_Y
-	
+    gfx.setDrawOffset(0, 0)
+    gfx.setBackgroundColor(gfx.kColorBlack)
+    playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
+    caveBottom = CaveBottom()
+    lowestY = STARTING_LOWEST_Y
+
     slideAnimator = gfx.animator.new(2000, -50, 165, playdate.easingFunctions.outQuad)
     player = Player(ROPE_X - PLAYER_ROPE_X_DIFF, -40)
-	player:add()
+    player:add()
     player.isOnRope = true
     player.g = 0.015
     player.dy = 1.1
 
-	local platform = Platform(200, 220)
-	platform:setZIndex(0)
+    local platform = Platform(200, 220)
+    platform:setZIndex(0)
 
     local pillar = Pillar(200, 177)
 

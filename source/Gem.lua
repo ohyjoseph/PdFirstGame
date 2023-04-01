@@ -9,25 +9,25 @@ local IMAGES = gfx.imagetable.new("images/gem")
 class("Gem").extends(gfx.sprite)
 
 function Gem:init(x, y)
-	Gem.super.init(self)
+    Gem.super.init(self)
 
     self.rotationTimer = pd.frameTimer.new(#IMAGES * 6, 1, #IMAGES)
     self.rotationTimer.repeats = true
 
-	self:setImage(IMAGES:getImage(1))
+    self:setImage(IMAGES:getImage(1))
     local width, height = self:getSize()
     self.gemIndicator = GemIndicator(x, y, height)
 
-	self:setCollideRect(-COLLISION_X_BUFFER, -COLLISION_Y_BUFFER,
-    width + COLLISION_X_BUFFER * 2, height + COLLISION_Y_BUFFER * 2)
-	self:setGroups(4)
-	self:setCollidesWithGroups(1)
-	self:add()
+    self:setCollideRect(-COLLISION_X_BUFFER, -COLLISION_Y_BUFFER,
+        width + COLLISION_X_BUFFER * 2, height + COLLISION_Y_BUFFER * 2)
+    self:setGroups(4)
+    self:setCollidesWithGroups(1)
+    self:add()
     self:moveTo(x, y)
 end
 
 function Gem:collisionResponse(other)
-	if other:isa(Player) and other.isOnGround then
+    if other:isa(Player) and other.isOnGround then
         addToMultiplier(1)
         self:removeClean()
         return gfx.sprite.kCollisionTypeOverlap
@@ -35,7 +35,7 @@ function Gem:collisionResponse(other)
 end
 
 function Gem:update()
-	self:checkCollisions(self.x, self.y)
+    self:checkCollisions(self.x, self.y)
     self:updateSprite()
 end
 
