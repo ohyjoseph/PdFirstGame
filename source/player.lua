@@ -19,6 +19,7 @@ local MAX_COYOTE_FRAMES = 6
 local STUNNED_FRAMES = 50
 local BOUNCE_FORCE = 6
 local DEATH_FRAMES = 100
+local halfPlayerWidth = 15
 
 function Player:init(x, y, score)
 	Player.super.init(self)
@@ -228,12 +229,12 @@ function Player:applyVelocities()
 end
 
 function Player:preventPlayerFromLeavingXBounds()
-	if self.x < 0 then
-		self.x = 0
+	if self.x - halfPlayerWidth < 0 then
+		self.x = halfPlayerWidth
 		self.dx = 0
 	end
-	if self.x > 400 then
-		self.x = 400
+	if self.x + halfPlayerWidth > 400 then
+		self.x = 400 - halfPlayerWidth
 		self.dx = 0
 	end
 end
