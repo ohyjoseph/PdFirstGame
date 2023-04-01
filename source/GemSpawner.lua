@@ -35,8 +35,7 @@ function GemSpawner:executeCollisionResponses(collisions)
             if otherSprite:isa(Player) then
                 local newY = self.y - self.yBetweenTriggers
                 local gemNewX = math.random(GEM_SPAWN_X_OFFSET, 400 - GEM_SPAWN_X_OFFSET)
-                local gem = Gem(gemNewX, newY)
-                gem:moveTo(gemNewX, newY)
+                Gem(gemNewX, newY)
 
                 local gemSpawner = GemSpawner(newY, self.yBetweenTriggers)
                 gemSpawner:moveTo(0, newY)

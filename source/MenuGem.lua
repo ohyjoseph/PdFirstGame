@@ -8,10 +8,9 @@ local BLACKOUT_DELAY_FRAMES = 30
 class("MenuGem").extends(Gem)
 
 function MenuGem:init(x, y)
-	MenuGem.super.init(self)
+	MenuGem.super.init(self, x, y)
 
 	self:setCollideRect(-10, 0, 47, 20)
-    self:moveTo(x, y)
 end
 
 function MenuGem:collisionResponse(other)

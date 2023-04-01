@@ -15,6 +15,7 @@ function Gem:init(x, y)
 	self:setGroups(4)
 	self:setCollidesWithGroups(1)
 	self:add()
+    self:moveTo(x, y)
 end
 
 function Gem:collisionResponse(other)
@@ -26,7 +27,7 @@ function Gem:collisionResponse(other)
 end
 
 function Gem:update()
-	self:moveWithCollisions(self.x, self.y)
+	self:checkCollisions(self.x, self.y)
     self:updateSprite()
 end
 
