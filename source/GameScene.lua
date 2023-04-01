@@ -24,8 +24,8 @@ local cameraOffsetTimer
 
 local PROJECTILE_FREQUENCY = 120
 local LAVA_STARTING_Y = 180
+local MIN_LAVA_STARTING_Y_OFFSET = 64
 local LAVA_RISE_COUNTER_FRAMES = 10
-local MIN_LAVA_CAMERA_Y_OFFSET = 230
 local player
 local score
 local lava
@@ -49,6 +49,7 @@ function GameScene:update()
 	moveCameraTowardGoal()
 	-- playdate.drawFPS(0,0) -- FPS widget
 
+	moveLavaWithLowestY()
 	moveLava()
 
 	updateCannons()
@@ -141,7 +142,6 @@ function moveCameraTowardGoal()
 			gfx.setDrawOffset(0, yOffset - 2)
 		end
 	end
-	moveLavaWithCamera(yOffset)
 end
 
 function moveLava()
@@ -150,9 +150,9 @@ function moveLava()
 	end
 end
 
-function moveLavaWithCamera(yOffset)
-	if lava.y > MIN_LAVA_CAMERA_Y_OFFSET - yOffset then
-		lava:moveWithCollisions(lava.x, MIN_LAVA_CAMERA_Y_OFFSET - yOffset)
+function moveLavaWithLowestY()
+	if lava.y > (lowestY + MIN_LAVA_STARTING_Y_OFFSET) then
+		lava:moveWithCollisions(lava.x, (lowestY + MIN_LAVA_STARTING_Y_OFFSET))
 	end
 end
 
