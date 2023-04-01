@@ -29,7 +29,7 @@ end
 
 function GemIndicator:isGemOnScreen(sprite)
 	local xOffset, yOffset = gfx.getDrawOffset()
-	if yOffset + self.smallestGemY >= 0 then
+	if yOffset + self.smallestGemY > 0 then
 		return true
 	end
 	return false
