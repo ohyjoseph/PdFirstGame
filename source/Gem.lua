@@ -1,3 +1,5 @@
+import "GemIndicator"
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 local IMAGES = gfx.imagetable.new("images/gem")
@@ -11,6 +13,9 @@ function Gem:init(x, y)
     self.rotationTimer.repeats = true
 
 	self:setImage(IMAGES:getImage(1))
+    local width, height = self:getSize()
+    self.gemIndicator = GemIndicator(x, y, height)
+
 	self:setCollideRect(0, 0, 27, 20)
 	self:setGroups(4)
 	self:setCollidesWithGroups(1)
@@ -21,7 +26,7 @@ end
 function Gem:collisionResponse(other)
 	if other:isa(Player) then
         addToMultiplier(1)
-        self:remove()
+        self:removeClean()
         return gfx.sprite.kCollisionTypeOverlap
     end
 end
@@ -31,12 +36,13 @@ function Gem:update()
     self:updateSprite()
 end
 
--- function Gem:playerCollisionResponse(otherSprite, normalX, normalY)
--- 	if otherSprite:isa(Player) then
--- 		otherSprite:hitByGemResponse()
--- 	end
--- end
-
 function Gem:updateSprite()
     self:setImage(IMAGES:getImage(math.floor(self.rotationTimer.value + 0.5)))
+end
+
+function Gem:removeClean()
+    if self.gemIndicator then
+        self.gemIndicator:remove()
+    end
+    self:remove()
 end

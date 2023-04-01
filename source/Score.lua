@@ -6,6 +6,7 @@ class('Score').extends(playdate.graphics.sprite)
 function Score:init()
 
 	Score.super.init(self)
+	self:setZIndex(900)
 	self.scoreFont = gfx.font.new('Score/Roobert-24-Medium-Numerals');
 	self:setCenter(1,0)
 	self:setScore(0)
