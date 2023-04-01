@@ -2,6 +2,8 @@ import "GemIndicator"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local COLLISION_X_BUFFER = 10
+local COLLISION_Y_BUFFER = 6
 local IMAGES = gfx.imagetable.new("images/gem")
 
 class("Gem").extends(gfx.sprite)
@@ -16,7 +18,8 @@ function Gem:init(x, y)
     local width, height = self:getSize()
     self.gemIndicator = GemIndicator(x, y, height)
 
-	self:setCollideRect(0, 0, 27, 20)
+	self:setCollideRect(-COLLISION_X_BUFFER, -COLLISION_Y_BUFFER,
+    width + COLLISION_X_BUFFER * 2, height + COLLISION_Y_BUFFER * 2)
 	self:setGroups(4)
 	self:setCollidesWithGroups(1)
 	self:add()
@@ -24,7 +27,7 @@ function Gem:init(x, y)
 end
 
 function Gem:collisionResponse(other)
-	if other:isa(Player) then
+	if other:isa(Player) and other.isOnGround then
         addToMultiplier(1)
         self:removeClean()
         return gfx.sprite.kCollisionTypeOverlap
