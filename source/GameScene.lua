@@ -71,7 +71,6 @@ function initialize()
 
 	score = Score()
 	score:setScore(0)
-	score:setZIndex(900)
 	score:addSprite()
 	score:setIgnoresDrawOffset(true)
 

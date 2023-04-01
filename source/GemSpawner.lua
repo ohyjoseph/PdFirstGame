@@ -10,6 +10,8 @@ function GemSpawner:init(y, yBetweenTriggers)
 	self.y = y
     self.yBetweenTriggers = yBetweenTriggers
 
+    self.gemIndicator = GemInd
+
 	self:setCollideRect(0, self.y, 400, 1)
 	self:setGroups(5)
 	self:setCollidesWithGroups(1)

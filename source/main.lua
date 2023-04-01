@@ -78,7 +78,6 @@ function cameraShake()
 		shakeTable.prevX = x
 		shakeTable.prevY = y
     elseif shakeTable.counter % 3 == 0 then
-		print("SHAKE", shakeTable.prevX, shakeTable.prevY)
         gfx.setDrawOffset(shakeTable.prevX, shakeTable.prevY)
     end
 end
