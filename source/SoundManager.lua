@@ -9,6 +9,12 @@ SoundManager.kSoundBump = 'bump'
 SoundManager.kSoundPlayerHit = 'playerHit'
 SoundManager.kSoundCannonShotLeft = 'cannonShotLeft'
 SoundManager.kSoundCannonShotRight = 'cannonShotRight'
+SoundManager.kSoundDeathJingle = 'deathJingle'
+SoundManager.kSoundGemPickup = 'gemPickup'
+SoundManager.kSoundHitByProjectile = 'hitByProjectile'
+SoundManager.kSoundLavaFall = 'lavaFall'
+SoundManager.kSoundProjectileDestroy = 'projectileDestroy'
+SoundManager.kSoundProjectileLand = 'projectileLand'
 
 local sounds = {}
 
