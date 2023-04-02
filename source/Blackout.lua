@@ -11,9 +11,9 @@ function Blackout:init()
 
     self.blackAnimator = gfx.animator.new(100, 1, 0, playdate.easingFunctions.linear)
     self.clearAnimator = gfx.animator.new(100, 0, 1, playdate.easingFunctions.linear, 500)
-    self.blackAnimator2 = gfx.animator.new(100, 1, 0, playdate.easingFunctions.linear, 500 + 100 + 100 + 600)
-    self.clearAnimator2 = gfx.animator.new(100, 0, 1, playdate.easingFunctions.linear, 500 + 100 + 100 + 600 + 200 + 600)
-    self.blackAnimator3 = gfx.animator.new(150, 1, 0, playdate.easingFunctions.linear, 500 + 100 + 100 + 600 + 200 + 600 + 400)
+    self.blackAnimator2 = gfx.animator.new(100, 1, 0, playdate.easingFunctions.linear, 500 + 100 + 100 + 400)
+    self.clearAnimator2 = gfx.animator.new(100, 0, 1, playdate.easingFunctions.linear, 500 + 100 + 100 + 400 + 100 + 800)
+    self.blackAnimator3 = gfx.animator.new(150, 1, 0, playdate.easingFunctions.linear, 500 + 100 + 100 + 400 + 100 + 800 + 400)
 
 	self:setZIndex(1003)
 	local rectImage = gfx.image.new(WIDTH, HEIGHT)
