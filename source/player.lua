@@ -301,7 +301,6 @@ function Player:startDeath()
 
 	self:saveHighScore()
 
-	SoundManager:playSound(SoundManager.kSoundBump)
 	SoundManager:playSound(SoundManager.kSoundDeathJingle)
 	pd.frameTimer.new(DEATH_FRAMES, function()
 		resetGame()
