@@ -29,7 +29,9 @@ end
 function Projectile:collisionResponse(other)
 	if other:isa(Projectile) or other:isa(Platform) then
 		if not self.isDangerous then
-			SoundManager:playSound(SoundManager.kSoundProjectileLand)
+			if not self.hasTouchedLava then
+				SoundManager:playSound(SoundManager.kSoundProjectileLand)
+			end
 			self:setUpdatesEnabled(false)
 			self:setCollidesWithGroups({1, 3})
 			self.dy = 0
