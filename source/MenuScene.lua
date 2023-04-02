@@ -46,6 +46,7 @@ class("MenuScene").extends(gfx.sprite)
 
 function MenuScene:init()
     startUp()
+    SoundManager:playSound(SoundManager.kSoundSlideDownRope)
 end
 
 function MenuScene:update()
