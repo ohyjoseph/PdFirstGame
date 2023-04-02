@@ -379,8 +379,12 @@ function Player:executeCollisionResponses(collisions)
 
 		if getLowestY() then
 			if self.y < getLowestY() then
-				addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
-				setLowestY(self.y)
+				-- delay by 1 frame in case player scores and grabs gem on the same frame
+				-- ensuring the multiplier goes up before adding to the score
+				pd.frameTimer.new(1, function()
+					addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
+					setLowestY(self.y)
+				end)
 			end
 		end
 	else
