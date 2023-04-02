@@ -14,6 +14,7 @@ SoundManager.kSoundLavaFall = 'lavaFall'
 SoundManager.kSoundProjectileDestroy = 'projectileDestroy'
 SoundManager.kSoundProjectileLand = 'projectileLand'
 SoundManager.kSoundSlideDownRope = 'slideDownRope'
+SoundManager.kSoundQuake = 'quake'
 
 local sounds = {}
 

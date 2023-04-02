@@ -46,7 +46,6 @@ class("MenuScene").extends(gfx.sprite)
 
 function MenuScene:init()
     startUp()
-    SoundManager:playSound(SoundManager.kSoundSlideDownRope)
 end
 
 function MenuScene:update()
@@ -67,6 +66,7 @@ function startUp()
     lowestY = STARTING_LOWEST_Y
 
     slideAnimator = gfx.animator.new(2000, -50, 165, playdate.easingFunctions.outQuad)
+    SoundManager:playSound(SoundManager.kSoundSlideDownRope)
     player = Player(ROPE_X - PLAYER_ROPE_X_DIFF, -40)
     player:add()
     player.isOnRope = true

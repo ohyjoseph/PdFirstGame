@@ -3,7 +3,7 @@ local gfx <const> = pd.graphics
 
 local SCREEN_SHAKE_DELAY_FRAMES = 20
 local TRANSTION_FRAMES = 120
-local BLACKOUT_DELAY_FRAMES = 30
+local BLACKOUT_DELAY_FRAMES = 50
 
 class("MenuGem").extends(Gem)
 
@@ -41,6 +41,7 @@ function MenuGem:checkCollisionsResponse(collisions)
                         end
                         pd.frameTimer.new(SCREEN_SHAKE_DELAY_FRAMES, function()
                             shouldCameraShake = true
+                            SoundManager:playSound(SoundManager.kSoundQuake)
                             pd.frameTimer.new(BLACKOUT_DELAY_FRAMES, function()
                                 local blackout = Blackout()
                                 pd.frameTimer.new(TRANSTION_FRAMES, function()
