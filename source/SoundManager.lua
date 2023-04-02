@@ -2,7 +2,6 @@ local snd = playdate.sound
 
 SoundManager = {}
 
-SoundManager.kSoundBreakBlock = 'breakBlock'
 SoundManager.kSoundJump = 'jump'
 SoundManager.kSoundStomp = 'stomp'
 SoundManager.kSoundBump = 'bump'
