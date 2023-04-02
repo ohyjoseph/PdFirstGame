@@ -2,8 +2,8 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 local SCREEN_SHAKE_DELAY_FRAMES = 20
-local TRANSTION_FRAMES = 120
-local BLACKOUT_DELAY_FRAMES = 50
+local TRANSTION_FRAMES = 180
+local BLACKOUT_DELAY_FRAMES = 60
 
 class("MenuGem").extends(Gem)
 
