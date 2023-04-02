@@ -140,10 +140,10 @@ function Fluid:checkCollisionsResponse(collisions)
 			-- 	self:touch(otherSprite.x, -8)
 			-- else
 			if otherSprite:isa(Projectile) then
-				if otherSprite.dy > 0 then
-					SoundManager:playSound(SoundManager.kSoundLavaFall)
-				end
 				if not otherSprite.hasTouchedLava then
+					if otherSprite.dy > 0 then
+						SoundManager:playSound(SoundManager.kSoundLavaFall)
+					end
 					self:touch(otherSprite.x, otherSprite.dy + 3)
 				end
 				otherSprite:collideWithLavaResponse()
