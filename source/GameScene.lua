@@ -73,9 +73,6 @@ function initialize()
 	platform:add()
 
 	score = Score()
-	score:setScore(0)
-	score:addSprite()
-	score:setIgnoresDrawOffset(true)
 
 	player = Player(210, 168, score)
 
