@@ -30,6 +30,7 @@ function Gem:collisionResponse(other)
     if other:isa(Player) and other.isOnGround then
         addToMultiplier(1)
         self:removeClean()
+        SoundManager:playSound(SoundManager.kSoundGemPickup)
         return gfx.sprite.kCollisionTypeOverlap
     end
 end

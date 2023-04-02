@@ -29,12 +29,14 @@ end
 function Projectile:collisionResponse(other)
 	if other:isa(Projectile) or other:isa(Platform) then
 		if not self.isDangerous then
+			SoundManager:playSound(SoundManager.kSoundProjectileLand)
 			self:setUpdatesEnabled(false)
 			self:setCollidesWithGroups({1, 3})
 			self.dy = 0
 			self:setZIndex(0)
 			return gfx.sprite.kCollisionTypeSlide
 		else
+			SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
 			self:remove()
 		end
 	elseif other:isa(Player) then

@@ -285,6 +285,7 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse(projectile)
+	SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
 	SoundManager:playSound(SoundManager.kSoundPlayerHit)
 
 	self.isStunned = true
@@ -301,6 +302,7 @@ function Player:startDeath()
 	self:saveHighScore()
 
 	SoundManager:playSound(SoundManager.kSoundBump)
+	SoundManager:playSound(SoundManager.kSoundDeathJingle)
 	pd.frameTimer.new(DEATH_FRAMES, function()
 		resetGame()
 	end)
