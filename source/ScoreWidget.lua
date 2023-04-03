@@ -28,11 +28,11 @@ function ScoreWidget:init(score)
 
     local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
     gfx.pushContext(dialogImage)
-        -- gfx.setColor(gfx.kColorBlack)
-        -- gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
-        -- gfx.setColor(gfx.kColorWhite)
-        -- gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2, self.dialogHeight  - self.borderWidth * 2, self.cornerRadius)
-        -- gfx.setColor(gfx.kColorBlack)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2, self.dialogHeight  - self.borderWidth * 2, self.cornerRadius)
+        gfx.setColor(gfx.kColorWhite)
         local scoreText = "Score: " .. self.score
         -- local newHighScore = false
         -- -- Here, I check if the height we're at is greater than the current
@@ -58,5 +58,5 @@ function ScoreWidget:init(score)
 
     self:add()
 
-    
+
 end
