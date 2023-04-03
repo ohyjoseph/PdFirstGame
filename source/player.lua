@@ -342,6 +342,7 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 				self.dy += -BOUNCE_FORCE
 			else 
 				self.dy = -BOUNCE_FORCE
+				otherSprite.startFallY = otherSprite.y
 				SoundManager:playSound(SoundManager.kSoundStomp)
 			end
 			otherSprite:fall()
