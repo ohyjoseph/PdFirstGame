@@ -15,6 +15,7 @@ import "SoundManager"
 import "Fluid"
 import "CaveBottom"
 import "Clearout"
+import "ScoreWidget"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -94,11 +95,13 @@ function initialize()
 end
 
 function resetGame()
-	gfx.sprite.removeAll()
-	for i, timer in pairs(playdate.frameTimer.allTimers()) do
-		timer:remove()
-	end
-	initialize()
+	local scoreWidget = ScoreWidget(score.score)
+	scoreWidget:moveTo(200, 120)
+	-- gfx.sprite.removeAll()
+	-- for i, timer in pairs(playdate.frameTimer.allTimers()) do
+	-- 	timer:remove()
+	-- end
+	-- initialize()
 end
 
 function chooseAndFireCannon()
