@@ -13,7 +13,6 @@ function ScoreWidget:init(score)
     self.leftPadding = 30
 
     self.score = score
-    print("SCORE", score)
 
     -- It's good practice to have these "magic numbers"
     -- be stored into a variable with a name for better
@@ -34,25 +33,28 @@ function ScoreWidget:init(score)
         -- gfx.setColor(gfx.kColorWhite)
         -- gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2, self.dialogHeight  - self.borderWidth * 2, self.cornerRadius)
         -- gfx.setColor(gfx.kColorBlack)
-        -- local scoreText = "Height: " .. self.score
+        local scoreText = "Score: " .. self.score
         -- local newHighScore = false
         -- -- Here, I check if the height we're at is greater than the current
         -- -- max height. Then, I make sure to update it
-        -- if self.score > HIGH_SCORE then
-        --     SAVE_HIGH_SCORE(self.score)
-        --     newHighScore = true
-        -- end
-        -- local highScoreText = "Max Height: " .. HIGH_SCORE
-        -- if newHighScore then
-        --     highScoreText = highScoreText .. " - *NEW*"
-        -- end
-        -- gfx.drawTextAligned("*Bye Bye Gaery*", self.dialogWidth / 2, 10, kTextAlignment.center)
-        -- gfx.drawText(scoreText, self.leftPadding, 45)
-        -- gfx.drawText(highScoreText, self.leftPadding, 75)
+        print("HIGHSCORE", self.score, HIGH_SCORE)
+        if self.score > HIGH_SCORE then
+            print("INIF")
+            SAVE_HIGH_SCORE(self.score)
+            newHighScore = true
+        end
+        local highScoreText = "High Score: " .. HIGH_SCORE
+        if newHighScore then
+            print("NEW HIGH SCORE")
+            highScoreText = highScoreText .. " - *NEW*"
+        end
+        gfx.setColor(gfx.kColorBlack)
+        gfx.drawTextAligned("*Bye Bye Gaery*", self.dialogWidth / 2, 10, kTextAlignment.center)
+        gfx.drawText(scoreText, self.leftPadding, 45)
+        gfx.drawText(highScoreText, self.leftPadding, 75)
         gfx.drawTextAligned("_Press_ *A* _to restart_", self.dialogWidth / 2, 110, kTextAlignment.center)
     gfx.popContext()
     self:setImage(dialogImage)
 
-    self:moveTo(200, -self.dialogHeight / 2)
     self:add()
 end
