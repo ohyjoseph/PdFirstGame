@@ -301,7 +301,7 @@ function Player:startDeath()
 
 	SoundManager:playSound(SoundManager.kSoundDeathJingle)
 	pd.frameTimer.new(DEATH_FRAMES, function()
-		resetGame()
+		showScoreWidget()
 	end)
 end
 

@@ -94,7 +94,7 @@ function initialize()
 	lava = Fluid(0, LAVA_STARTING_Y, 400, 70)
 end
 
-function resetGame()
+function showScoreWidget()
 	local scoreWidget = ScoreWidget(score.score)
 	scoreWidget:moveTo(200, 120)
 	-- gfx.sprite.removeAll()
@@ -102,6 +102,21 @@ function resetGame()
 	-- 	timer:remove()
 	-- end
 	-- initialize()
+	local widgetInputHandler = {
+		AButtonDown = function()
+			resetGame()
+			playdate.inputHandlers.pop()
+		end
+	}
+	playdate.inputHandlers.push(widgetInputHandler)
+end
+
+function resetGame()
+	gfx.sprite.removeAll()
+	for i, timer in pairs(playdate.frameTimer.allTimers()) do
+		timer:remove()
+	end
+	initialize()
 end
 
 function chooseAndFireCannon()

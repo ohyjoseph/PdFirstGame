@@ -57,4 +57,6 @@ function ScoreWidget:init(score)
     self:setImage(dialogImage)
 
     self:add()
+
+    
 end
