@@ -285,12 +285,14 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse(projectile)
-	SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
-	SoundManager:playSound(SoundManager.kSoundPlayerHit)
-
-	self.isStunned = true
-	self.externalDx += projectile.dx
-	projectile:remove()
+	if projectile.isDangerous then
+		SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
+		SoundManager:playSound(SoundManager.kSoundPlayerHit)
+		
+		self.isStunned = true
+		self.externalDx += projectile.dx
+		projectile:remove()
+	end
 end
 
 function Player:startDeath()
@@ -344,10 +346,9 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 				SoundManager:playSound(SoundManager.kSoundStomp)
 			end
 			otherSprite:fall()
+			otherSprite:setCollideRect(4, 4, 26, 26)
 		else
-			if otherSprite.isDangerous then
-				self:hitByProjectileResponse(otherSprite)
-			end
+			self:hitByProjectileResponse(otherSprite)
 		end
 	end
 end
