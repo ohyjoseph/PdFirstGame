@@ -38,7 +38,6 @@ function ScoreWidget:init(score)
     gfx.setColor(gfx.kColorWhite)
     -- if self.score > HIGH_SCORE then
     local highScoresChanged = SAVE_HIGH_SCORE(self.score)
-    print("HasChanged", highScoresChanged)
     -- newHighScore = true
     -- else
     newHighScore = false
@@ -48,7 +47,7 @@ function ScoreWidget:init(score)
         highScoreText = highScoreText .. " - *NEW*"
     end
     gfx.setImageDrawMode(gfx.kDrawModeInverted)
-    gfx.drawTextAligned("*Game Over*", self.dialogWidth / 2, 10, kTextAlignment.center)
+    gfx.drawTextAligned("*High Scores*", self.dialogWidth / 2, 10, kTextAlignment.center)
     local SCORE_Y_OFFSET = 22
     local SCORE_Y_SPACING = 15
     local alreadyFoundNew = false

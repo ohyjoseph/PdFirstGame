@@ -98,6 +98,9 @@ function SAVE_HIGH_SCORE(newScore)
 	if highScoresLength < forLength then
 		forLength = highScoresLength
 	end
+	if forLength < 5 then
+		forLength += 1
+	end
 	local newHighScores = {}
 	table.sort(HIGH_SCORES, function(a, b)
 		return a > b
@@ -124,7 +127,7 @@ end
 
 function LOAD_HIGH_SCORES()
     local gameData = playdate.datastore.read()
-    if gameData then
+    if gameData and type(gameData) == "table" then
         return gameData
     end
 	return {}
