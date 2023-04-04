@@ -57,6 +57,10 @@ function ScoreWidget:init(score)
     self:setImage(dialogImage)
 
     self:add()
+end
 
-
+function ScoreWidget:update()
+    if playdate.buttonJustPressed(playdate.kButtonA) then
+		resetGame()
+	end
 end
