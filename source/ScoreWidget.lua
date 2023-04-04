@@ -34,12 +34,7 @@ function ScoreWidget:init(score)
         gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2, self.dialogHeight  - self.borderWidth * 2, self.cornerRadius)
         gfx.setColor(gfx.kColorWhite)
         local scoreText = "Score: " .. self.score
-        -- local newHighScore = false
-        -- -- Here, I check if the height we're at is greater than the current
-        -- -- max height. Then, I make sure to update it
-        print("HIGHSCORE", self.score, HIGH_SCORE)
         if self.score > HIGH_SCORE then
-            print("INIF")
             SAVE_HIGH_SCORE(self.score)
             newHighScore = true
         else
@@ -47,10 +42,9 @@ function ScoreWidget:init(score)
         end
         local highScoreText = "High Score: " .. HIGH_SCORE
         if newHighScore then
-            print("NEW HIGH SCORE")
             highScoreText = highScoreText .. " - *NEW*"
         end
-        gfx.setColor(gfx.kColorBlack)
+        gfx.setImageDrawMode(gfx.kDrawModeInverted)
         gfx.drawTextAligned("*Bye Bye Gaery*", self.dialogWidth / 2, 10, kTextAlignment.center)
         gfx.drawText(scoreText, self.leftPadding, 45)
         gfx.drawText(highScoreText, self.leftPadding, 75)
