@@ -42,6 +42,8 @@ function ScoreWidget:init(score)
             print("INIF")
             SAVE_HIGH_SCORE(self.score)
             newHighScore = true
+        else
+            newHighScore = false
         end
         local highScoreText = "High Score: " .. HIGH_SCORE
         if newHighScore then
