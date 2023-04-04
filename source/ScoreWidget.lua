@@ -8,9 +8,9 @@ local gfx <const> = pd.graphics
 class('ScoreWidget').extends(gfx.sprite)
 
 function ScoreWidget:init(score)
-    self.dialogWidth = 240
+    self.dialogWidth = 200
     self.dialogHeight = 140
-    self.leftPadding = 76
+    self.leftPadding = 56
     self.font = gfx.font.new('font/Air Buster');
     gfx.setFont(self.font)
 
@@ -19,8 +19,8 @@ function ScoreWidget:init(score)
     -- It's good practice to have these "magic numbers"
     -- be stored into a variable with a name for better
     -- readability
-    self.borderWidth = 3
-    self.cornerRadius = 3
+    self.borderWidth = 2
+    self.cornerRadius = 5
 
     self:setCenter(0.5, 0.5)
     self:setIgnoresDrawOffset(true)
