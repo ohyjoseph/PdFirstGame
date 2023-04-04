@@ -10,7 +10,7 @@ class('ScoreWidget').extends(gfx.sprite)
 function ScoreWidget:init(score)
     self.dialogWidth = 240
     self.dialogHeight = 140
-    self.leftPadding = 30
+    self.leftPadding = 76
     self.font = gfx.font.new('font/Air Buster');
     gfx.setFont(self.font)
 
@@ -54,10 +54,10 @@ function ScoreWidget:init(score)
 
     for i = #HIGH_SCORES, 1, -1 do
         local highScore = HIGH_SCORES[i]
-        local newText = ""
+        local isNewHighScore = false
         if not alreadyFoundNew and highScoresChanged and highScore == score then
             alreadyFoundNew = true
-            newText = " NEW "
+            isNewHighScore = true
         end
         local scoreString
         if i == 1 then
@@ -69,7 +69,11 @@ function ScoreWidget:init(score)
         else
             scoreString = i .. "TH "
         end
-        gfx.drawText(scoreString .. HIGH_SCORES[i] .. newText, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+        gfx.drawText(scoreString, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+        gfx.drawTextAligned(HIGH_SCORES[i], self.leftPadding + 89, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
+        if isNewHighScore then
+            gfx.drawText("NEW", self.leftPadding + 99, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+        end
     end
     gfx.drawTextAligned("_Press_ *A* _to restart_", self.dialogWidth / 2, 115, kTextAlignment.center)
     gfx.popContext()
