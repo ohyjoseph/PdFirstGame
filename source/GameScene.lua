@@ -38,6 +38,7 @@ local rightCannon
 local STARTING_LOWEST_Y = 168
 local lowestY
 local goalYOffset = 0
+local isPaused = false
 local gemSpawner
 local clearout
 
@@ -48,17 +49,18 @@ function GameScene:init()
 end
 
 function GameScene:update()
-	updateGoalYOffset()
-	moveCameraTowardGoal()
-	-- playdate.drawFPS(0,0) -- FPS widget
-
-	moveLavaWithLowestY()
-	moveLava()
-
-	updateCannons()
-	chooseAndFireCannon()
-
-	removeProjectilesAndGemsBelowLava()
+	if not isPaused then
+		updateGoalYOffset()
+		moveCameraTowardGoal()
+		-- playdate.drawFPS(0,0) -- FPS widget
+		
+		moveLavaWithLowestY()
+		moveLava()
+	
+		updateCannons()
+		chooseAndFireCannon()
+		removeProjectilesAndGemsBelowLava()
+	end
 end
 
 function initialize()
@@ -72,6 +74,8 @@ function initialize()
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
+
+	isPaused = false
 
 	score = Score()
 
@@ -95,6 +99,9 @@ function initialize()
 end
 
 function showScoreWidget()
+	isPaused = true
+	leftCannon:setUpdatesEnabled(false)
+	rightCannon:setUpdatesEnabled(false)
 	local scoreWidget = ScoreWidget(score.score)
 	scoreWidget:moveTo(200, 120)
 end
