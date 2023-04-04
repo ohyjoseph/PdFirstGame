@@ -21,6 +21,8 @@ import "GameScene"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
+DEFAULT_FONT = gfx.getFont()
+
 isMenuGemCollected = false
 
 local hasUsedMenuScene = false
@@ -81,22 +83,63 @@ function cameraShake()
     end
 end
 
+function arrayFirstFiveEqual(table1, table2)
+	for i = 1, 5 do
+		if table1[i] ~= table2[i] then
+			return false
+		end
+	end
+	return true
+end
+
 function SAVE_HIGH_SCORE(newScore)
-	if newScore > HIGH_SCORE then
-		local gameData = {
-			highScore = newScore
-		}
-		playdate.datastore.write(gameData)
-		HIGH_SCORE = newScore
+	local forLength = 5
+	local highScoresLength = #HIGH_SCORES
+	if highScoresLength < forLength then
+		forLength = highScoresLength
+	end
+	local newHighScores = {}
+	table.sort(HIGH_SCORES, function(a, b)
+		return a > b
+	end)
+	for i = 1, forLength do
+		table.insert(newHighScores, HIGH_SCORES[i])
+	end
+	table.insert(newHighScores, newScore)
+	table.sort(newHighScores, function(a, b)
+		return a > b
+	end)
+
+	local highScoreTablesEqual = arrayFirstFiveEqual(HIGH_SCORES, newHighScores)
+	if not highScoreTablesEqual then
+		local highScoresToSave = {}
+		for i = 1, forLength do
+			table.insert(highScoresToSave, newHighScores[i])
+		end
+		playdate.datastore.write(highScoresToSave)
+		HIGH_SCORES = highScoresToSave
+	end
+	return not highScoreTablesEqual
+end
+
+function LOAD_HIGH_SCORES()
+    local gameData = playdate.datastore.read()
+    if gameData then
+        return gameData
+    end
+	return {}
+end
+
+function GET_HIGH_SCORE()
+	local highScores = LOAD_HIGH_SCORES()
+	local highScoresLength = #highScores
+	if highScoresLength < 1 then
+		return 0
+	else
+		return highScores[highScoresLength]
 	end
 end
 
-function LOAD_HIGH_SCORE()
-    local gameData = playdate.datastore.read()
-    if gameData then
-        return gameData.highScore
-    end
-	return 0
-end
-
-HIGH_SCORE = LOAD_HIGH_SCORE()
+HIGH_SCORES = LOAD_HIGH_SCORES()
+HIGH_SCORE = GET_HIGH_SCORE()
+-- SAVE_HIGH_SCORE(1)

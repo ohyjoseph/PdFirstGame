@@ -7,8 +7,7 @@ function Score:init(initialScore, initialMultiplier)
 	Score.super.init(self)
 	self:setIgnoresDrawOffset(true)
 	self:setZIndex(900)
-	self.scoreFont = gfx.font.new('Score/Roobert-24-Medium-Numerals');
-	gfx.setFont(self.scoreFont)
+	gfx.setFont(DEFAULT_FONT)
 	self:setCenter(1, 0)
 	if initialScore then
 		self.score = initialScore

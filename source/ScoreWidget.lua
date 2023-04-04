@@ -11,6 +11,8 @@ function ScoreWidget:init(score)
     self.dialogWidth = 240
     self.dialogHeight = 140
     self.leftPadding = 30
+    self.font = gfx.font.new('font/Air Buster');
+    gfx.setFont(self.font)
 
     self.score = score
 
@@ -28,27 +30,49 @@ function ScoreWidget:init(score)
 
     local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
     gfx.pushContext(dialogImage)
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
-        gfx.setColor(gfx.kColorBlack)
-        gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2, self.dialogHeight  - self.borderWidth * 2, self.cornerRadius)
-        gfx.setColor(gfx.kColorWhite)
-        local scoreText = "Score: " .. self.score
-        if self.score > HIGH_SCORE then
-            SAVE_HIGH_SCORE(self.score)
-            newHighScore = true
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2,
+    self.dialogHeight - self.borderWidth * 2, self.cornerRadius)
+    gfx.setColor(gfx.kColorWhite)
+    -- if self.score > HIGH_SCORE then
+    local highScoresChanged = SAVE_HIGH_SCORE(self.score)
+    print("HasChanged", highScoresChanged)
+    -- newHighScore = true
+    -- else
+    newHighScore = false
+    -- end
+    local highScoreText = "HIGH SCORE: " .. HIGH_SCORE
+    if newHighScore then
+        highScoreText = highScoreText .. " - *NEW*"
+    end
+    gfx.setImageDrawMode(gfx.kDrawModeInverted)
+    gfx.drawTextAligned("*Game Over*", self.dialogWidth / 2, 10, kTextAlignment.center)
+    local SCORE_Y_OFFSET = 22
+    local SCORE_Y_SPACING = 15
+    local alreadyFoundNew = false
+
+    for i = #HIGH_SCORES, 1, -1 do
+        local highScore = HIGH_SCORES[i]
+        local newText = ""
+        if not alreadyFoundNew and highScoresChanged and highScore == score then
+            alreadyFoundNew = true
+            newText = " NEW "
+        end
+        local scoreString
+        if i == 1 then
+            scoreString = "1ST "
+        elseif i == 2 then
+            scoreString = "2ND "
+        elseif i == 3 then
+            scoreString = "3RD "
         else
-            newHighScore = false
+            scoreString = i .. "TH "
         end
-        local highScoreText = "High Score: " .. HIGH_SCORE
-        if newHighScore then
-            highScoreText = highScoreText .. " - *NEW*"
-        end
-        gfx.setImageDrawMode(gfx.kDrawModeInverted)
-        gfx.drawTextAligned("*Bye Bye Gaery*", self.dialogWidth / 2, 10, kTextAlignment.center)
-        gfx.drawText(scoreText, self.leftPadding, 45)
-        gfx.drawText(highScoreText, self.leftPadding, 75)
-        gfx.drawTextAligned("_Press_ *A* _to restart_", self.dialogWidth / 2, 110, kTextAlignment.center)
+        gfx.drawText(scoreString .. HIGH_SCORES[i] .. newText, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+    end
+    gfx.drawTextAligned("_Press_ *A* _to restart_", self.dialogWidth / 2, 115, kTextAlignment.center)
     gfx.popContext()
     self:setImage(dialogImage)
 
@@ -57,6 +81,6 @@ end
 
 function ScoreWidget:update()
     if playdate.buttonJustPressed(playdate.kButtonA) then
-		resetGame()
-	end
+        resetGame()
+    end
 end
