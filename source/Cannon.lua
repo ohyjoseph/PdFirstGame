@@ -49,8 +49,18 @@ function Cannon:update()
 	self:moveTo(self.x, self.y + self.dy)
     if self.isFacingRight then
         self.wheel:moveTo(self.x + 9, self.y + 15)
+        if self.dy > 0 then
+            self.wheel:turnClockwise()
+        elseif self.dy < 0 then
+            self.wheel:turnCounterClockwise()
+        end
     else
         self.wheel:moveTo(self.x - 9, self.y + 15)
+        if self.dy > 0 then
+            self.wheel:turnCounterClockwise()
+        elseif self.dy < 0 then
+            self.wheel:turnClockwise()
+        end
     end
 end
 
