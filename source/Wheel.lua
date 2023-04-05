@@ -19,7 +19,7 @@ function Wheel:init(x, y)
     self:moveTo(x, y)
 end
 
-function Wheel:turnClockwise()
+function Wheel:turnClockwise(dy)
     if self.rotationTimer.frame <= 1 then
         return
     end
@@ -32,7 +32,7 @@ function Wheel:turnClockwise()
     self:setImage(IMAGES:getImage(self.rotationI))
 end
 
-function Wheel:turnCounterClockwise()
+function Wheel:turnCounterClockwise(dy)
     if self.rotationTimer.frame <= 1 then
         return
     end
