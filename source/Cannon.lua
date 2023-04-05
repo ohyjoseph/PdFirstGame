@@ -13,8 +13,10 @@ class("Cannon").extends(gfx.sprite)
 function Cannon:init(x, y, isFacingRight)
 	Cannon.super.init(self)
 
-	self.x = x
-	self.y = y
+    self.wheel = Wheel(x, y)
+
+    self:setZIndex(100)
+
     self.dx = 0
 	self.dy = 0
     self.goalY = 0
@@ -45,6 +47,11 @@ end
 function Cannon:update()
     self:moveTowardGoalY()
 	self:moveTo(self.x, self.y)
+    if self.isFacingRight then
+        self.wheel:moveTo(self.x + 9, self.y + 15)
+    else
+        self.wheel:moveTo(self.x - 9, self.y + 15)
+    end
 end
 
 function Cannon:getSpriteOrientation()
