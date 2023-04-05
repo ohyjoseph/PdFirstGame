@@ -45,8 +45,8 @@ function Cannon:init(x, y, isFacingRight)
 end
 
 function Cannon:update()
-    self:moveTowardGoalY()
-	self:moveTo(self.x, self.y)
+    self:updateDyTowardGoalY()
+	self:moveTo(self.x, self.y + self.dy)
     if self.isFacingRight then
         self.wheel:moveTo(self.x + 9, self.y + 15)
     else
@@ -62,16 +62,13 @@ function Cannon:getSpriteOrientation()
 	end
 end
 
-function Cannon:moveTowardGoalY()
-    if not self.movementAllowed then
-        return
-    end
-    if self.y == self.goalY then
-        return
-    elseif self.y < self.goalY then
-        self.y += 1
-    elseif self.y > self.goalY then
-        self.y -= 1
+function Cannon:updateDyTowardGoalY()
+    if not self.movementAllowed or self.y == self.goalY then
+        self.dy = 0
+    elseif self.y < self.goalY and self.dy < 1 then
+        self.dy += 1
+    elseif self.y > self.goalY and self.dy > -1 then
+        self.dy -= 1
     end
 end
 
