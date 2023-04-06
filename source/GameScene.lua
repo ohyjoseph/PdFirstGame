@@ -55,7 +55,7 @@ function GameScene:update()
 		moveCameraTowardGoal()
 		-- playdate.drawFPS(0,0) -- FPS widget
 		
-		moveLavaWithLowestY()
+		changeLavaSpeedWithLowestY()
 		moveLava()
 	
 		updateCannons()
@@ -168,7 +168,7 @@ function moveLava()
 	end
 end
 
-function moveLavaWithLowestY()
+function changeLavaSpeedWithLowestY()
 	if lava.y > (lowestY + MIN_LAVA_STARTING_Y_OFFSET) then
 		lavaRiseCounterLimit = CATCHUP_LAVA_RISE_LIMIT
 	else
