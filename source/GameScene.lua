@@ -21,14 +21,14 @@ import "ScoreWidget"
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
-local projectileSpawnTimer
 local cameraOffsetTimer
+local projectileShootCounterLimit
 
-local PROJECTILE_FREQUENCY = 120
-local LAVA_STARTING_Y = 180
-local MIN_LAVA_STARTING_Y_OFFSET = 40
+local STARTING_PROJECTILE_SHOOT_LIMIT = 120
 local STARTING_LAVE_RISE_LIMIT = 10
 local CATCHUP_LAVA_RISE_LIMIT = 2
+local LAVA_STARTING_Y = 180
+local MIN_LAVA_STARTING_Y_OFFSET = 40
 local lavaRiseCounterLimit
 local player
 local score
@@ -85,13 +85,13 @@ function initialize()
 	leftCannon = Cannon(0, player.y, true)
 	rightCannon = Cannon(400, player.y, false)
 
-	projectileSpawnTimer = playdate.frameTimer.new(PROJECTILE_FREQUENCY)
-	projectileSpawnTimer:start()
 	cameraOffsetTimer = playdate.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
-	lavaRiseCounterLimit = STARTING_LAVE_RISE_LIMIT
+	projectileShootCounter = 0
+	projectileShootCounterLimit = STARTING_PROJECTILE_SHOOT_LIMIT
 	lavaRiseCounter = 0
+	lavaRiseCounterLimit = STARTING_LAVE_RISE_LIMIT
 
 	gemSpawner = GemSpawner(player.y, 240)
 
@@ -116,7 +116,8 @@ function resetGame()
 end
 
 function chooseAndFireCannon()
-	if projectileSpawnTimer.frame >= PROJECTILE_FREQUENCY then
+	projectileShootCounter += 1
+	if projectileShootCounter >= projectileShootCounterLimit then
 		local leftCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
 		local rightCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
 		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
@@ -130,7 +131,7 @@ function chooseAndFireCannon()
 		else
 			rightCannon:startShootingProjectile()
 		end
-		projectileSpawnTimer:reset()
+		projectileShootCounter = 0
 	end
 end
 
