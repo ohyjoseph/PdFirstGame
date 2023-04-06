@@ -17,6 +17,7 @@ local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
 local STUNNED_FRAMES = 50
+local JUMP_BOUNCE_FORCE = 7.5
 local BOUNCE_FORCE = 6
 local DEATH_FRAMES = 100
 local halfPlayerWidth = 15
@@ -340,8 +341,12 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 		if normalY == -1 then
 			if self.dy < -BOUNCE_FORCE then
 				self.dy += -BOUNCE_FORCE
-			else 
-				self.dy = -BOUNCE_FORCE
+			else
+				if playdate.buttonIsPressed(playdate.kButtonA) then
+					self.dy = -JUMP_BOUNCE_FORCE
+				else
+					self.dy = -BOUNCE_FORCE
+				end
 				otherSprite.startFallY = otherSprite.y
 				SoundManager:playSound(SoundManager.kSoundStomp)
 			end
