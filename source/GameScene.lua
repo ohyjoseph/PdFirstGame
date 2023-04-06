@@ -140,13 +140,15 @@ function updateCannons()
 end
 
 function moveCameraTowardGoal()
-	if lowestY == STARTING_LOWEST_Y then
-		return
-	end
+	-- if lowestY == STARTING_LOWEST_Y then
+	-- 	return
+	-- end
 	local xOffset, yOffset = gfx.getDrawOffset()
 	-- scroll 2 pixels at a time to prevent flickering from dithering
 	if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
 		return
+	elseif player.y < player.lastGroundY - 150 then
+		gfx.setDrawOffset(0, yOffset + 2)
 	elseif goalYOffset > yOffset then
 		if cameraOffsetTimer.frame == 0 or cameraOffsetTimer.frame == 5 then
 			gfx.setDrawOffset(0, yOffset + 2)
@@ -191,6 +193,8 @@ function updateGoalYOffset()
 		goalYOffset = STARTING_LOWEST_Y - lowestY - 70
 	elseif player.y > player.lastGroundY then
 		goalYOffset = STARTING_LOWEST_Y - player.y - 20
+	elseif player.y < player.lastGroundY - 150 then
+		goalYOffset = STARTING_LOWEST_Y - player.y
 	else
 		goalYOffset = STARTING_LOWEST_Y - player.lastGroundY - 15
 	end
