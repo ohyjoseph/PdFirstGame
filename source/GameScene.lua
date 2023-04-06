@@ -80,7 +80,7 @@ function initialize()
 
 	score = Score()
 
-	player = Player(210, 168, score)
+	player = Player(210, STARTING_LOWEST_Y, score)
 
 	leftCannon = Cannon(0, player.y, true)
 	rightCannon = Cannon(400, player.y, false)
@@ -140,12 +140,15 @@ function updateCannons()
 end
 
 function moveCameraTowardGoal()
+	if lowestY == STARTING_LOWEST_Y then
+		return
+	end
 	local xOffset, yOffset = gfx.getDrawOffset()
 	-- scroll 2 pixels at a time to prevent flickering from dithering
 	if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
 		return
 	elseif goalYOffset > yOffset then
-		if cameraOffsetTimer.frame == 0 then
+		if cameraOffsetTimer.frame == 0 or cameraOffsetTimer.frame == 5 then
 			gfx.setDrawOffset(0, yOffset + 2)
 		end
 	elseif goalYOffset < yOffset then
@@ -184,7 +187,7 @@ function removeProjectilesAndGemsBelowLava()
 end
 
 function updateGoalYOffset()
-	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY
+	goalYOffset = STARTING_LOWEST_Y - player.lastGroundY - 15
 end
 
 function addToScore(value)
