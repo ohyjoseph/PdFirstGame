@@ -22,14 +22,27 @@ local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
 
 local cameraOffsetTimer
-local projectileShootCounterLimit
-
 local STARTING_PROJECTILE_SHOOT_LIMIT = 120
-local STARTING_LAVE_RISE_LIMIT = 10
+local STARTING_LAVA_RISE_LIMIT = 10
 local CATCHUP_LAVA_RISE_LIMIT = 2
 local LAVA_STARTING_Y = 180
 local MIN_LAVA_STARTING_Y_OFFSET = 40
+
+-- the lower the slower the difficulty ramps up
+local DIFFICULTY_SPEED_SCALE = 0.15
+local LAVA_DIFFICULTY_SCALE =  0.05
+local PROJECTILE_DIFFICULTY_SCALE = 0.015
+local LAVA_RISE_SPEED_DIFF = STARTING_LAVA_RISE_LIMIT * LAVA_DIFFICULTY_SCALE * DIFFICULTY_SPEED_SCALE
+local PROJECTILE_FREQ_SPEED_DIFF = STARTING_PROJECTILE_SHOOT_LIMIT * PROJECTILE_DIFFICULTY_SCALE * DIFFICULTY_SPEED_SCALE
+
+
+local HARDEST_LAVA_RISE_LIMIT = 3
+local HARDEST_PROJECTILE_SHOOT_LIMIT = 95
+
 local lavaRiseCounterLimit
+local projectileShootCounterLimit
+local atMaxDifficulty= false
+local difficultyLevel = 1
 local player
 local score
 local lava
@@ -54,7 +67,8 @@ function GameScene:update()
 		updateGoalYOffset()
 		moveCameraTowardGoal()
 		-- playdate.drawFPS(0,0) -- FPS widget
-		
+
+		setDifficulty()
 		changeLavaSpeedWithLowestY()
 		moveLava()
 	
@@ -62,6 +76,23 @@ function GameScene:update()
 		chooseAndFireCannon()
 		removeProjectilesAndGemsBelowLava()
 	end
+end
+
+function setDifficulty()
+	if atMaxDifficulty then
+		lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
+		projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
+	else
+		local height = (-math.floor(lowestY / 22) + 7)
+		lavaRiseCounterLimit = math.ceil(STARTING_LAVA_RISE_LIMIT - LAVA_RISE_SPEED_DIFF * height)
+		projectileShootCounterLimit = math.ceil(STARTING_PROJECTILE_SHOOT_LIMIT - PROJECTILE_FREQ_SPEED_DIFF * height)
+		if lavaRiseCounterLimit <= HARDEST_LAVA_RISE_LIMIT then
+			atMaxDifficulty = true
+			lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
+			projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
+		end
+	end
+	print(lavaRiseCounterLimit, projectileShootCounterLimit)
 end
 
 function initialize()
@@ -75,6 +106,10 @@ function initialize()
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
 	platform:add()
+	
+	atMaxDifficulty = false
+	lavaRiseCounterLimit = STARTING_LAVA_RISE_LIMIT
+	projectileShootCounterLimit = STARTING_PROJECTILE_SHOOT_LIMIT
 
 	isPaused = false
 
@@ -91,7 +126,7 @@ function initialize()
 	projectileShootCounter = 0
 	projectileShootCounterLimit = STARTING_PROJECTILE_SHOOT_LIMIT
 	lavaRiseCounter = 0
-	lavaRiseCounterLimit = STARTING_LAVE_RISE_LIMIT
+	lavaRiseCounterLimit = STARTING_LAVA_RISE_LIMIT
 
 	gemSpawner = GemSpawner(player.y, 240)
 
@@ -141,7 +176,7 @@ function updateCannons()
 end
 
 function moveCameraTowardGoal()
-	if lowestY == STARTING_LOWEST_Y then
+	if lowestY == STARTING_LOWEST_Y or player.isDead then
 		return
 	end
 	local xOffset, yOffset = gfx.getDrawOffset()
@@ -162,18 +197,18 @@ function moveCameraTowardGoal()
 end
 
 function moveLava()
-	lavaRiseCounter += 1
-	if lavaRiseCounter > lavaRiseCounterLimit then
-		lava:moveWithCollisions(lava.x, lava.y - 1)
-		lavaRiseCounter = 0
+	if not player.isDead then
+		lavaRiseCounter += 1
+		if lavaRiseCounter > lavaRiseCounterLimit then
+			lava:moveWithCollisions(lava.x, lava.y - 1)
+			lavaRiseCounter = 0
+		end
 	end
 end
 
 function changeLavaSpeedWithLowestY()
 	if lava.y > (lowestY + MIN_LAVA_STARTING_Y_OFFSET) then
 		lavaRiseCounterLimit = CATCHUP_LAVA_RISE_LIMIT
-	else
-		lavaRiseCounterLimit = STARTING_LAVE_RISE_LIMIT
 	end
 end
 
@@ -190,9 +225,7 @@ function removeProjectilesAndGemsBelowLava()
 end
 
 function updateGoalYOffset()
-	if player.isDead then
-		goalYOffset = STARTING_LOWEST_Y - lowestY - 70
-	elseif player.y > player.lastGroundY then
+	if player.y > player.lastGroundY then
 		goalYOffset = STARTING_LOWEST_Y - player.y - 20
 	elseif player.y < player.lastGroundY - 150 then
 		goalYOffset = STARTING_LOWEST_Y - player.y
