@@ -31,6 +31,11 @@ local MIN_LAVA_STARTING_Y_OFFSET = 40
 local UPDATE_CANNONS_LIMIT = 20
 local updateCannonsCounter
 
+local MAX_PROJECTILE_Y_OFFSET = 45
+local PROJECTILE_Y_OFFSET_DIFF = 19 / (MAX_PROJECTILE_Y_OFFSET)
+local HARDEST_PROJECTILE_Y_OFFSET_DIFF = 45
+local projectileYOffset
+
 -- the lower the slower the difficulty ramps up
 local DIFFICULTY_SPEED_SCALE = 0.15
 local LAVA_DIFFICULTY_SCALE =  0.05
@@ -45,7 +50,6 @@ local HARDEST_PROJECTILE_SHOOT_LIMIT = 95
 local lavaRiseCounterLimit
 local projectileShootCounterLimit
 local atMaxDifficulty= false
-local difficultyLevel = 1
 local player
 local score
 local lava
@@ -85,17 +89,20 @@ function setDifficulty()
 	if atMaxDifficulty then
 		lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
 		projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
+		projectileYOffset = HARDEST_PROJECTILE_Y_OFFSET_DIFF
 	else
 		local height = (-math.floor(lowestY / 22) + 7)
 		lavaRiseCounterLimit = math.ceil(STARTING_LAVA_RISE_LIMIT - LAVA_RISE_SPEED_DIFF * height)
 		projectileShootCounterLimit = math.ceil(STARTING_PROJECTILE_SHOOT_LIMIT - PROJECTILE_FREQ_SPEED_DIFF * height)
+		projectileYOffset = math.ceil(PROJECTILE_Y_OFFSET_DIFF * height)
 		if lavaRiseCounterLimit <= HARDEST_LAVA_RISE_LIMIT then
 			atMaxDifficulty = true
 			lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
 			projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
+			projectileYOffset = HARDEST_PROJECTILE_Y_OFFSET_DIFF
 		end
 	end
-	print(lavaRiseCounterLimit, projectileShootCounterLimit)
+	print("DIFF", lavaRiseCounterLimit, projectileShootCounterLimit, projectileYOffset)
 end
 
 function initialize()
@@ -113,6 +120,7 @@ function initialize()
 	atMaxDifficulty = false
 	lavaRiseCounterLimit = STARTING_LAVA_RISE_LIMIT
 	projectileShootCounterLimit = STARTING_PROJECTILE_SHOOT_LIMIT
+	projectileYOffset = 0
 
 	isPaused = false
 
@@ -184,8 +192,8 @@ function updateCannons()
 end
 
 function getRandomCannonYGoal()
-	local randomCannonYGoal = player.y - math.random(-5, 45)
-	local lowestGoalYPossible = lowestY - 45
+	local randomCannonYGoal = player.y - math.random(-2, projectileYOffset)
+	local lowestGoalYPossible = lowestY - MAX_PROJECTILE_Y_OFFSET
 	if randomCannonYGoal < lowestGoalYPossible then
 		randomCannonYGoal = lowestGoalYPossible
 	end
