@@ -89,7 +89,23 @@ end
 function Cannon:startShootingProjectile()
     self:setImage(IMAGES:getImage(2), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
+    pd.frameTimer.new(10, function()
+        self:startShootingProjectile2()
+    end)
+end
+
+function Cannon:startShootingProjectile2()
+    self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
+    self.movementAllowed = false
+    pd.frameTimer.new(10, function()
+        self:startShootingProjectile3()
+    end)
+end
+
+function Cannon:startShootingProjectile3()
+    self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
+    self.movementAllowed = false
+    pd.frameTimer.new(10, function()
         self:shootProjectile()
     end)
 end
@@ -97,7 +113,7 @@ end
 function Cannon:shootProjectile()
     SoundManager:playSound(self.kSound)
 
-    self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
+    self:setImage(IMAGES:getImage(5), self:getSpriteOrientation())
     Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
     pd.frameTimer.new(SHOOT_FRAMES, function()
         self:cooldown()
@@ -105,7 +121,7 @@ function Cannon:shootProjectile()
 end
 
 function Cannon:cooldown()
-    self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
+    self:setImage(IMAGES:getImage(6), self:getSpriteOrientation())
     pd.frameTimer.new(COOLDOWN_FRAMES, function()
         self.movementAllowed = true
         self:setImage(IMAGES:getImage(1), self:getSpriteOrientation())
