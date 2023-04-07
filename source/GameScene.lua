@@ -184,8 +184,8 @@ function updateCannons()
 end
 
 function getRandomCannonYGoal()
-	local randomCannonYGoal = player.y - math.random(-5, 40)
-	local lowestGoalYPossible = lowestY - 40
+	local randomCannonYGoal = player.y - math.random(-5, 45)
+	local lowestGoalYPossible = lowestY - 45
 	if randomCannonYGoal < lowestGoalYPossible then
 		randomCannonYGoal = lowestGoalYPossible
 	end
