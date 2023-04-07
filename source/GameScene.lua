@@ -28,6 +28,9 @@ local CATCHUP_LAVA_RISE_LIMIT = 2
 local LAVA_STARTING_Y = 180
 local MIN_LAVA_STARTING_Y_OFFSET = 40
 
+local UPDATE_CANNONS_LIMIT = 20
+local updateCannonsCounter
+
 -- the lower the slower the difficulty ramps up
 local DIFFICULTY_SPEED_SCALE = 0.15
 local LAVA_DIFFICULTY_SCALE =  0.05
@@ -123,6 +126,7 @@ function initialize()
 	cameraOffsetTimer = playdate.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
+	updateCannonsCounter = 0
 	projectileShootCounter = 0
 	projectileShootCounterLimit = STARTING_PROJECTILE_SHOOT_LIMIT
 	lavaRiseCounter = 0
@@ -171,8 +175,21 @@ function chooseAndFireCannon()
 end
 
 function updateCannons()
-	leftCannon:updateGoalY(player.y)
-	rightCannon:updateGoalY(player.y)
+	updateCannonsCounter += 1
+	if updateCannonsCounter >= UPDATE_CANNONS_LIMIT then
+		updateCannonsCounter = 0
+		local randomLeftCannonYGoal = player.y - math.random(-5, 40)
+		if randomLeftCannonYGoal < lowestY - 40 then
+			print("CHANGED")
+			randomLeftCannonYGoal = lowestY - 40
+		end
+		local randomRightCannonYGoal = player.y - math.random(-5, 40)
+		if randomRightCannonYGoal < lowestY - 40 then
+			randomRightCannonYGoal = lowestY - 40
+		end
+		leftCannon:updateGoalY(randomLeftCannonYGoal)
+		rightCannon:updateGoalY(randomRightCannonYGoal)
+	end
 end
 
 function moveCameraTowardGoal()
