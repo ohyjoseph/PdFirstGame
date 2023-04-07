@@ -21,7 +21,7 @@ function Projectile:init(x, y, dx, rotatesClockwise)
 
 	self:setZIndex(101)
 	self:setImage(IMAGES:getImage(1))
-	self:setCollideRect(4, 6, 26, 22)
+	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
 	self:setCollidesWithGroups({1, 2, 3})
 	self:moveTo(x, y)
@@ -103,7 +103,7 @@ function Projectile:fall()
 	self.isDangerous = false
 	self.dx = 0
 	self.dy = 6
-	self:setCollideRect(4, 4, 26, 26)
+	-- self:setCollideRect(4, 4, 26, 26)
 end
 
 function Projectile:removeSelfIfFarAway()
