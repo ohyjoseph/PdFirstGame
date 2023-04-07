@@ -178,18 +178,18 @@ function updateCannons()
 	updateCannonsCounter += 1
 	if updateCannonsCounter >= UPDATE_CANNONS_LIMIT then
 		updateCannonsCounter = 0
-		local randomLeftCannonYGoal = player.y - math.random(-5, 40)
-		if randomLeftCannonYGoal < lowestY - 40 then
-			print("CHANGED")
-			randomLeftCannonYGoal = lowestY - 40
-		end
-		local randomRightCannonYGoal = player.y - math.random(-5, 40)
-		if randomRightCannonYGoal < lowestY - 40 then
-			randomRightCannonYGoal = lowestY - 40
-		end
-		leftCannon:updateGoalY(randomLeftCannonYGoal)
-		rightCannon:updateGoalY(randomRightCannonYGoal)
+		leftCannon:updateGoalY(getRandomCannonYGoal())
+		rightCannon:updateGoalY(getRandomCannonYGoal())
 	end
+end
+
+function getRandomCannonYGoal()
+	local randomCannonYGoal = player.y - math.random(-5, 40)
+	local lowestGoalYPossible = lowestY - 40
+	if randomCannonYGoal < lowestGoalYPossible then
+		randomCannonYGoal = lowestGoalYPossible
+	end
+	return randomCannonYGoal
 end
 
 function moveCameraTowardGoal()
