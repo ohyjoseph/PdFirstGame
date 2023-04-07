@@ -77,7 +77,6 @@ function ScoreWidget:drawWidget()
         else
             scoreString = i .. "TH "
         end
-        print("hi", i, self.newHighScoreI)
         if i == self.newHighScoreI then
             if self.flashTimer.frame <= self.flashTimer.duration * 0.67 then
                 gfx.setImageDrawMode(gfx.kDrawModeInverted)
@@ -93,6 +92,7 @@ function ScoreWidget:drawWidget()
             gfx.drawText("NEW", self.leftPadding + 99, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
         end
     end
+    gfx.setImageDrawMode(gfx.kDrawModeInverted)
     gfx.drawTextAligned("_Press_ *A* _to restart_", self.dialogWidth / 2, 115, kTextAlignment.center)
     gfx.popContext()
     self:setImage(dialogImage)
