@@ -66,7 +66,7 @@ function Player:init(x, y, score)
 
 	self:setImage(self.playerImages:getImage(1))
 	self:setZIndex(1000)
-	self:setCollideRect(4, 0, 22, 44)
+	self:setCollideRect(5, 4, 20, 40)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
