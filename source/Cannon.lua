@@ -3,7 +3,7 @@ local gfx <const> = pd.graphics
 local IMAGES = gfx.imagetable.new("images/cannon")
 
 local PROJECTILE_DX = 4.5
-local SHOOT_PREP_FRAMES = 35
+local SHOOT_PREP_FRAMES = 10
 local SHOOT_FRAMES = 10
 local COOLDOWN_FRAMES = 20
 local PROJECTILE_X_OFFSET = 45
@@ -89,7 +89,7 @@ end
 function Cannon:startShootingProjectile()
     self:setImage(IMAGES:getImage(2), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(10, function()
+    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:startShootingProjectile2()
     end)
 end
@@ -97,7 +97,7 @@ end
 function Cannon:startShootingProjectile2()
     self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(10, function()
+    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:startShootingProjectile3()
     end)
 end
@@ -105,7 +105,7 @@ end
 function Cannon:startShootingProjectile3()
     self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(10, function()
+    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:shootProjectile()
     end)
 end
