@@ -1,5 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+
 local IMAGES = gfx.imagetable.new("images/boulder")
 
 class("Projectile").extends(gfx.sprite)

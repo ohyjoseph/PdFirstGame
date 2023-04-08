@@ -19,8 +19,12 @@ import "Clearout"
 import "ScoreWidget"
 import "TipWidget"
 
-local gfx <const> = playdate.graphics
-local FrameTimer_update = playdate.frameTimer.updateTimers
+local pd <const> = playdate
+local gfx <const> = pd.graphics
+local getDrawOffset <const> = gfx.getDrawOffset
+local setDrawOffset <const> = gfx.setDrawOffset
+local getAllSprites <const> = gfx.sprite.getAllSprites
+local querySpritesAlongLines <const> = gfx.sprite.querySpritesAlongLine
 
 local cameraOffsetTimer
 local STARTING_PROJECTILE_SHOOT_LIMIT = 120
@@ -54,15 +58,12 @@ local atMaxDifficulty= false
 local player
 local score
 local lava
-local caveBottom
 local leftCannon
 local rightCannon
 local STARTING_LOWEST_Y = 168
 local lowestY
 local goalYOffset = 0
 local isPaused = false
-local gemSpawner
-local clearout
 
 class("GameScene").extends(gfx.sprite)
 
@@ -74,7 +75,7 @@ function GameScene:update()
 	if not isPaused then
 		updateGoalYOffset()
 		moveCameraTowardGoal()
-		-- playdate.drawFPS(0,0) -- FPS widget
+		-- pd.drawFPS(0,0) -- FPS widget
 
 		setDifficulty()
 		changeLavaSpeedWithLowestY()
@@ -110,12 +111,12 @@ function initialize()
 	music:setVolume(getLavaVolume())
 	music:play(0)
 
-    math.randomseed(playdate.getSecondsSinceEpoch())
-	gfx.setDrawOffset(0, 0)
+    math.randomseed(pd.getSecondsSinceEpoch())
+	setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
 	Clearout()
-	playdate.display.setRefreshRate(45) -- Sets framerate to 45 fps
-	caveBottom = CaveBottom()
+	pd.display.setRefreshRate(45) -- Sets framerate to 45 fps
+	CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
@@ -135,7 +136,7 @@ function initialize()
 	leftCannon = Cannon(0, player.y, true)
 	rightCannon = Cannon(400, player.y, false)
 
-	cameraOffsetTimer = playdate.frameTimer.new(9)
+	cameraOffsetTimer = pd.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
 	updateCannonsCounter = 0
@@ -144,9 +145,8 @@ function initialize()
 	lavaRiseCounter = 0
 	lavaRiseCounterLimit = STARTING_LAVA_RISE_LIMIT
 
-	gemSpawner = GemSpawner(player.y, 240)
+	GemSpawner(player.y, 240)
 
-	-- local rect = Rectangle(0, 195, 420, 150)
 	lava = Fluid(0, LAVA_STARTING_Y, 400, 90)
 end
 
@@ -166,7 +166,7 @@ end
 function resetGame()
 	gfx.sprite.removeAll()
 	music:pause()
-	for i, timer in pairs(playdate.frameTimer.allTimers()) do
+	for i, timer in pairs(pd.frameTimer.allTimers()) do
 		timer:remove()
 	end
 	initialize()
@@ -175,8 +175,8 @@ end
 function chooseAndFireCannon()
 	projectileShootCounter += 1
 	if projectileShootCounter >= projectileShootCounterLimit then
-		local leftCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
-		local rightCannonHasClearShot = #gfx.sprite.querySpritesAlongLine(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
+		local leftCannonHasClearShot = #querySpritesAlongLines(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
+		local rightCannonHasClearShot = #querySpritesAlongLines(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
 		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
 			if math.random(1, 2) == 1 then
 				leftCannon:startShootingProjectile()
@@ -214,19 +214,19 @@ function moveCameraTowardGoal()
 	if lowestY == STARTING_LOWEST_Y or player.isDead then
 		return
 	end
-	local xOffset, yOffset = gfx.getDrawOffset()
+	local xOffset, yOffset = getDrawOffset()
 	-- scroll 2 pixels at a time to prevent flickering from dithering
 	if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
 		return
 	elseif player.y < player.lastGroundY - 150 then
-		gfx.setDrawOffset(0, yOffset + 2)
+		setDrawOffset(0, yOffset + 2)
 	elseif goalYOffset > yOffset then
 		if cameraOffsetTimer.frame == 0 or cameraOffsetTimer.frame == 5 then
-			gfx.setDrawOffset(0, yOffset + 2)
+			setDrawOffset(0, yOffset + 2)
 		end
 	elseif goalYOffset < yOffset then
 		if cameraOffsetTimer.frame %2 == 0 then
-			gfx.setDrawOffset(0, yOffset - 2)
+			setDrawOffset(0, yOffset - 2)
 		end
 	end
 end
@@ -248,7 +248,7 @@ function changeLavaSpeedWithLowestY()
 end
 
 function removeProjectilesAndGemsBelowLava()
-	local sprites = gfx.sprite.getAllSprites()
+	local sprites = getAllSprites()
 	for i = 1, #sprites do
 		local sprite = sprites[i]
 		-- makes sure sprite is far enough below lava before deleting

@@ -1,5 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local getDrawOffset <const> = gfx.getDrawOffset
+
 local image = gfx.image.new("images/GemIndicator")
 
 class("GemIndicator").extends(gfx.sprite)
@@ -28,7 +30,7 @@ function GemIndicator:removeIfGemOnScreen()
 end
 
 function GemIndicator:isGemOnScreen(sprite)
-    local xOffset, yOffset = gfx.getDrawOffset()
+    local xOffset, yOffset = getDrawOffset()
     if yOffset + self.smallestGemY > 0 then
         return true
     end

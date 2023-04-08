@@ -1,5 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local frameTimer <const> = pd.frameTimer
+
 local IMAGES = gfx.imagetable.new("images/cannon")
 
 local PROJECTILE_DX = 4.5
@@ -89,7 +91,7 @@ end
 function Cannon:startShootingProjectile()
     self:setImage(IMAGES:getImage(2), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
+    frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:startShootingProjectile2()
     end)
 end
@@ -97,7 +99,7 @@ end
 function Cannon:startShootingProjectile2()
     self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
+    frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:startShootingProjectile3()
     end)
 end
@@ -105,7 +107,7 @@ end
 function Cannon:startShootingProjectile3()
     self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
+    frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:shootProjectile()
     end)
 end
@@ -115,14 +117,14 @@ function Cannon:shootProjectile()
 
     self:setImage(IMAGES:getImage(5), self:getSpriteOrientation())
     Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
-    pd.frameTimer.new(SHOOT_FRAMES, function()
+    frameTimer.new(SHOOT_FRAMES, function()
         self:cooldown()
     end)
 end
 
 function Cannon:cooldown()
     self:setImage(IMAGES:getImage(6), self:getSpriteOrientation())
-    pd.frameTimer.new(COOLDOWN_FRAMES, function()
+    frameTimer.new(COOLDOWN_FRAMES, function()
         self.movementAllowed = true
         self:setImage(IMAGES:getImage(1), self:getSpriteOrientation())
     end)

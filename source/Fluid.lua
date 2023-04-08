@@ -1,5 +1,9 @@
 local gfx <const> = playdate.graphics
 local geometry <const> = playdate.geometry
+local fillPolygon <const> = gfx.fillPolygon
+local setDitherPattern <const> = gfx.setDitherPattern
+local setColor <const> = gfx.setColor
+
 local X_OFFSET = 0
 local Y_OFFSET = 50
 
@@ -216,9 +220,9 @@ end
 function Fluid:fill()
 	local image = gfx.image.new(X_OFFSET + self.bounds.width, Y_OFFSET + self.bounds.height)
 	gfx.pushContext(image)
-		gfx.setColor(gfx.kColorWhite)
-		gfx.setDitherPattern(0.3)
-		gfx.fillPolygon(self.polygon)
+		setColor(gfx.kColorWhite)
+		setDitherPattern(0.3)
+		fillPolygon(self.polygon)
 	gfx.popContext()
 	self:setImage(image)
 end

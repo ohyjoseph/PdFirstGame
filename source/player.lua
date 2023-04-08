@@ -1,5 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local frameTimer <const> = pd.frameTimer
 
 class("Player").extends(gfx.sprite)
 
@@ -25,16 +26,16 @@ local HALF_PLAYER_WIDTH = 15
 function Player:init(x, y, score)
 	Player.super.init(self)
 
-	self.idleTimer = pd.frameTimer.new(MAX_IDLE_FRAMES)
+	self.idleTimer = frameTimer.new(MAX_IDLE_FRAMES)
 	self.idleTimer.discardOnCompletion = false
-	self.runTimer = pd.frameTimer.new(MAX_RUN_FRAMES)
+	self.runTimer = frameTimer.new(MAX_RUN_FRAMES)
 	self.runTimer.discardOnCompletion = false
 
-	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
+	self.jumpTimer = frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
 	self.jumpTimer.discardOnCompletion = false
 
-	self.coyoteTimer = pd.frameTimer.new(MAX_COYOTE_FRAMES)
+	self.coyoteTimer = frameTimer.new(MAX_COYOTE_FRAMES)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
@@ -110,7 +111,7 @@ end
 function Player:unstunPlayer()
 	if self.isOnGround and self.isStunned then
 		if not self.unstunTimer then
-			self.unstunTimer = pd.frameTimer.new(STUNNED_FRAMES, function()
+			self.unstunTimer = frameTimer.new(STUNNED_FRAMES, function()
 				self.isStunned = false
 				self.unstunTimer = nil
 			end)
@@ -303,7 +304,7 @@ function Player:startDeath()
 	self.g = 0.04
 
 	SoundManager:playSound(SoundManager.kSoundDeathJingle)
-	pd.frameTimer.new(DEATH_FRAMES, function()
+	frameTimer.new(DEATH_FRAMES, function()
 		showScoreWidget()
 	end)
 end
@@ -387,7 +388,7 @@ function Player:executeCollisionResponses(collisions)
 			if self.y < getLowestY() then
 				-- delay by 1 frame in case player scores and grabs gem on the same frame
 				-- ensuring the multiplier goes up before adding to the score
-				pd.frameTimer.new(1, function()
+				frameTimer.new(1, function()
 					addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
 					setLowestY(self.y)
 				end)
