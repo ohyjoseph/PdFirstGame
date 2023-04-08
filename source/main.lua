@@ -63,6 +63,7 @@ function playdate.update()
 end
 
 function reset()
+	music:pause()
 	gfx.sprite.removeAll()
 	for i, timer in pairs(playdate.frameTimer.allTimers()) do
 		timer:remove()
@@ -145,4 +146,5 @@ end
 
 HIGH_SCORES = LOAD_HIGH_SCORES()
 HIGH_SCORE = GET_HIGH_SCORE()
--- SAVE_HIGH_SCORE(1)
+
+music = playdate.sound.fileplayer.new("sound/lavaLoop")

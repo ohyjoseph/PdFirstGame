@@ -107,6 +107,9 @@ function setDifficulty()
 end
 
 function initialize()
+	music:setVolume(1)
+	music:play(0)
+
     math.randomseed(playdate.getSecondsSinceEpoch())
 	gfx.setDrawOffset(0, 0)
 	gfx.setBackgroundColor(gfx.kColorBlack)
@@ -154,10 +157,13 @@ function showScoreWidget()
 	createTipWidget()
 	local scoreWidget = ScoreWidget(score.score)
 	scoreWidget:moveTo(200, 120)
+
+	music:setVolume(0, 0, 2)
 end
 
 function resetGame()
 	gfx.sprite.removeAll()
+	music:pause()
 	for i, timer in pairs(playdate.frameTimer.allTimers()) do
 		timer:remove()
 	end
