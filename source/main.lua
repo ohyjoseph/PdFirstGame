@@ -35,6 +35,7 @@ music = playdate.sound.fileplayer.new("sound/lavaLoop")
 local menu = playdate.getSystemMenu()
 menu:addOptionsMenuItem("Lava Vol", {"off", "low", "med", "high"}, "med", function(volumeText)
 	music:setVolume(translateMenuVolume(volumeText))
+	SAVE_LAVA_VOLUME()
 end)
 menu:addMenuItem("Back to Intro", function()
 	reset()
@@ -90,8 +91,6 @@ function translateMenuVolume(volumeText)
 	end
 	return 0
 end
-
-getLavaVolume()
 
 function cameraShake()
     shakeTable.counter += 1
@@ -164,6 +163,28 @@ function GET_HIGH_SCORE()
 		return highScores[highScoresLength]
 	end
 end
+
+function SAVE_LAVA_VOLUME()
+	local newLavaVolumeTable = {}
+	table.insert(newLavaVolumeTable, menu:getMenuItems()[1]:getValue())
+	playdate.datastore.write(newLavaVolumeTable, "lavaVolume")
+end
+
+function LOAD_LAVA_VOLUME()
+	return playdate.datastore.read("lavaVolume")
+end
+
+
+function initLavaVolume()
+	local lavaVolumeTable = LOAD_LAVA_VOLUME()
+	if lavaVolumeTable and lavaVolumeTable[1] then
+		menu:getMenuItems()[1]:setValue(lavaVolumeTable[1])
+	else
+		menu:getMenuItems()[1]:setValue("med")
+	end
+end
+
+initLavaVolume()
 
 HIGH_SCORES = LOAD_HIGH_SCORES()
 HIGH_SCORE = GET_HIGH_SCORE()
