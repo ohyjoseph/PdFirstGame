@@ -2,8 +2,8 @@ import "GemIndicator"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
-local COLLISION_X_BUFFER = 10
-local COLLISION_Y_BUFFER = 6
+local COLLISION_X_BUFFER = 12
+local COLLISION_Y_BUFFER = 12
 local IMAGES = gfx.imagetable.new("images/gem")
 
 class("Gem").extends(gfx.sprite)
