@@ -144,7 +144,7 @@ function initialize()
 	gemSpawner = GemSpawner(player.y, 240)
 
 	-- local rect = Rectangle(0, 195, 420, 150)
-	lava = Fluid(0, LAVA_STARTING_Y, 400, 70)
+	lava = Fluid(0, LAVA_STARTING_Y, 400, 90)
 end
 
 function showScoreWidget()
