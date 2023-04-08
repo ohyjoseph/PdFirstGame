@@ -30,8 +30,12 @@ local isInGameScene = false
 local shakeTable = {counter = 0, prevX = 0, prevY = 0}
 
 local scene
+music = playdate.sound.fileplayer.new("sound/lavaLoop")
 
 local menu = playdate.getSystemMenu()
+menu:addOptionsMenuItem("Lava Vol", {"off", "low", "med", "high"}, "med", function(volumeText)
+	music:setVolume(translateMenuVolume(volumeText))
+end)
 menu:addMenuItem("Back to Intro", function()
 	reset()
 	hasUsedMenuScene = false
@@ -71,6 +75,23 @@ function reset()
 	shouldCameraShake = false
 	shakeTable = {counter = 0, prevX = 0, prevY = 0}
 end
+
+function getLavaVolume()
+	return translateMenuVolume(menu:getMenuItems()[1]:getValue())
+end
+
+function translateMenuVolume(volumeText)
+	if volumeText == "low" then
+		return 0.33
+	elseif volumeText == "med" then
+		return 0.66
+	elseif volumeText == "high" then
+		return 1
+	end
+	return 0
+end
+
+getLavaVolume()
 
 function cameraShake()
     shakeTable.counter += 1
@@ -146,5 +167,3 @@ end
 
 HIGH_SCORES = LOAD_HIGH_SCORES()
 HIGH_SCORE = GET_HIGH_SCORE()
-
-music = playdate.sound.fileplayer.new("sound/lavaLoop")

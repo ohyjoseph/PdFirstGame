@@ -107,7 +107,7 @@ function setDifficulty()
 end
 
 function initialize()
-	music:setVolume(1)
+	music:setVolume(getLavaVolume())
 	music:play(0)
 
     math.randomseed(playdate.getSecondsSinceEpoch())
@@ -158,7 +158,9 @@ function showScoreWidget()
 	local scoreWidget = ScoreWidget(score.score)
 	scoreWidget:moveTo(200, 120)
 
-	music:setVolume(0, 0, 2)
+	music:setVolume(0, 0, 2, function(musicPlayer)
+		musicPlayer:pause()
+	end)
 end
 
 function resetGame()
