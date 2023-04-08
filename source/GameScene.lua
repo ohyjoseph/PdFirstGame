@@ -17,6 +17,7 @@ import "Fluid"
 import "CaveBottom"
 import "Clearout"
 import "ScoreWidget"
+import "TipWidget"
 
 local gfx <const> = playdate.graphics
 local FrameTimer_update = playdate.frameTimer.updateTimers
@@ -150,6 +151,7 @@ function showScoreWidget()
 	isPaused = true
 	leftCannon:setUpdatesEnabled(false)
 	rightCannon:setUpdatesEnabled(false)
+	createTipWidget()
 	local scoreWidget = ScoreWidget(score.score)
 	scoreWidget:moveTo(200, 120)
 end
@@ -277,4 +279,24 @@ end
 
 function setLowestY(value)
 	lowestY = value
+end
+
+function getTip()
+	if score.score <= 1 then
+		return  "Jump on boulders to\nstack them up!"
+	elseif score.multiplier <= 1 then
+		return "Gems can only be collected\nwhile standing!"
+	elseif score.multiplier <= 5 then
+		return "Collect gems to increase\nthe score multiplier!"
+	elseif score.multiplier <= 10 then
+		return "Stack boulders towards gems\n to get high scores!"
+	end
+end
+
+function createTipWidget()
+	local tipText = getTip()
+	if tipText then
+		local tipWidget = TipWidget(getTip())
+		tipWidget:moveTo(200, 9)
+	end
 end
