@@ -48,5 +48,6 @@ function Gem:removeClean()
     if self.gemIndicator then
         self.gemIndicator:remove()
     end
+    self.rotationTimer:remove()
     self:remove()
 end

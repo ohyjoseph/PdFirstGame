@@ -260,7 +260,7 @@ function removeProjectilesAndGemsBelowLava()
 		-- makes sure sprite is far enough below lava before deleting
 		if (sprite:isa(Projectile) or sprite:isa(Gem)) and sprite.y > lava.y + 150 then
 			print("REMOVED SPRITE")
-			sprite:remove()
+			sprite:removeClean()
 		end
 	end
 end

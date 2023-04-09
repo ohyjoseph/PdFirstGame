@@ -124,3 +124,7 @@ function Projectile:executeCollisionResponses(collisions)
 		end
 	end
 end
+
+function Projectile:removeClean()
+	self:remove()
+end
