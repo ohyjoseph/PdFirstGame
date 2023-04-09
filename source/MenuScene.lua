@@ -1,8 +1,3 @@
-import "CoreLibs/object"
-import "CoreLibs/graphics"
-import "CoreLibs/sprites"
-import 'CoreLibs/frameTimer'
-
 import "Player"
 import "Platform"
 import "Rectangle"
@@ -14,9 +9,11 @@ import "SoundManager"
 import "Fluid"
 import "CaveBottom"
 import "Rope"
+import "Gem"
 import "MenuGem"
 import "Pillar"
 import "Blackout"
+import "MenuGem"
 
 
 local pd <const> = playdate

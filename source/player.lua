@@ -400,4 +400,4 @@ function Player:executeCollisionResponses(collisions)
 		self.isOnGround = false
 		self.coyoteTimer:start()
 	end
-end
+end -- 1060222 15780

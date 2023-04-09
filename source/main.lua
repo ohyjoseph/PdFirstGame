@@ -5,14 +5,7 @@ import 'CoreLibs/frameTimer'
 
 import "Player"
 import "Platform"
-import "Rectangle"
-import "Cannon"
-import "Projectile"
-import "Gem"
-import "GemSpawner"
-import "Score"
 import "SoundManager"
-import "Fluid"
 import "CaveBottom"
 
 import "MenuScene"
@@ -55,11 +48,17 @@ end)
 
 function pd.update()
 	if not hasUsedMenuScene then
+		if scene then
+			scene:remove()
+		end
 		scene = MenuScene()
 		hasUsedMenuScene = true
 	end
 
 	if isMenuGemCollected and not isInGameScene then
+		if scene then
+			scene:remove()
+		end
 		scene = GameScene()
 		isInGameScene = true
 	end

@@ -1,11 +1,3 @@
-import "CoreLibs/object"
-import "CoreLibs/graphics"
-import "CoreLibs/sprites"
-import 'CoreLibs/frameTimer'
-
-import "Player"
-import "Platform"
-import "Rectangle"
 import "Cannon"
 import "Wheel"
 import "Projectile"
