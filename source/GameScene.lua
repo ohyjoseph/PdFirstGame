@@ -67,6 +67,8 @@ local caveBottom
 
 local removalTimer
 
+local shouldStopCamera
+
 class("GameScene").extends(gfx.sprite)
 
 function GameScene:init()
@@ -159,6 +161,7 @@ function initialize()
 	goalYOffset = 0
 	highestHeight = 0
 	cameraMovedPastStart = false
+	shouldStopCamera = false
 end
 
 function showScoreWidget()
@@ -168,6 +171,8 @@ function showScoreWidget()
 	createTipWidget()
 	local scoreWidget = ScoreWidget(score.score)
 	scoreWidget:moveTo(200, 120)
+
+	shouldStopCamera = true
 
 	music:setVolume(0, 0, 2, function(musicPlayer)
 		musicPlayer:pause()
@@ -222,7 +227,10 @@ function getRandomCannonYGoal()
 end
 
 function moveCameraTowardGoal()
-	if not cameraMovedPastStart and (lowestY == STARTING_LOWEST_Y or player.isDead) then
+	if shouldStopCamera then
+		return
+	end
+	if not cameraMovedPastStart and lowestY == STARTING_LOWEST_Y then
 		return
 	end
 	cameraMovedPastStart = true
@@ -359,4 +367,8 @@ function shiftObjects()
 			caveBottom:remove()
 		end
 	end
+end
+
+function setShouldStopCamera(value)
+	shouldStopCamera = value
 end

@@ -304,7 +304,18 @@ function Player:startDeath()
 	self.g = 0.04
 
 	SoundManager:playSound(SoundManager.kSoundDeathJingle)
+	frameTimer.new(DEATH_FRAMES / 5.5, function()
+		setShouldStopCamera(true)
+		self.dy /= 2
+		self.g /= 2
+	end)
+	frameTimer.new(DEATH_FRAMES / 2, function()
+		self.dy /= 2
+		self.g /= 2
+	end)
 	frameTimer.new(DEATH_FRAMES, function()
+		self.dy /= 2
+		self.g /= 2
 		showScoreWidget()
 	end)
 end
