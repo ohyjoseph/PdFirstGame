@@ -395,15 +395,19 @@ function Player:executeCollisionResponses(collisions)
 		self.coyoteTimer:pause()
 		self.coyoteTimer:reset()
 
-		if self.y < getLowestY() then
-			-- delay by 1 frame in case player scores and grabs gem on the same frame
-			-- ensuring the multiplier goes up before adding to the score
-			frameTimer.new(1, function()
-				local baseValue = math.floor((getLowestY() - self.y) / 22)
-				addToHighestHeight(baseValue)
-				addToScore(getMutliplier() * baseValue)
-				setLowestY(self.y)
-			end)
+		local currentLowestY = getLowestY()
+		if currentLowestY then
+			if self.y < currentLowestY then
+				-- delay by 1 frame in case player scores and grabs gem on the same frame
+				-- ensuring the multiplier goes up before adding to the score
+				frameTimer.new(1, function()
+					-- getting lowestY again because the delay of 1 frame
+					local baseValue = math.floor((getLowestY() - self.y) / 22)
+					addToHighestHeight(baseValue)
+					addToScore(getMutliplier() * baseValue)
+					setLowestY(self.y)
+				end)
+			end
 		end
 	else
 		self.isOnGround = false
