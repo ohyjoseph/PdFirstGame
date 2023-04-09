@@ -17,6 +17,7 @@ local getDrawOffset <const> = gfx.getDrawOffset
 local setDrawOffset <const> = gfx.setDrawOffset
 local getAllSprites <const> = gfx.sprite.getAllSprites
 local querySpritesAlongLines <const> = gfx.sprite.querySpritesAlongLine
+local removeAllSprites <const> = gfx.sprite.removeAll
 
 local cameraOffsetTimer
 local STARTING_PROJECTILE_SHOOT_LIMIT = 120
@@ -169,7 +170,7 @@ function showScoreWidget()
 end
 
 function resetGame()
-	gfx.sprite.removeAll()
+	removeAllSprites()
 	music:pause()
 	for i, timer in pairs(pd.frameTimer.allTimers()) do
 		timer:remove()
@@ -323,7 +324,8 @@ function addYToObjects()
 	local sprites = getAllSprites()
 	for i = 1, #sprites do
 		local sprite = sprites[i]
-		if sprite.className ~= "GemIndicator" and sprite.className ~= "Score" then
+		local spriteClassName = sprite.className
+		if spriteClassName ~= "GemIndicator" and spriteClassName ~= "Score" then
 			local x, y, width, height = sprite:getCollideBounds()
 			if not width == 0 and not height == 0 then
 				-- print ("COL", spriteCollideRect)
@@ -331,13 +333,13 @@ function addYToObjects()
 			else
 				sprite:moveTo(sprite.x, sprite.y + LOWEST_ALLOWED_Y)
 			end
-		elseif sprite.className == "GemIndicator" then
+		elseif spriteClassName == "GemIndicator" then
 			sprite.smallestGemY += LOWEST_ALLOWED_Y
 		end
 	end
-	local offsetX, offsetY = gfx.getDrawOffset()
+	local offsetX, offsetY = getDrawOffset()
 	goalYOffset -= LOWEST_ALLOWED_Y
-	gfx.setDrawOffset(offsetX, offsetY - LOWEST_ALLOWED_Y)
+	setDrawOffset(offsetX, offsetY - LOWEST_ALLOWED_Y)
 	lowestY += LOWEST_ALLOWED_Y
 	player.lastGroundY += LOWEST_ALLOWED_Y
 	leftCannon.goalY += LOWEST_ALLOWED_Y
