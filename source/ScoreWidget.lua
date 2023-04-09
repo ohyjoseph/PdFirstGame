@@ -58,7 +58,7 @@ function ScoreWidget:drawWidget()
     local SCORE_Y_OFFSET = 22
     local SCORE_Y_SPACING = 15
     local alreadyFoundNew = false
-
+    gfx.setFont(self.font)
     for i = #HIGH_SCORES, 1, -1 do
         local highScore = HIGH_SCORES[i]
         local isNewHighScore = false

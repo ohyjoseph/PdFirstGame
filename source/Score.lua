@@ -50,6 +50,7 @@ end
 
 -- draw callback from the sprite library
 function Score:draw()
+	gfx.setFont(DEFAULT_FONT)
 	gfx.setImageDrawMode(gfx.kDrawModeInverted)
 	local displayString = self:getDisplayString()
 	local width = gfx.getTextSize(displayString)
