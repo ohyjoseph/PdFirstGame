@@ -36,6 +36,8 @@ local MIN_LAVA_STARTING_Y_OFFSET = 40
 local UPDATE_CANNONS_LIMIT = 20
 local updateCannonsCounter
 
+local LOWEST_ALLOWED_Y = 400
+
 local MAX_PROJECTILE_Y_OFFSET = 40
 local PROJECTILE_Y_OFFSET_DIFF = 16 / (MAX_PROJECTILE_Y_OFFSET)
 local HARDEST_PROJECTILE_Y_OFFSET_DIFF = 40
@@ -67,6 +69,9 @@ local isPaused = false
 
 local highestHeight
 
+local cameraMovedPastStart
+local caveBottom
+
 class("GameScene").extends(gfx.sprite)
 
 function GameScene:init()
@@ -92,7 +97,6 @@ function GameScene:update()
 end
 
 function setDifficulty()
-	print("HIGH", highestHeight)
 	if atMaxDifficulty then
 		lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
 		projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
@@ -121,7 +125,7 @@ function initialize()
 	gfx.setBackgroundColor(gfx.kColorBlack)
 	Clearout()
 	pd.display.setRefreshRate(45) -- Sets framerate to 45 fps
-	CaveBottom()
+	caveBottom = CaveBottom()
 	lowestY = STARTING_LOWEST_Y
 	local platform = Platform(200, 220, 180, 62)
 	platform:setZIndex(0)
@@ -156,6 +160,7 @@ function initialize()
 
 	goalYOffset = 0
 	highestHeight = 0
+	cameraMovedPastStart = false
 end
 
 function showScoreWidget()
@@ -219,9 +224,10 @@ function getRandomCannonYGoal()
 end
 
 function moveCameraTowardGoal()
-	if lowestY == STARTING_LOWEST_Y or player.isDead then
+	if not cameraMovedPastStart and (lowestY == STARTING_LOWEST_Y or player.isDead) then
 		return
 	end
+	cameraMovedPastStart = true
 	local xOffset, yOffset = getDrawOffset()
 	-- scroll 2 pixels at a time to prevent flickering from dithering
 	if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
@@ -257,7 +263,6 @@ end
 
 function removeProjectilesAndGemsBelowLava()
 	local sprites = getAllSprites()
-	print("ALLSPRITES", #sprites)
 	for i = 1, #sprites do
 		local sprite = sprites[i]
 		-- makes sure sprite is far enough below lava before deleting
@@ -323,37 +328,35 @@ function createTipWidget()
 end
 
 function addYToObjects()
-	-- print("ADDING Y")
-	local addY = -250
 	local sprites = getAllSprites()
 	for i = 1, #sprites do
 		local sprite = sprites[i]
-		-- print(sprite.className)
 		if sprite.className ~= "GemIndicator" and sprite.className ~= "Score" then
 			local x, y, width, height = sprite:getCollideBounds()
 			if not width == 0 and not height == 0 then
 				-- print ("COL", spriteCollideRect)
-				sprite:moveWithCollisions(sprite.x, sprite.y + addY)
+				sprite:moveWithCollisions(sprite.x, sprite.y + LOWEST_ALLOWED_Y)
 			else
-				sprite:moveTo(sprite.x, sprite.y + addY)
+				sprite:moveTo(sprite.x, sprite.y + LOWEST_ALLOWED_Y)
 			end
 		elseif sprite.className == "GemIndicator" then
-			sprite.smallestGemY += addY
-			-- print("INDICATORTHING")
+			sprite.smallestGemY += LOWEST_ALLOWED_Y
 		end
 	end
 	local offsetX, offsetY = gfx.getDrawOffset()
-	goalYOffset -= addY
-	gfx.setDrawOffset(offsetX, offsetY - addY)
-	lowestY += addY
-	player.lastGroundY += addY
-	leftCannon.goalY += addY
-	rightCannon.goalY += addY
+	goalYOffset -= LOWEST_ALLOWED_Y
+	gfx.setDrawOffset(offsetX, offsetY - LOWEST_ALLOWED_Y)
+	lowestY += LOWEST_ALLOWED_Y
+	player.lastGroundY += LOWEST_ALLOWED_Y
+	leftCannon.goalY += LOWEST_ALLOWED_Y
+	rightCannon.goalY += LOWEST_ALLOWED_Y
 end
-local a = false
+
 function shiftObjects()
-	if not a and player.y <= 100 then
+	if lowestY <= -LOWEST_ALLOWED_Y then
 		addYToObjects()
-		-- a = true
+		if caveBottom then
+			caveBottom:remove()
+		end
 	end
 end
