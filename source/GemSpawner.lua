@@ -7,10 +7,7 @@ class("GemSpawner").extends(gfx.sprite)
 
 function GemSpawner:init(y, yBetweenTriggers)
     GemSpawner.super.init(self)
-    self.y = y
     self.yBetweenTriggers = yBetweenTriggers
-
-    self.gemIndicator = GemInd
 
     self:setCollideRect(0, self.y, 400, 1)
     self:setGroups(5)
@@ -26,7 +23,7 @@ function GemSpawner:collisionResponse(other)
 end
 
 function GemSpawner:update()
-    unused, unused2, collisions, length = self:checkCollisions(0, 0)
+    unused, unused2, collisions, length = self:checkCollisions(self.x, self.y)
     self:executeCollisionResponses(collisions)
 end
 

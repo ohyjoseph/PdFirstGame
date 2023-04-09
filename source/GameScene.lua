@@ -84,6 +84,8 @@ function GameScene:update()
 		updateCannons()
 		chooseAndFireCannon()
 		removeProjectilesAndGemsBelowLava()
+
+		shiftObjects()
 	end
 end
 
@@ -104,7 +106,7 @@ function setDifficulty()
 			projectileYOffset = HARDEST_PROJECTILE_Y_OFFSET_DIFF
 		end
 	end
-	print("DIFF", lavaRiseCounterLimit, projectileShootCounterLimit, projectileYOffset)
+	-- print("DIFF", lavaRiseCounterLimit, projectileShootCounterLimit, projectileYOffset)
 end
 
 function initialize()
@@ -249,6 +251,7 @@ end
 
 function removeProjectilesAndGemsBelowLava()
 	local sprites = getAllSprites()
+	print("ALLSPRITES", #sprites)
 	for i = 1, #sprites do
 		local sprite = sprites[i]
 		-- makes sure sprite is far enough below lava before deleting
@@ -306,5 +309,43 @@ function createTipWidget()
 	if tipText then
 		local tipWidget = TipWidget(getTip())
 		tipWidget:moveTo(200, 9)
+	end
+end
+
+function addYToObjects()
+	-- print("ADDING Y")
+	local addY = -250
+	local sprites = getAllSprites()
+	for i = 1, #sprites do
+		local sprite = sprites[i]
+		-- print(sprite.className)
+		if sprite.className ~= "GemIndicator" and sprite.className ~= "Score" then
+			local x, y, width, height = sprite:getCollideBounds()
+			if not width == 0 and not height == 0 then
+				-- print ("COL", spriteCollideRect)
+				sprite:moveWithCollisions(sprite.x, sprite.y + addY)
+			else
+				sprite:moveTo(sprite.x, sprite.y + addY)
+			end
+		else
+			if sprite.className == "GemIndicator" then
+				sprite.smallestGemY += addY
+			end
+			-- print("INDICATORTHING")
+		end
+	end
+	local offsetX, offsetY = gfx.getDrawOffset()
+	goalYOffset -= addY
+	gfx.setDrawOffset(offsetX, offsetY - addY)
+	lowestY += addY
+	player.lastGroundY += addY
+	leftCannon.goalY += addY
+	rightCannon.goalY += addY
+end
+local a = false
+function shiftObjects()
+	if not a and player.y <= 100 then
+		addYToObjects()
+		-- a = true
 	end
 end
