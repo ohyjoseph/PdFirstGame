@@ -65,6 +65,8 @@ local highestHeight
 local cameraMovedPastStart
 local caveBottom
 
+local removalTimer
+
 class("GameScene").extends(gfx.sprite)
 
 function GameScene:init()
@@ -141,6 +143,9 @@ function initialize()
 	cameraOffsetTimer = pd.frameTimer.new(9)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
+	removalTimer = pd.frameTimer.new(225)
+	removalTimer.discardOnCompletion = false
+	removalTimer.repeats = true
 	updateCannonsCounter = 0
 	projectileShootCounter = 0
 	projectileShootCounterLimit = STARTING_PROJECTILE_SHOOT_LIMIT
@@ -255,13 +260,14 @@ function changeLavaSpeedWithLowestY()
 end
 
 function removeProjectilesAndGemsBelowLava()
-	local sprites = getAllSprites()
-	for i = 1, #sprites do
-		local sprite = sprites[i]
-		-- makes sure sprite is far enough below lava before deleting
-		if (sprite:isa(Projectile) or sprite:isa(Gem)) and sprite.y > lava.y + 150 then
-			print("REMOVED SPRITE")
-			sprite:removeClean()
+	if removalTimer.frame >= removalTimer.duration then
+		local sprites = getAllSprites()
+		for i = 1, #sprites do
+			local sprite = sprites[i]
+			-- makes sure sprite is far enough below lava before deleting
+			if (sprite:isa(Projectile) or sprite:isa(Gem)) and sprite.y > lava.y + 150 then
+				sprite:removeClean()
+			end
 		end
 	end
 end
