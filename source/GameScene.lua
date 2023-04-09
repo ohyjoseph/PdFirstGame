@@ -337,10 +337,8 @@ function addYToObjects()
 			else
 				sprite:moveTo(sprite.x, sprite.y + addY)
 			end
-		else
-			if sprite.className == "GemIndicator" then
-				sprite.smallestGemY += addY
-			end
+		elseif sprite.className == "GemIndicator" then
+			sprite.smallestGemY += addY
 			-- print("INDICATORTHING")
 		end
 	end
