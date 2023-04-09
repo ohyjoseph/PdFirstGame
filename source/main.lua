@@ -51,6 +51,9 @@ function pd.update()
 		if scene then
 			scene:remove()
 		end
+		for i, timer in pairs(pd.frameTimer.allTimers()) do
+			timer:remove()
+		end
 		scene = MenuScene()
 		hasUsedMenuScene = true
 	end
@@ -58,6 +61,9 @@ function pd.update()
 	if isMenuGemCollected and not isInGameScene then
 		if scene then
 			scene:remove()
+		end
+		for i, timer in pairs(pd.frameTimer.allTimers()) do
+			timer:remove()
 		end
 		scene = GameScene()
 		isInGameScene = true
