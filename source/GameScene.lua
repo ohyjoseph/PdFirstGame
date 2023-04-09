@@ -62,8 +62,10 @@ local leftCannon
 local rightCannon
 local STARTING_LOWEST_Y = 168
 local lowestY
-local goalYOffset = 0
+local goalYOffset
 local isPaused = false
+
+local highestHeight
 
 class("GameScene").extends(gfx.sprite)
 
@@ -90,15 +92,16 @@ function GameScene:update()
 end
 
 function setDifficulty()
+	print("HIGH", highestHeight)
 	if atMaxDifficulty then
 		lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
 		projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
 		projectileYOffset = HARDEST_PROJECTILE_Y_OFFSET_DIFF
 	else
 		local height = (-math.floor(lowestY / 22) + 7)
-		lavaRiseCounterLimit = math.ceil(STARTING_LAVA_RISE_LIMIT - LAVA_RISE_SPEED_DIFF * height)
-		projectileShootCounterLimit = math.ceil(STARTING_PROJECTILE_SHOOT_LIMIT - PROJECTILE_FREQ_SPEED_DIFF * height)
-		projectileYOffset = math.ceil(PROJECTILE_Y_OFFSET_DIFF * height)
+		lavaRiseCounterLimit = math.ceil(STARTING_LAVA_RISE_LIMIT - LAVA_RISE_SPEED_DIFF * highestHeight)
+		projectileShootCounterLimit = math.ceil(STARTING_PROJECTILE_SHOOT_LIMIT - PROJECTILE_FREQ_SPEED_DIFF * highestHeight)
+		projectileYOffset = math.ceil(PROJECTILE_Y_OFFSET_DIFF * highestHeight)
 		if lavaRiseCounterLimit <= HARDEST_LAVA_RISE_LIMIT then
 			atMaxDifficulty = true
 			lavaRiseCounterLimit = HARDEST_LAVA_RISE_LIMIT
@@ -150,6 +153,9 @@ function initialize()
 	GemSpawner(player.y, 240)
 
 	lava = Fluid(0, LAVA_STARTING_Y, 400, 90)
+
+	goalYOffset = 0
+	highestHeight = 0
 end
 
 function showScoreWidget()
@@ -278,6 +284,10 @@ end
 
 function addToMultiplier(value)
 	score:addToMultiplier(value)
+end
+
+function addToHighestHeight(value)
+	highestHeight += value
 end
 
 function getMutliplier()

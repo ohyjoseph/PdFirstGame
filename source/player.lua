@@ -389,7 +389,9 @@ function Player:executeCollisionResponses(collisions)
 				-- delay by 1 frame in case player scores and grabs gem on the same frame
 				-- ensuring the multiplier goes up before adding to the score
 				frameTimer.new(1, function()
-					addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
+					local baseValue = math.floor((getLowestY() - self.y) / 22)
+					addToHighestHeight(baseValue)
+					addToScore(getMutliplier() * baseValue)
 					setLowestY(self.y)
 				end)
 			end
