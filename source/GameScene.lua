@@ -99,7 +99,6 @@ function setDifficulty()
 		projectileShootCounterLimit =  HARDEST_PROJECTILE_SHOOT_LIMIT
 		projectileYOffset = HARDEST_PROJECTILE_Y_OFFSET_DIFF
 	else
-		local height = (-math.floor(lowestY / 22) + 7)
 		lavaRiseCounterLimit = math.ceil(STARTING_LAVA_RISE_LIMIT - LAVA_RISE_SPEED_DIFF * highestHeight)
 		projectileShootCounterLimit = math.ceil(STARTING_PROJECTILE_SHOOT_LIMIT - PROJECTILE_FREQ_SPEED_DIFF * highestHeight)
 		projectileYOffset = math.ceil(PROJECTILE_Y_OFFSET_DIFF * highestHeight)
