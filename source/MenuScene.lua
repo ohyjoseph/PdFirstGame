@@ -24,6 +24,9 @@ local STARTING_LOWEST_Y = 168
 local PLAYER_ROPE_X_DIFF = 10
 local ROPE_X = 140
 local slideAnimator
+local menuGem
+local rope
+local pillar
 
 class("MenuScene").extends(gfx.sprite)
 
@@ -59,12 +62,38 @@ function startUp()
     local platform = Platform(200, 220)
     platform:setZIndex(0)
 
-    Pillar(200, 177)
+    pillar = Pillar(200, 177)
 
-    Rope(ROPE_X, -75)
+    rope = Rope(ROPE_X, -75)
     platform:setZIndex(0)
 
     Rectangle(-10, 230, 420, 20)
 
-    MenuGem(200, 160)
+    menuGem = MenuGem(200, 160)
+end
+
+function setPlayerIsStunned(value)
+	player.isStunned = value
+end
+
+function removeMenuGem()
+    if menuGem then
+        menuGem:remove()
+    end
+end
+
+function setPlayerPosition(x, y)
+    player:moveTo(x, y)
+end
+
+function removeRope()
+    if rope then
+        rope:remove()
+    end
+end
+
+function removePillar()
+    if pillar then
+        pillar:remove()
+    end
 end

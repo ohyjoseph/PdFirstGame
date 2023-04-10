@@ -32,16 +32,19 @@ function Blackout:update()
     local ditherValue = self.blackAnimator:currentValue()
     if self.blackAnimator:ended() then
         ditherValue = self.clearAnimator:currentValue()
+        setPlayerPosition(210, 168)
+        setPlayerIsStunned(true)
+        removeMenuGem()
         if self.clearAnimator:ended() then
             if not self.blackAnimator2:ended() then
-                print("WHT")
                 ditherValue = self.blackAnimator2:currentValue()
             else
+                removeRope()
+                removePillar()
                 if not self.clearAnimator2:ended() then
                     ditherValue = self.clearAnimator2:currentValue()
                 else
                     if not self.blackAnimator3:ended() then
-                        print("HELLO", self.blackAnimator3:currentValue())
                         ditherValue = self.blackAnimator3:currentValue()
                     else
                         ditherValue = 0
