@@ -190,8 +190,9 @@ end
 function chooseAndFireCannon()
 	projectileShootCounter += 1
 	if projectileShootCounter >= projectileShootCounterLimit then
-		local leftCannonHasClearShot = #querySpritesAlongLines(leftCannon.x, leftCannon.y, player.x, player.y) <= 1
-		local rightCannonHasClearShot = #querySpritesAlongLines(rightCannon.x, rightCannon.y, player.x, player.y) <= 1
+		local leftCannonHasClearShot = cannonHasClearShot(leftCannon)
+		local rightCannonHasClearShot = cannonHasClearShot(rightCannon)
+		print("CLEARSHOT", leftCannonHasClearShot, rightCannonHasClearShot)
 		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
 			if math.random(1, 2) == 1 then
 				leftCannon:startShootingProjectile()
@@ -205,6 +206,17 @@ function chooseAndFireCannon()
 		end
 		projectileShootCounter = 0
 	end
+end
+
+function cannonHasClearShot(cannon)
+	local sprites = querySpritesAlongLines(cannon.x, cannon.y, player.x, cannon.y)
+	for i = 1, #sprites do
+		local sprite = sprites[i]
+		if (sprite:isa(Projectile) and not sprite.isDangerous)  then
+			return false
+		end
+	end
+	return true
 end
 
 function updateCannons()
