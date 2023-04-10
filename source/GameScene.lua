@@ -192,7 +192,6 @@ function chooseAndFireCannon()
 	if projectileShootCounter >= projectileShootCounterLimit then
 		local leftCannonHasClearShot = cannonHasClearShot(leftCannon)
 		local rightCannonHasClearShot = cannonHasClearShot(rightCannon)
-		print("CLEARSHOT", leftCannonHasClearShot, rightCannonHasClearShot)
 		if (leftCannonHasClearShot and rightCannonHasClearShot) or (not leftCannonHasClearShot and not rightCannonHasClearShot) then
 			if math.random(1, 2) == 1 then
 				leftCannon:startShootingProjectile()
