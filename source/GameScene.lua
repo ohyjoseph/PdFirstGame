@@ -1,6 +1,7 @@
 import "Cannon"
 import "Wheel"
 import "Projectile"
+import "ProjectileBreak"
 import "Gem"
 import "GemSpawner"
 import "Score"

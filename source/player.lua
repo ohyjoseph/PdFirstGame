@@ -288,9 +288,9 @@ end
 
 function Player:hitByProjectileResponse(projectile)
 	if projectile.isDangerous then
-		SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
+		projectile:breakProjectile()
 		SoundManager:playSound(SoundManager.kSoundPlayerHit)
-		
+
 		self.isStunned = true
 		self.externalDx += projectile.dx
 		projectile:remove()

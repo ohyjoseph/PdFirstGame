@@ -3,6 +3,8 @@ local gfx <const> = pd.graphics
 
 local IMAGES = gfx.imagetable.new("images/boulder")
 
+local HALF_PROJECTILE_HEIGHT = 17
+
 class("Projectile").extends(gfx.sprite)
 
 function Projectile:init(x, y, dx, rotatesClockwise)
@@ -20,7 +22,7 @@ function Projectile:init(x, y, dx, rotatesClockwise)
 	self.hasTouchedLava = false
 
 
-	self:setZIndex(101)
+	self:setZIndex(1001)
 	self:setImage(IMAGES:getImage(1))
 	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
@@ -43,12 +45,17 @@ function Projectile:collisionResponse(other)
 			self:setZIndex(0)
 			return gfx.sprite.kCollisionTypeSlide
 		else
-			SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
-			self:remove()
+			self:breakProjectile()
 		end
 	elseif other:isa(Player) then
 		return gfx.sprite.kCollisionTypeOverlap
 	end
+end
+
+function Projectile:breakProjectile()
+	SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
+			ProjectileBreak(self.x, self.y - HALF_PROJECTILE_HEIGHT, self.dx)
+			self:removeClean()
 end
 
 function Projectile:update()
