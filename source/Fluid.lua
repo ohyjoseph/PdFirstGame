@@ -27,7 +27,7 @@ function Fluid:init(x, y, width, height, options)
 	self:setGroups(7)
 	self:setCenter(0, 0)
 	self:setOpaque(true)
-	self:setZIndex(1001)
+	self:setZIndex(1002)
 	
 	options = options or {}
 
