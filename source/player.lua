@@ -1,5 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local frameTimer <const> = pd.frameTimer
 
 class("Player").extends(gfx.sprite)
 
@@ -17,22 +18,24 @@ local MAX_RUN_FRAMES = 20
 local MAX_CONTINUE_JUMP_FRAMES = 12
 local MAX_COYOTE_FRAMES = 6
 local STUNNED_FRAMES = 50
+local JUMP_BOUNCE_FORCE = 7.5
 local BOUNCE_FORCE = 6
 local DEATH_FRAMES = 100
+local HALF_PLAYER_WIDTH = 15
 
 function Player:init(x, y, score)
 	Player.super.init(self)
 
-	self.idleTimer = pd.frameTimer.new(MAX_IDLE_FRAMES)
+	self.idleTimer = frameTimer.new(MAX_IDLE_FRAMES)
 	self.idleTimer.discardOnCompletion = false
-	self.runTimer = pd.frameTimer.new(MAX_RUN_FRAMES)
+	self.runTimer = frameTimer.new(MAX_RUN_FRAMES)
 	self.runTimer.discardOnCompletion = false
 
-	self.jumpTimer = pd.frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
+	self.jumpTimer = frameTimer.new(MAX_CONTINUE_JUMP_FRAMES)
 	self.jumpTimer:pause()
 	self.jumpTimer.discardOnCompletion = false
 
-	self.coyoteTimer = pd.frameTimer.new(MAX_COYOTE_FRAMES)
+	self.coyoteTimer = frameTimer.new(MAX_COYOTE_FRAMES)
 	self.coyoteTimer:pause()
 	self.coyoteTimer.discardOnCompletion = false
 
@@ -64,7 +67,7 @@ function Player:init(x, y, score)
 
 	self:setImage(self.playerImages:getImage(1))
 	self:setZIndex(1000)
-	self:setCollideRect(4, 0, 22, 44)
+	self:setCollideRect(5, 4, 20, 40)
 	self:setGroups(1)
 	self:setCollidesWithGroups({2, 3})
 	self:add()
@@ -108,7 +111,7 @@ end
 function Player:unstunPlayer()
 	if self.isOnGround and self.isStunned then
 		if not self.unstunTimer then
-			self.unstunTimer = pd.frameTimer.new(STUNNED_FRAMES, function()
+			self.unstunTimer = frameTimer.new(STUNNED_FRAMES, function()
 				self.isStunned = false
 				self.unstunTimer = nil
 			end)
@@ -228,12 +231,12 @@ function Player:applyVelocities()
 end
 
 function Player:preventPlayerFromLeavingXBounds()
-	if self.x < 0 then
-		self.x = 0
+	if self.x - HALF_PLAYER_WIDTH < 0 then
+		self.x = HALF_PLAYER_WIDTH
 		self.dx = 0
 	end
-	if self.x > 400 then
-		self.x = 400
+	if self.x + HALF_PLAYER_WIDTH > 400 then
+		self.x = 400 - HALF_PLAYER_WIDTH
 		self.dx = 0
 	end
 end
@@ -284,11 +287,14 @@ function Player:applyGravity()
 end
 
 function Player:hitByProjectileResponse(projectile)
-	SoundManager:playSound(SoundManager.kSoundPlayerHit)
+	if projectile.isDangerous then
+		projectile:breakProjectile()
+		SoundManager:playSound(SoundManager.kSoundPlayerHit)
 
-	self.isStunned = true
-	self.externalDx += projectile.dx
-	projectile:remove()
+		self.isStunned = true
+		self.externalDx += projectile.dx
+		projectile:remove()
+	end
 end
 
 function Player:startDeath()
@@ -297,11 +303,20 @@ function Player:startDeath()
 	self.dy = self.dy * 0.03
 	self.g = 0.04
 
-	self:saveHighScore()
-
-	SoundManager:playSound(SoundManager.kSoundBump)
-	pd.frameTimer.new(DEATH_FRAMES, function()
-		resetGame()
+	SoundManager:playSound(SoundManager.kSoundDeathJingle)
+	frameTimer.new(DEATH_FRAMES / 5.5, function()
+		setShouldStopCamera(true)
+		self.dy /= 2
+		self.g /= 2
+	end)
+	frameTimer.new(DEATH_FRAMES / 2, function()
+		self.dy /= 2
+		self.g /= 2
+	end)
+	frameTimer.new(DEATH_FRAMES, function()
+		self.dy /= 2
+		self.g /= 2
+		showScoreWidget()
 	end)
 end
 
@@ -338,15 +353,19 @@ function Player:projectileCollisionResponse(otherSprite, normalX, normalY)
 		if normalY == -1 then
 			if self.dy < -BOUNCE_FORCE then
 				self.dy += -BOUNCE_FORCE
-			else 
-				self.dy = -BOUNCE_FORCE
+			else
+				if playdate.buttonIsPressed(playdate.kButtonA) then
+					self.dy = -JUMP_BOUNCE_FORCE
+				else
+					self.dy = -BOUNCE_FORCE
+				end
+				otherSprite.startFallY = otherSprite.y
 				SoundManager:playSound(SoundManager.kSoundStomp)
 			end
 			otherSprite:fall()
+			otherSprite:setCollideRect(4, 4, 26, 26)
 		else
-			if otherSprite.isDangerous then
-				self:hitByProjectileResponse(otherSprite)
-			end
+			self:hitByProjectileResponse(otherSprite)
 		end
 	end
 end
@@ -376,14 +395,22 @@ function Player:executeCollisionResponses(collisions)
 		self.coyoteTimer:pause()
 		self.coyoteTimer:reset()
 
-		if getLowestY() then
-			if self.y < getLowestY() then
-				addToScore(getMutliplier() * math.floor((getLowestY() - self.y) / 22))
-				setLowestY(self.y)
+		local currentLowestY = getLowestY()
+		if currentLowestY then
+			if self.y < currentLowestY then
+				-- delay by 1 frame in case player scores and grabs gem on the same frame
+				-- ensuring the multiplier goes up before adding to the score
+				frameTimer.new(1, function()
+					-- getting lowestY again because the delay of 1 frame
+					local baseValue = math.floor((getLowestY() - self.y) / 22)
+					addToHighestHeight(baseValue)
+					addToScore(getMutliplier() * baseValue)
+					setLowestY(self.y)
+				end)
 			end
 		end
 	else
 		self.isOnGround = false
 		self.coyoteTimer:start()
 	end
-end
+end -- 1060222 15780

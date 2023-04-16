@@ -1,5 +1,9 @@
 local gfx <const> = playdate.graphics
 local geometry <const> = playdate.geometry
+local fillPolygon <const> = gfx.fillPolygon
+local setDitherPattern <const> = gfx.setDitherPattern
+local setColor <const> = gfx.setColor
+
 local X_OFFSET = 0
 local Y_OFFSET = 50
 
@@ -23,7 +27,7 @@ function Fluid:init(x, y, width, height, options)
 	self:setGroups(7)
 	self:setCenter(0, 0)
 	self:setOpaque(true)
-	self:setZIndex(1001)
+	self:setZIndex(1002)
 	
 	options = options or {}
 
@@ -141,6 +145,9 @@ function Fluid:checkCollisionsResponse(collisions)
 			-- else
 			if otherSprite:isa(Projectile) then
 				if not otherSprite.hasTouchedLava then
+					if otherSprite.dy > 0 then
+						SoundManager:playSound(SoundManager.kSoundLavaFall)
+					end
 					self:touch(otherSprite.x, otherSprite.dy + 3)
 				end
 				otherSprite:collideWithLavaResponse()
@@ -156,6 +163,7 @@ function Fluid:checkCollisionsResponse(collisions)
 			-- end
 			if otherSprite:isa(Player) then
 				self:touch(otherSprite.x, otherSprite.dy * 0.5 + 2)
+				SoundManager:playSound(SoundManager.kSoundLavaFall)
                 otherSprite:startDeath()
             end
         end
@@ -212,9 +220,9 @@ end
 function Fluid:fill()
 	local image = gfx.image.new(X_OFFSET + self.bounds.width, Y_OFFSET + self.bounds.height)
 	gfx.pushContext(image)
-		gfx.setColor(gfx.kColorWhite)
-		-- gfx.setDitherPattern(0.4)
-		gfx.fillPolygon(self.polygon)
+		setColor(gfx.kColorWhite)
+		setDitherPattern(0.3)
+		fillPolygon(self.polygon)
 	gfx.popContext()
 	self:setImage(image)
 end

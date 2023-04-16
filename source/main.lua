@@ -5,21 +5,19 @@ import 'CoreLibs/frameTimer'
 
 import "Player"
 import "Platform"
-import "Rectangle"
-import "Cannon"
-import "Projectile"
-import "Gem"
-import "GemSpawner"
-import "Score"
 import "SoundManager"
-import "Fluid"
 import "CaveBottom"
 
 import "MenuScene"
 import "GameScene"
 
-local gfx <const> = playdate.graphics
-local FrameTimer_update = playdate.frameTimer.updateTimers
+local pd <const> = playdate
+local gfx <const> = pd.graphics
+local sprite <const> =  gfx.sprite
+local spriteUpdate <const> = sprite.update
+local FrameTimer_update = pd.frameTimer.updateTimers
+
+DEFAULT_FONT = gfx.getFont()
 
 isMenuGemCollected = false
 
@@ -28,8 +26,13 @@ local isInGameScene = false
 local shakeTable = {counter = 0, prevX = 0, prevY = 0}
 
 local scene
+music = pd.sound.fileplayer.new("sound/lavaLoop")
 
-local menu = playdate.getSystemMenu()
+local menu = pd.getSystemMenu()
+menu:addOptionsMenuItem("Lava Vol", {"off", "low", "med", "high"}, "med", function(volumeText)
+	music:setVolume(translateMenuVolume(volumeText))
+	SAVE_LAVA_VOLUME()
+end)
 menu:addMenuItem("Back to Intro", function()
 	reset()
 	hasUsedMenuScene = false
@@ -43,31 +46,58 @@ menu:addMenuItem("Restart Run", function()
 	isInGameScene = false
 end)
 
-function playdate.update()
+function pd.update()
 	if not hasUsedMenuScene then
+		if scene then
+			scene:remove()
+		end
+		for i, timer in pairs(pd.frameTimer.allTimers()) do
+			timer:remove()
+		end
 		scene = MenuScene()
 		hasUsedMenuScene = true
 	end
 
 	if isMenuGemCollected and not isInGameScene then
+		if scene then
+			scene:remove()
+		end
+		for i, timer in pairs(pd.frameTimer.allTimers()) do
+			timer:remove()
+		end
 		scene = GameScene()
 		isInGameScene = true
 	end
 
 	scene:update()
 
-	gfx.sprite.update()
+	spriteUpdate()
 	FrameTimer_update()
 end
 
 function reset()
-	gfx.sprite.removeAll()
-	for i, timer in pairs(playdate.frameTimer.allTimers()) do
+	music:pause()
+	sprite.removeAll()
+	for i, timer in pairs(pd.frameTimer.allTimers()) do
 		timer:remove()
 	end
 	shouldCameraShake = false
-	x, y = gfx.getDrawOffset()
-	shakeTable = {counter = 0, prevX = x, prevY = y}
+	shakeTable = {counter = 0, prevX = 0, prevY = 0}
+end
+
+function getLavaVolume()
+	return translateMenuVolume(menu:getMenuItems()[1]:getValue())
+end
+
+function translateMenuVolume(volumeText)
+	if volumeText == "low" then
+		return 0.33
+	elseif volumeText == "med" then
+		return 0.66
+	elseif volumeText == "high" then
+		return 1
+	end
+	return 0
 end
 
 function cameraShake()
@@ -82,22 +112,87 @@ function cameraShake()
     end
 end
 
+function arrayFirstFiveEqual(table1, table2)
+	for i = 1, 5 do
+		if table1[i] ~= table2[i] then
+			return false
+		end
+	end
+	return true
+end
+
 function SAVE_HIGH_SCORE(newScore)
-	if newScore > HIGH_SCORE then
-		local gameData = {
-			highScore = newScore
-		}
-		playdate.datastore.write(gameData)
-		HIGH_SCORE = newScore
+	local forLength = 5
+	local highScoresLength = #HIGH_SCORES
+	if highScoresLength < forLength then
+		forLength = highScoresLength
+	end
+	if forLength < 5 then
+		forLength += 1
+	end
+	local newHighScores = {}
+	table.sort(HIGH_SCORES, function(a, b)
+		return a > b
+	end)
+	for i = 1, forLength do
+		table.insert(newHighScores, HIGH_SCORES[i])
+	end
+	table.insert(newHighScores, newScore)
+	table.sort(newHighScores, function(a, b)
+		return a > b
+	end)
+
+	local highScoreTablesEqual = arrayFirstFiveEqual(HIGH_SCORES, newHighScores)
+	if not highScoreTablesEqual then
+		local highScoresToSave = {}
+		for i = 1, forLength do
+			table.insert(highScoresToSave, newHighScores[i])
+		end
+		pd.datastore.write(highScoresToSave)
+		HIGH_SCORES = highScoresToSave
+	end
+	return not highScoreTablesEqual
+end
+
+function LOAD_HIGH_SCORES()
+    local gameData = pd.datastore.read()
+    if gameData and type(gameData) == "table" then
+        return gameData
+    end
+	return {}
+end
+
+function GET_HIGH_SCORE()
+	local highScores = LOAD_HIGH_SCORES()
+	local highScoresLength = #highScores
+	if highScoresLength < 1 then
+		return 0
+	else
+		return highScores[highScoresLength]
 	end
 end
 
-function LOAD_HIGH_SCORE()
-    local gameData = playdate.datastore.read()
-    if gameData then
-        return gameData.highScore
-    end
-	return 0
+function SAVE_LAVA_VOLUME()
+	local newLavaVolumeTable = {}
+	table.insert(newLavaVolumeTable, menu:getMenuItems()[1]:getValue())
+	pd.datastore.write(newLavaVolumeTable, "lavaVolume")
 end
 
-HIGH_SCORE = LOAD_HIGH_SCORE()
+function LOAD_LAVA_VOLUME()
+	return pd.datastore.read("lavaVolume")
+end
+
+
+function initLavaVolume()
+	local lavaVolumeTable = LOAD_LAVA_VOLUME()
+	if lavaVolumeTable and lavaVolumeTable[1] then
+		menu:getMenuItems()[1]:setValue(lavaVolumeTable[1])
+	else
+		menu:getMenuItems()[1]:setValue("med")
+	end
+end
+
+initLavaVolume()
+
+HIGH_SCORES = LOAD_HIGH_SCORES()
+HIGH_SCORE = GET_HIGH_SCORE()

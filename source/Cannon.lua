@@ -1,9 +1,11 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+local frameTimer <const> = pd.frameTimer
+
 local IMAGES = gfx.imagetable.new("images/cannon")
 
 local PROJECTILE_DX = 4.5
-local SHOOT_PREP_FRAMES = 35
+local SHOOT_PREP_FRAMES = 10
 local SHOOT_FRAMES = 10
 local COOLDOWN_FRAMES = 20
 local PROJECTILE_X_OFFSET = 45
@@ -13,8 +15,10 @@ class("Cannon").extends(gfx.sprite)
 function Cannon:init(x, y, isFacingRight)
 	Cannon.super.init(self)
 
-	self.x = x
-	self.y = y
+    self.wheel = Wheel(x, y)
+
+    self:setZIndex(100)
+
     self.dx = 0
 	self.dy = 0
     self.goalY = 0
@@ -43,8 +47,23 @@ function Cannon:init(x, y, isFacingRight)
 end
 
 function Cannon:update()
-    self:moveTowardGoalY()
-	self:moveTo(self.x, self.y)
+    self:updateDyTowardGoalY()
+	self:moveTo(self.x, self.y + self.dy)
+    if self.isFacingRight then
+        self.wheel:moveTo(self.x + 9, self.y + 15)
+        if self.dy > 0 then
+            self.wheel:turnClockwise()
+        elseif self.dy < 0 then
+            self.wheel:turnCounterClockwise()
+        end
+    else
+        self.wheel:moveTo(self.x - 9, self.y + 15)
+        if self.dy > 0 then
+            self.wheel:turnCounterClockwise()
+        elseif self.dy < 0 then
+            self.wheel:turnClockwise()
+        end
+    end
 end
 
 function Cannon:getSpriteOrientation()
@@ -55,16 +74,13 @@ function Cannon:getSpriteOrientation()
 	end
 end
 
-function Cannon:moveTowardGoalY()
-    if not self.movementAllowed then
-        return
-    end
-    if self.y == self.goalY then
-        return
-    elseif self.y < self.goalY then
-        self.y += 1
-    elseif self.y > self.goalY then
-        self.y -= 1
+function Cannon:updateDyTowardGoalY()
+    if not self.movementAllowed or self.y == self.goalY then
+        self.dy = 0
+    elseif self.y < self.goalY and self.dy < 1 then
+        self.dy += 1
+    elseif self.y > self.goalY and self.dy > -1 then
+        self.dy -= 1
     end
 end
 
@@ -75,7 +91,23 @@ end
 function Cannon:startShootingProjectile()
     self:setImage(IMAGES:getImage(2), self:getSpriteOrientation())
     self.movementAllowed = false
-    pd.frameTimer.new(SHOOT_PREP_FRAMES, function()
+    frameTimer.new(SHOOT_PREP_FRAMES, function()
+        self:startShootingProjectile2()
+    end)
+end
+
+function Cannon:startShootingProjectile2()
+    self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
+    self.movementAllowed = false
+    frameTimer.new(SHOOT_PREP_FRAMES, function()
+        self:startShootingProjectile3()
+    end)
+end
+
+function Cannon:startShootingProjectile3()
+    self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
+    self.movementAllowed = false
+    frameTimer.new(SHOOT_PREP_FRAMES, function()
         self:shootProjectile()
     end)
 end
@@ -83,16 +115,16 @@ end
 function Cannon:shootProjectile()
     SoundManager:playSound(self.kSound)
 
-    self:setImage(IMAGES:getImage(3), self:getSpriteOrientation())
+    self:setImage(IMAGES:getImage(5), self:getSpriteOrientation())
     Projectile(self.x + self.projectileXOffset, self.y, self.projectileDx, self.isFacingRight)
-    pd.frameTimer.new(SHOOT_FRAMES, function()
+    frameTimer.new(SHOOT_FRAMES, function()
         self:cooldown()
     end)
 end
 
 function Cannon:cooldown()
-    self:setImage(IMAGES:getImage(4), self:getSpriteOrientation())
-    pd.frameTimer.new(COOLDOWN_FRAMES, function()
+    self:setImage(IMAGES:getImage(6), self:getSpriteOrientation())
+    frameTimer.new(COOLDOWN_FRAMES, function()
         self.movementAllowed = true
         self:setImage(IMAGES:getImage(1), self:getSpriteOrientation())
     end)

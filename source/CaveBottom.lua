@@ -9,8 +9,8 @@ function CaveBottom:init(x, y, dx)
 	self.image = gfx.image.new("images/caveBottom")
 	self:setImage(self.image)
 	self:add()
-    self:setZIndex(-1)
+	self:setZIndex(-1)
 
-    self:setCenter(1, 1)
-    self:moveTo(400, 240)
+	self:setCenter(1, 1)
+	self:moveTo(400, 240)
 end

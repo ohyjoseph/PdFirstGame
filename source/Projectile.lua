@@ -1,6 +1,9 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
+
 local IMAGES = gfx.imagetable.new("images/boulder")
+
+local HALF_PROJECTILE_HEIGHT = 17
 
 class("Projectile").extends(gfx.sprite)
 
@@ -18,6 +21,8 @@ function Projectile:init(x, y, dx, rotatesClockwise)
 	self.isDangerous = true
 	self.hasTouchedLava = false
 
+
+	self:setZIndex(1001)
 	self:setImage(IMAGES:getImage(1))
 	self:setCollideRect(4, 4, 26, 26)
 	self:setGroups(3)
@@ -29,17 +34,28 @@ end
 function Projectile:collisionResponse(other)
 	if other:isa(Projectile) or other:isa(Platform) then
 		if not self.isDangerous then
+			if not self.hasTouchedLava then
+				if self.startFallY and self.y - self.startFallY >= 25 then
+					SoundManager:playSound(SoundManager.kSoundProjectileLand)
+				end
+			end
 			self:setUpdatesEnabled(false)
 			self:setCollidesWithGroups({1, 3})
 			self.dy = 0
 			self:setZIndex(0)
 			return gfx.sprite.kCollisionTypeSlide
 		else
-			self:remove()
+			self:breakProjectile()
 		end
 	elseif other:isa(Player) then
 		return gfx.sprite.kCollisionTypeOverlap
 	end
+end
+
+function Projectile:breakProjectile()
+	SoundManager:playSound(SoundManager.kSoundProjectileDestroy)
+			ProjectileBreak(self.x, self.y - HALF_PROJECTILE_HEIGHT, self.dx)
+			self:removeClean()
 end
 
 function Projectile:update()
@@ -95,6 +111,7 @@ function Projectile:fall()
 	self.isDangerous = false
 	self.dx = 0
 	self.dy = 6
+	-- self:setCollideRect(4, 4, 26, 26)
 end
 
 function Projectile:removeSelfIfFarAway()
@@ -113,4 +130,8 @@ function Projectile:executeCollisionResponses(collisions)
 			self:playerCollisionResponse(otherSprite, normalX, normalY)
 		end
 	end
+end
+
+function Projectile:removeClean()
+	self:remove()
 end
