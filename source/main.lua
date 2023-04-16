@@ -122,6 +122,9 @@ function arrayFirstFiveEqual(table1, table2)
 end
 
 function SAVE_HIGH_SCORE(newScore)
+	if newScore <= 0 then
+		return
+	end
 	local forLength = 5
 	local highScoresLength = #HIGH_SCORES
 	if highScoresLength < forLength then
