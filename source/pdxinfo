@@ -2,6 +2,6 @@ name=Hurry Gaery!
 author=theOHzonelayer
 description=Collect treasure and stack boulders to escape the rising lava!
 bundleID=com.theOHzonelayer.hurrygaery
-version=1.0
+version=1.0.1
 buildNumber=1
 imagePath=SystemAssets/
