@@ -76,6 +76,7 @@ function pd.update()
 end
 
 function reset()
+	SoundManager:stopSound(SoundManager.kSoundQuake)
 	music:pause()
 	sprite.removeAll()
 	for i, timer in pairs(pd.frameTimer.allTimers()) do
