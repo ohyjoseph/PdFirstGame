@@ -142,7 +142,7 @@ function initialize()
 	leftCannon = Cannon(0, player.y, true)
 	rightCannon = Cannon(400, player.y, false)
 
-	cameraOffsetTimer = pd.frameTimer.new(9)
+	cameraOffsetTimer = pd.frameTimer.new(6)
 	cameraOffsetTimer.discardOnCompletion = false
 	cameraOffsetTimer.repeats = true
 	removalTimer = pd.frameTimer.new(225)
@@ -250,15 +250,13 @@ function moveCameraTowardGoal()
 	if goalYOffset == yOffset or goalYOffset - 1 == yOffset or goalYOffset + 1 == yOffset then
 		return
 	elseif player.y < player.lastGroundY - 150 then
-		setDrawOffset(0, yOffset + 2)
+		setDrawOffset(0, yOffset + 1)
 	elseif goalYOffset > yOffset then
-		if cameraOffsetTimer.frame == 0 or cameraOffsetTimer.frame == 5 then
-			setDrawOffset(0, yOffset + 2)
+		if cameraOffsetTimer.frame == 0 or cameraOffsetTimer.frame == 3 then
+			setDrawOffset(0, yOffset + 1)
 		end
 	elseif goalYOffset < yOffset then
-		if cameraOffsetTimer.frame %2 == 0 then
-			setDrawOffset(0, yOffset - 2)
-		end
+		setDrawOffset(0, yOffset - 1)
 	end
 end
 
