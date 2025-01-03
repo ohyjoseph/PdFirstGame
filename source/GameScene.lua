@@ -13,6 +13,7 @@ import "ScoreWidget"
 import "TipWidget"
 
 local pd <const> = playdate
+local scoreboards <const> = pd.scoreboards
 local gfx <const> = pd.graphics
 local getDrawOffset <const> = gfx.getDrawOffset
 local setDrawOffset <const> = gfx.setDrawOffset
@@ -162,6 +163,20 @@ function initialize()
 	highestHeight = 0
 	cameraMovedPastStart = false
 	shouldStopCamera = false
+end
+
+function AddScoreToLeaderboard()
+	local boardId = "highscores"
+	if score.score > 0 then
+		scoreboards.addScore(boardId, score.score, AddScoreToLeaderboardCb)
+	end
+end
+
+function AddScoreToLeaderboardCb(status, result)
+	print("AddScoreToLeaderBoardCb")
+    print(status.code)
+    print(status.message)
+    printTable(result)
 end
 
 function showScoreWidget()

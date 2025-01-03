@@ -3,6 +3,7 @@
 -- height
 
 local pd <const> = playdate
+local scoreboards <const> = pd.scoreboards
 local gfx <const> = pd.graphics
 
 class('ScoreWidget').extends(gfx.sprite)
@@ -35,6 +36,23 @@ function ScoreWidget:init(score)
     self:add()
 
     self.highScoresChanged = SAVE_HIGH_SCORE(self.score)
+    scoreboards.getScoreboards(GetScoreBoardsCallbackTest)
+    scoreboards.getScores("highscores", GetScoresCallbackTest)
+end
+
+function GetScoreBoardsCallbackTest(status, result) 
+    print("pizza")
+    print(pd.metadata.bundleID)
+    print(status.code)
+    print(status.message)
+    printTable(result)
+end
+
+function GetScoresCallbackTest(status, result) 
+    print("icecream")
+    print(status.code)
+    print(status.message)
+    printTable(result)
 end
 
 function ScoreWidget:update()

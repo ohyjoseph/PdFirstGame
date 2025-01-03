@@ -303,6 +303,8 @@ function Player:startDeath()
 	self.dy = self.dy * 0.03
 	self.g = 0.04
 
+	AddScoreToLeaderboard()
+
 	SoundManager:playSound(SoundManager.kSoundDeathJingle)
 	frameTimer.new(DEATH_FRAMES / 5.5, function()
 		setShouldStopCamera(true)
