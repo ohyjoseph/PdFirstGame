@@ -9,7 +9,7 @@ class('ScoreWidget').extends(gfx.sprite)
 
 function ScoreWidget:init(score)
     self.dialogWidth = 200
-    self.dialogHeight = 140
+    self.dialogHeight = 230
     self.leftPadding = 56
     self.font = gfx.font.new('font/Air Buster');
     gfx.setFont(self.font)
@@ -93,7 +93,8 @@ function ScoreWidget:drawWidget()
         end
     end
     gfx.setImageDrawMode(gfx.kDrawModeInverted)
-    gfx.drawTextAligned("_Press_ *A* _to restart_", self.dialogWidth / 2, 115, kTextAlignment.center)
+    gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 5, 185, kTextAlignment.left)
+    gfx.drawTextAligned("*B* _for global scores_", self.dialogWidth / 5, 205, kTextAlignment.left)
     gfx.popContext()
     self:setImage(dialogImage)
 end

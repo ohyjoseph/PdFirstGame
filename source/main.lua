@@ -113,8 +113,8 @@ function cameraShake()
     end
 end
 
-function arrayFirstFiveEqual(table1, table2)
-	for i = 1, 5 do
+function arrayFirstTenEqual(table1, table2)
+	for i = 1, 10 do
 		if table1[i] ~= table2[i] then
 			return false
 		end
@@ -126,12 +126,12 @@ function SAVE_HIGH_SCORE(newScore)
 	if newScore <= 0 then
 		return
 	end
-	local forLength = 5
+	local forLength = 10
 	local highScoresLength = #HIGH_SCORES
 	if highScoresLength < forLength then
 		forLength = highScoresLength
 	end
-	if forLength < 5 then
+	if forLength < 10 then
 		forLength += 1
 	end
 	local newHighScores = {}
@@ -146,7 +146,7 @@ function SAVE_HIGH_SCORE(newScore)
 		return a > b
 	end)
 
-	local highScoreTablesEqual = arrayFirstFiveEqual(HIGH_SCORES, newHighScores)
+	local highScoreTablesEqual = arrayFirstTenEqual(HIGH_SCORES, newHighScores)
 	if not highScoreTablesEqual then
 		local highScoresToSave = {}
 		for i = 1, forLength do
