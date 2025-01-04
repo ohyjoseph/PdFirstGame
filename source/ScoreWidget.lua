@@ -9,6 +9,9 @@ local gfx <const> = pd.graphics
 class('ScoreWidget').extends(gfx.sprite)
 
 function ScoreWidget:init(score)
+    self.showGlobalRankings = false
+    self.isLoadingGlobalRankings = false
+
     self.dialogWidth = 200
     self.dialogHeight = 230
     self.leftPadding = 56
@@ -36,8 +39,6 @@ function ScoreWidget:init(score)
     self:add()
 
     self.highScoresChanged = SAVE_HIGH_SCORE(self.score)
-    scoreboards.getScoreboards(GetScoreBoardsCallbackTest)
-    scoreboards.getScores("highscores", GetScoresCallbackTest)
 end
 
 function GetScoreBoardsCallbackTest(status, result) 
@@ -56,13 +57,71 @@ function GetScoresCallbackTest(status, result)
 end
 
 function ScoreWidget:update()
-    self:drawWidget()
-    if playdate.buttonJustPressed(playdate.kButtonA) then
+    if self.isLoadingGlobalRankings then
+        return
+    end
+    if self.showGlobalRankings == false then
+        if pd.buttonJustPressed(pd.kButtonB) then
+            self.showGlobalRankings = true
+            self.isLoadingGlobalRankings = true
+            self:drawGlobalRankingsWidget()
+            scoreboards.getScores("highscores", function(status, result)
+                self.isLoadingGlobalRankings = false
+                local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
+                gfx.pushContext(dialogImage)
+                gfx.setColor(gfx.kColorWhite)
+                gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
+                gfx.setColor(gfx.kColorBlack)
+                gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2,
+                self.dialogHeight - self.borderWidth * 2, self.cornerRadius)
+                gfx.setColor(gfx.kColorWhite)
+                gfx.setImageDrawMode(gfx.kDrawModeInverted)
+                gfx.drawTextAligned("*Global Rankings*", self.dialogWidth / 2, 10, kTextAlignment.center)
+                local SCORE_Y_OFFSET = 22
+                local SCORE_Y_SPACING = 15
+                gfx.setFont(self.font)
+                for i = #result.scores, 1, -1 do
+                    local scoreString
+                    if result.scores[i].rank == 1 then
+                        scoreString = "1ST "
+                    elseif result.scores[i].rank == 2 then
+                        scoreString = "2ND "
+                    elseif result.scores[i].rank == 3 then
+                        scoreString = "3RD "
+                    else
+                        scoreString = result.scores[i].rank .. "TH "
+                    end
+                    gfx.setImageDrawMode(gfx.kDrawModeInverted)
+                    gfx.drawText(scoreString, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+                    gfx.drawTextAligned(result.scores[i].value, self.leftPadding + 89, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
+                end
+                gfx.setImageDrawMode(gfx.kDrawModeInverted)
+                gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 5, 185, kTextAlignment.left)
+                gfx.drawTextAligned("*B* _for high scores_", self.dialogWidth / 5, 205, kTextAlignment.left)
+                gfx.popContext()
+                self:setImage(dialogImage)
+            end)
+            print("after getScoresCb")
+        else
+            self:drawLocalScoresWidget()
+        end  
+    else
+        if pd.buttonJustPressed(pd.kButtonB) then
+            self.showGlobalRankings = false
+            self.isLoadingGlobalRankings = false
+            self:drawLocalScoresWidget()
+        else
+            if self.isLoadingGlobalRankings then
+                self:drawGlobalRankingsWidget()
+            end
+        end
+    end
+    if pd.buttonJustPressed(pd.kButtonA) then
         resetGame()
     end
 end
 
-function ScoreWidget:drawWidget()
+function ScoreWidget:drawLocalScoresWidget()
     local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
     gfx.pushContext(dialogImage)
     gfx.setColor(gfx.kColorWhite)
@@ -112,7 +171,22 @@ function ScoreWidget:drawWidget()
     end
     gfx.setImageDrawMode(gfx.kDrawModeInverted)
     gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 5, 185, kTextAlignment.left)
-    gfx.drawTextAligned("*B* _for global scores_", self.dialogWidth / 5, 205, kTextAlignment.left)
+    gfx.drawTextAligned("*B* _for global rankings_", self.dialogWidth / 5, 205, kTextAlignment.left)
+    gfx.popContext()
+    self:setImage(dialogImage)
+end
+
+function ScoreWidget:drawGlobalRankingsWidget()
+    local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
+    gfx.pushContext(dialogImage)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2,
+    self.dialogHeight - self.borderWidth * 2, self.cornerRadius)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setImageDrawMode(gfx.kDrawModeInverted)
+    gfx.drawTextAligned("*Loading*", self.dialogWidth / 2, 10, kTextAlignment.center)
     gfx.popContext()
     self:setImage(dialogImage)
 end
