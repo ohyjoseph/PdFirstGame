@@ -2,8 +2,8 @@ import "GemIndicator"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
-local COLLISION_X_BUFFER = 12
-local COLLISION_Y_BUFFER = 12
+local COLLISION_X_BUFFER = 8
+local COLLISION_Y_BUFFER = 4
 local IMAGES = gfx.imagetable.new("images/gem")
 
 class("Gem").extends(gfx.sprite)
@@ -27,7 +27,7 @@ function Gem:init(x, y)
 end
 
 function Gem:collisionResponse(other)
-    if other:isa(Player) and other.isOnGround then
+    if other:isa(Player) then
         addToMultiplier(1)
         self:removeClean()
         SoundManager:playSound(SoundManager.kSoundGemPickup)
