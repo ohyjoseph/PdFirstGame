@@ -58,13 +58,18 @@ end
 
 function ScoreWidget:update()
     if self.isLoadingGlobalRankings then
+        if pd.buttonJustPressed(pd.kButtonA) then
+            resetGame()
+        end
+        self:drawLoadingGlobalRankingsWidget()
         return
     end
     if self.showGlobalRankings == false then
         if pd.buttonJustPressed(pd.kButtonB) then
             self.showGlobalRankings = true
             self.isLoadingGlobalRankings = true
-            self:drawGlobalRankingsWidget()
+            self.flashTimer:reset()
+            self:drawLoadingGlobalRankingsWidget()
             scoreboards.getScores("highscores", function(status, result)
                 self.isLoadingGlobalRankings = false
                 local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
@@ -109,10 +114,11 @@ function ScoreWidget:update()
         if pd.buttonJustPressed(pd.kButtonB) then
             self.showGlobalRankings = false
             self.isLoadingGlobalRankings = false
+            self.flashTimer:reset()
             self:drawLocalScoresWidget()
         else
             if self.isLoadingGlobalRankings then
-                self:drawGlobalRankingsWidget()
+                self:drawLoadingGlobalRankingsWidget()
             end
         end
     end
@@ -176,7 +182,7 @@ function ScoreWidget:drawLocalScoresWidget()
     self:setImage(dialogImage)
 end
 
-function ScoreWidget:drawGlobalRankingsWidget()
+function ScoreWidget:drawLoadingGlobalRankingsWidget()
     local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
     gfx.pushContext(dialogImage)
     gfx.setColor(gfx.kColorWhite)
@@ -186,7 +192,12 @@ function ScoreWidget:drawGlobalRankingsWidget()
     self.dialogHeight - self.borderWidth * 2, self.cornerRadius)
     gfx.setColor(gfx.kColorWhite)
     gfx.setImageDrawMode(gfx.kDrawModeInverted)
-    gfx.drawTextAligned("*Loading*", self.dialogWidth / 2, 10, kTextAlignment.center)
+    if self.flashTimer.frame <= self.flashTimer.duration * 0.5 then
+        gfx.setImageDrawMode(gfx.kDrawModeInverted)
+    else
+        gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    end
+    gfx.drawTextAligned("*Loading...*", self.dialogWidth / 2, 10, kTextAlignment.center)
     gfx.popContext()
     self:setImage(dialogImage)
 end
