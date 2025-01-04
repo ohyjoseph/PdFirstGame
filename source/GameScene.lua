@@ -155,7 +155,7 @@ function initialize()
 	lavaRiseCounter = 0
 	lavaRiseCounterLimit = STARTING_LAVA_RISE_LIMIT
 
-	GemSpawner(player.y, 240)
+	GemSpawner(player.y, 100)
 
 	lava = Fluid(0, LAVA_STARTING_Y, 400, 90)
 
