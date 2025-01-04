@@ -12,10 +12,10 @@ function ScoreWidget:init(score)
     self.showGlobalRankings = false
     self.isLoadingGlobalRankings = false
 
-    self.dialogWidth = 200
+    self.dialogWidth = 280
     self.dialogHeight = 230
-    self.leftPadding = 56
-    self.font = gfx.font.new('font/Air Buster');
+    self.leftPadding = 16
+    self.font = gfx.font.new('font/Mini Sans');
     gfx.setFont(self.font)
 
     self.score = score
@@ -86,23 +86,15 @@ function ScoreWidget:update()
                 local SCORE_Y_SPACING = 15
                 gfx.setFont(self.font)
                 for i = #result.scores, 1, -1 do
-                    local scoreString
-                    if result.scores[i].rank == 1 then
-                        scoreString = "1ST "
-                    elseif result.scores[i].rank == 2 then
-                        scoreString = "2ND "
-                    elseif result.scores[i].rank == 3 then
-                        scoreString = "3RD "
-                    else
-                        scoreString = result.scores[i].rank .. "TH "
-                    end
+                    local scoreString = result.scores[i].rank .. "."
                     gfx.setImageDrawMode(gfx.kDrawModeInverted)
                     gfx.drawText(scoreString, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
-                    gfx.drawTextAligned(result.scores[i].value, self.leftPadding + 89, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
+                    gfx.drawTextAligned(result.scores[i].player, self.leftPadding + 115, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.center)
+                    gfx.drawTextAligned(result.scores[i].value, self.leftPadding + 250, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
                 end
                 gfx.setImageDrawMode(gfx.kDrawModeInverted)
-                gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 5, 185, kTextAlignment.left)
-                gfx.drawTextAligned("*B* _for high scores_", self.dialogWidth / 5, 205, kTextAlignment.left)
+                gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 4, 185, kTextAlignment.left)
+                gfx.drawTextAligned("*B* _for highscores_", self.dialogWidth / 4, 205, kTextAlignment.left)
                 gfx.popContext()
                 self:setImage(dialogImage)
             end)
@@ -150,16 +142,7 @@ function ScoreWidget:drawLocalScoresWidget()
             isNewHighScore = true
             self.newHighScoreI = i
         end
-        local scoreString
-        if i == 1 then
-            scoreString = "1ST "
-        elseif i == 2 then
-            scoreString = "2ND "
-        elseif i == 3 then
-            scoreString = "3RD "
-        else
-            scoreString = i .. "TH "
-        end
+        local scoreString = i .. "."
         if i == self.newHighScoreI then
             if self.flashTimer.frame <= self.flashTimer.duration * 0.67 then
                 gfx.setImageDrawMode(gfx.kDrawModeInverted)
@@ -169,15 +152,15 @@ function ScoreWidget:drawLocalScoresWidget()
         else
             gfx.setImageDrawMode(gfx.kDrawModeInverted)
         end
-        gfx.drawText(scoreString, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
-        gfx.drawTextAligned(HIGH_SCORES[i], self.leftPadding + 89, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
+        gfx.drawText(scoreString, self.leftPadding + 80, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+        gfx.drawTextAligned(HIGH_SCORES[i], self.leftPadding + 80 + 89, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
         if isNewHighScore then
             gfx.drawText("NEW", self.leftPadding + 99, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
         end
     end
     gfx.setImageDrawMode(gfx.kDrawModeInverted)
-    gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 5, 185, kTextAlignment.left)
-    gfx.drawTextAligned("*B* _for global rankings_", self.dialogWidth / 5, 205, kTextAlignment.left)
+    gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 4, 185, kTextAlignment.left)
+    gfx.drawTextAligned("*B* _for global rankings_", self.dialogWidth / 4, 205, kTextAlignment.left)
     gfx.popContext()
     self:setImage(dialogImage)
 end
