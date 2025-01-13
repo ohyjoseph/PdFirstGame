@@ -72,6 +72,25 @@ function ScoreWidget:update()
             self:drawLoadingGlobalRankingsWidget()
             scoreboards.getScores("highscores", function(status, result)
                 self.isLoadingGlobalRankings = false
+                if status.code == "ERROR" then
+                    local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
+                    gfx.pushContext(dialogImage)
+                    gfx.setColor(gfx.kColorWhite)
+                    gfx.fillRoundRect(0, 0, self.dialogWidth, self.dialogHeight, self.cornerRadius)
+                    gfx.setColor(gfx.kColorBlack)
+                    gfx.fillRoundRect(self.borderWidth, self.borderWidth, self.dialogWidth - self.borderWidth * 2,
+                    self.dialogHeight - self.borderWidth * 2, self.cornerRadius)
+                    gfx.setColor(gfx.kColorWhite)
+                    gfx.setImageDrawMode(gfx.kDrawModeInverted)
+                    gfx.drawTextAligned("*Failed to Connect*", self.dialogWidth / 2, 10, kTextAlignment.center)
+                    gfx.setFont(self.font)
+                    gfx.setImageDrawMode(gfx.kDrawModeInverted)
+                    gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 4, 185, kTextAlignment.left)
+                    gfx.drawTextAligned("*B* _for highscores_", self.dialogWidth / 4, 205, kTextAlignment.left)
+                    gfx.popContext()
+                    self:setImage(dialogImage)
+                    return
+                end
                 local dialogImage = gfx.image.new(self.dialogWidth, self.dialogHeight)
                 gfx.pushContext(dialogImage)
                 gfx.setColor(gfx.kColorWhite)
@@ -85,12 +104,14 @@ function ScoreWidget:update()
                 local SCORE_Y_OFFSET = 22
                 local SCORE_Y_SPACING = 15
                 gfx.setFont(self.font)
-                for i = #result.scores, 1, -1 do
-                    local scoreString = result.scores[i].rank .. "."
-                    gfx.setImageDrawMode(gfx.kDrawModeInverted)
-                    gfx.drawText(scoreString, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
-                    gfx.drawTextAligned(result.scores[i].player, self.leftPadding + 115, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.center)
-                    gfx.drawTextAligned(result.scores[i].value, self.leftPadding + 250, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
+                if result then
+                    for i = #result.scores, 1, -1 do
+                        local scoreString = result.scores[i].rank .. "."
+                        gfx.setImageDrawMode(gfx.kDrawModeInverted)
+                        gfx.drawText(scoreString, self.leftPadding, SCORE_Y_OFFSET + SCORE_Y_SPACING * i)
+                        gfx.drawTextAligned(result.scores[i].player, self.leftPadding + 115, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.center)
+                        gfx.drawTextAligned(result.scores[i].value, self.leftPadding + 250, SCORE_Y_OFFSET + SCORE_Y_SPACING * i, kTextAlignment.right)
+                    end
                 end
                 gfx.setImageDrawMode(gfx.kDrawModeInverted)
                 gfx.drawTextAligned("*A* _to restart_", self.dialogWidth / 4, 185, kTextAlignment.left)
